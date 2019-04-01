@@ -1,0 +1,17 @@
+{
+  "name": "konmego",
+  "version": "1.0.0",
+  "description": "The worlds most productive social network",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "vue": "^2.6.10"
+  }
+}
