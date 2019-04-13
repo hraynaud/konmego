@@ -18,7 +18,6 @@ class AuthenticationController < ApplicationController
 
   def login
     jwt = Authentication.login_by_password  params[:email], params[:password]
-    binding.pry
     if jwt
       pwd_login_success jwt
     else
