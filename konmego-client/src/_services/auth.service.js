@@ -1,39 +1,26 @@
 import config from 'config';
 import { authHeader } from '../_helpers';
+import { apiService } from '../_services';
 
 export const authService = {
     login,
     logout,
-    getAll,
     setToken
 };
 
-function setToken(jwt){
+function setToken(jwt) {
     if (jwt) {
-      sessionStorage.setItem('jwt', jwt);
+        sessionStorage.setItem('jwt', jwt);
     }
 }
 
 function login(email, password) {
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-    };
-
-    return fetch(`${config.apiUrl}/login`, requestOptions)
-        .then(handleResponse)
-        .then(user => {
-            // login successful if there's a user in the response
-            if (user) {
-                // store user details and basic auth credentials in local storage 
-                // to keep user logged in between page refreshes
-                user.authdata = window.btoa(email + ':' + password);
-                localStorage.setItem('user', JSON.stringify(user));
-            }
-
-            return user;
-        });
+    return apiService.writeToApi({ email, password }, '/login')
+    .then(response => response.json())
+    .then(handleResponse)
+    .catch(error => {
+        console.log("Auth Error", error)
+    })
 }
 
 function logout() {
@@ -41,29 +28,25 @@ function logout() {
     localStorage.removeItem('user');
 }
 
-function getAll() {
-    const requestOptions = {
-        method: 'GET',
-        headers: authHeader()
-    };
+function handleResponse(response) {
+    if (response.jwt) {
+        setToken(response.jwt);
+    }else{
+        return Promise.reject(response.error);
+    }
 
-    return fetch(`${config.apiUrl}/users`, requestOptions).then(handleResponse);
 }
 
-function handleResponse(response) {
-    return response.text().then(text => {
-        const data = text && JSON.parse(text);
-        if (!response.ok) {
-            if (response.status === 401) {
-                // auto logout if 401 response returned from api
-                logout();
-                location.reload(true);
-            }
+function setUser(user) {
 
-            const error = (data && data.message) || response.statusText;
-            return Promise.reject(error);
-        }
+    // login successful if there's a user in the response
+    if (user) {
+        // store user details and basic auth credentials in local storage 
+        // to keep user logged in between page refreshes
 
-        return data;
-    });
+
+        // user.authdata = window.btoa(email + ':' + password);
+        // localStorage.setItem('user', JSON.stringify(user));
+    }
+    return user;
 }

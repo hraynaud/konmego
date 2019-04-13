@@ -66,18 +66,13 @@ export default {
       this.submitted = true;
       const { email, password } = this;
 
-      // stop here if form is invalid
       if (!(email && password)) {
         return;
       }
 
       this.loading = true;
-      authService.login(email, password).then(
-        response => {
-          if (response.jwt) {
-              debugger
-            authService.setToken(response.jwt);
-          }
+      authService.login(email, password).then(() => {
+           this.loading = false;
           return router.push(this.returnUrl);
         },
 
