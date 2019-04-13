@@ -1,11 +1,18 @@
 import config from 'config';
 import { authHeader } from '../_helpers';
 
-export const userService = {
+export const authService = {
     login,
     logout,
-    getAll
+    getAll,
+    setToken
 };
+
+function setToken(jwt){
+    if (jwt) {
+      sessionStorage.setItem('jwt', jwt);
+    }
+}
 
 function login(email, password) {
     const requestOptions = {
