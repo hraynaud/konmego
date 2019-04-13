@@ -25,7 +25,7 @@ class ApplicationController < ActionController::API
 
 
   def pwd_login_fail error="Authentication failed"
-    render json: error, status: 401
+    render json: {error: error}, status: 401
   end
 
   def authenticate_request
