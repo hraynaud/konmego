@@ -12,9 +12,11 @@ function writeToApi(payload, path) {
     };
 
     return fetch(`${config.apiUrl}/${path}`, requestOptions)
+
+        .then(response => response.json())
         .catch(function (error) {
-            console.log("API Error:", error)
-         })
+            throw new Error("Unable to connect to API")
+        })
 
 }
 

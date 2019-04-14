@@ -3,7 +3,7 @@ class Authentication
   def self.login_by_password email, pwd
     user = User.find_by email: email
 
-    if user && user.authenticate(pwd) != false
+    if user && user.authenticate(pwd)
       jwt_for user
     else  #If authentication fails then...
       nil
