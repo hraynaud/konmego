@@ -1,52 +1,56 @@
 import config from 'config';
+import JWTDecode from 'jwt-decode';
 import { authHeader } from '../_helpers';
-import { apiService } from '../_services';
+import { apiService, eventService } from '../_services';
 
 export const authService = {
     login,
     logout,
-    setToken
+    currentUser,
 };
 
-function setToken(jwt) {
-    if (jwt) {
-        sessionStorage.setItem('jwt', jwt);
-    }
-}
+const SESSION_AUTH_KEY="jwt"
+const SESSION_USER_KEY="user"
 
 function login(email, password) {
     return apiService.writeToApi({ email, password }, '/login')
-    .then(response => response.json())
-    .then(handleResponse)
-    .catch(error => {
-        console.log("Auth Error", error)
-    })
+        .then(response => response.json())
+        .then(handleLogin)
+        .catch(error => {
+            console.log("Auth Error", error)
+        })
+}
+
+function handleLogin(response) {
+    if (response.jwt) {
+        signIn(response.jwt);
+    } else {
+        return Promise.reject(response.error);
+    }
+}
+
+function signIn(jwt) {
+    sessionStorage.setItem(SESSION_AUTH_KEY, jwt);
+ 
+    //destructure using IIFE
+    var user = ( ({first, last}) => ({ first, last }) )(JWTDecode(jwt));
+    localStorage.setItem(SESSION_USER_KEY, JSON.stringify(user))
+    eventService.$emit("logged-in",user);
+}
+
+function currentUser(){
+    return localStorage.getItem(SESSION_USER_KEY);
 }
 
 function logout() {
     // remove user from local storage to log user out
-    localStorage.removeItem('user');
+    localStorage.removeItem(SESSION_USER_KEY);
+    sessionStorage.removeItem(SESSION_AUTH_KEY,'');
+    eventService.$emit("logged-off");
 }
 
-function handleResponse(response) {
-    if (response.jwt) {
-        setToken(response.jwt);
-    }else{
-        return Promise.reject(response.error);
-    }
-
+function userByJwt() {
+    return new Uri(location.search).getQueryParamValue(SESSION_AUTH_KEY);
 }
 
-function setUser(user) {
 
-    // login successful if there's a user in the response
-    if (user) {
-        // store user details and basic auth credentials in local storage 
-        // to keep user logged in between page refreshes
-
-
-        // user.authdata = window.btoa(email + ':' + password);
-        // localStorage.setItem('user', JSON.stringify(user));
-    }
-    return user;
-}
