@@ -13,7 +13,7 @@
 <script>
 export default {
   props:{
-      user: "",
+    user: String
   },
 };
 </script>

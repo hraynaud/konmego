@@ -39,7 +39,7 @@ function signIn(jwt) {
 }
 
 function currentUser(){
-    return localStorage.getItem(SESSION_USER_KEY);
+    return JSON.parse(localStorage.getItem(SESSION_USER_KEY));
 }
 
 function logout() {
@@ -49,8 +49,5 @@ function logout() {
     eventService.$emit("logged-off");
 }
 
-function userByJwt() {
-    return new Uri(location.search).getQueryParamValue(SESSION_AUTH_KEY);
-}
 
 
