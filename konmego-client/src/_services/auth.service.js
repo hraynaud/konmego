@@ -6,7 +6,7 @@ export const authService = {
     logout,
     currentUser,
 };
-
+const {localStorage} = window
 const SESSION_AUTH_KEY = "jwt"
 const SESSION_USER_KEY = "user"
 
@@ -31,7 +31,7 @@ function handleLogin(response) {
 }
 
 function currentUser() {
-    return JSON.parse(window.localStorage.getItem(SESSION_USER_KEY));
+    return JSON.parse(localStorage.getItem(SESSION_USER_KEY));
 }
 
 function signIn(jwt) {
