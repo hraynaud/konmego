@@ -15,12 +15,23 @@ function login(email, password) {
         .then(handleLogin)
 }
 
+function logout() {
+    // remove user from local storage to log user out
+    localStorage.removeItem(SESSION_USER_KEY);
+    sessionStorage.removeItem(SESSION_AUTH_KEY, '');
+    eventService.$emit("logged-off");
+}
+
 function handleLogin(response) {
     if (response.jwt) {
         signIn(response.jwt);
     } else {
         return Promise.reject(response.error);
     }
+}
+
+function currentUser() {
+    return JSON.parse(window.localStorage.getItem(SESSION_USER_KEY));
 }
 
 function signIn(jwt) {
@@ -32,16 +43,6 @@ function signIn(jwt) {
     eventService.$emit("logged-in", user);
 }
 
-function currentUser() {
-    return JSON.parse(localStorage.getItem(SESSION_USER_KEY));
-}
-
-function logout() {
-    // remove user from local storage to log user out
-    localStorage.removeItem(SESSION_USER_KEY);
-    sessionStorage.removeItem(SESSION_AUTH_KEY, '');
-    eventService.$emit("logged-off");
-}
 
 
 
