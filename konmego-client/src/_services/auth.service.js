@@ -1,6 +1,4 @@
-import config from 'config';
 import JWTDecode from 'jwt-decode';
-import { authHeader } from '../_helpers';
 import { apiService, eventService } from '../_services';
 
 export const authService = {
@@ -15,8 +13,6 @@ const SESSION_USER_KEY = "user"
 function login(email, password) {
     return apiService.writeToApi({ email, password }, '/login')
         .then(handleLogin)
-      
-
 }
 
 function handleLogin(response) {
