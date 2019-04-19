@@ -19,31 +19,13 @@ class AuthenticationController < ApplicationController
 
   def login
     jwt = Authentication.login_by_password  params[:email], params[:password]
-
+    
     if jwt
       pwd_login_success jwt
     else
+      
       do_auth_failed "Incorrect email or password"
     end
-  end
-
-  private
-
-  def pwd_login_success jwt
-    render json: {jwt: jwt}, status: 200
-  end
-
-  def authenticate_request
-    begin
-      uid = JWT.decode(request.headers['Authorization'], Rails.application.secrets.secret_key_base)[0]['uid']
-      @current_user = User.find_by(uid: uid)
-    rescue JWT::DecodeError
-      do_auth_failed
-    end
-  end
-
-  def do_auth_failed error="Authentication failed"
-    render json: {error: error}, status: 401
   end
 
 end

@@ -1,7 +1,9 @@
 class Api::V1::ProjectsController < ApplicationController
+
+  before_action :authenticate_request
+
   def index
-    @project = Project.all.order(created_at: :desc)
-    render json: @project
+    render json: {project: "blah"}
   end
 end
 
