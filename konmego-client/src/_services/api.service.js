@@ -1,19 +1,35 @@
 import config from 'config';
 import axios from 'axios';
 
+const { sessionStorage } = window
+
 export const apiService = {
   writeToApi,
   readFromApi,
 };
 
-// const baseConfig = {
-//   baseURL: `${config.apiUrl}`,
-//   headers: { 'Content-Type': 'application/json', 'Authorization': sessionStorage.getItem('jwt') },
-// };
+const baseConfig = {
+  baseURL: `${config.apiUrl}`,
+  headers: { 'Content-Type': 'application/json', 'Authorization': sessionStorage.getItem('jwt') },
+};
 
-// function reqestConfig(custConfig){
-//   return {...baseConfig, custConfig}
-// }
+function requestConfig(custConfig, path) {
+  return { ...baseConfig, ...custConfig, url: path }
+}
+
+function writeToApi(path, payload) {
+  const requestOptions = {
+    method: 'POST',
+    data: JSON.stringify(payload),
+  };
+  return axios(requestConfig({ method: 'POST', data: JSON.stringify(payload) }, path))
+    .catch(errHandler)
+}
+
+function readFromApi(path, params) {
+  return axios(requestConfig({ method: 'GET' }, path))
+    .catch(errHandler)
+}
 
 
 function errHandler(error) {
@@ -26,32 +42,4 @@ function errHandler(error) {
     msg = "Unable to connect to API"
   }
   throw new Error(msg)
-}
-
-function writeToApi(path, payload) {
-  const requestOptions = {
-    method: 'POST',
-    baseURL: `${config.apiUrl}`,
-    headers: { 'Content-Type': 'application/json', 'Authorization': sessionStorage.getItem('jwt') },
-    data: JSON.stringify(payload),
-    url: path
-  };
-  return axios(requestOptions)
-    .catch(function (error) {
-      errHandler(error)
-    })
-}
-
-function readFromApi(path, params) {
-  const requestOptions = {
-    method: 'GET',
-    baseURL: `${config.apiUrl}`,
-    headers: { 'Content-Type': 'application/json', 'Authorization': sessionStorage.getItem('jwt') },
-    url: path,
-  };
-
-  return axios(requestOptions)
-    .catch(function (error) {
-      errHandler(error)
-    })
 }
