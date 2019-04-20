@@ -4,8 +4,15 @@
     <p>You're logged in with Vue.js & Basic HTTP Authentication!!</p>
     <h3>Users from secure api end point:</h3>
     
+     <p>
+      <router-link to="/login">logout</router-link>
+    </p>
     <p>
-      <router-link to="/login">Logout</router-link>
+      <router-link to="/home">Home</router-link>
+    </p>
+   
+    <p>
+      <router-link to="/projects">Projects</router-link>
     </p>
   </div>
 </template>
