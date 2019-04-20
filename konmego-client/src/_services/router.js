@@ -13,7 +13,7 @@ export const router = new Router({
   routes: [
     { path: '/', component: HomePage, props: loggedInUser },
     { path: '/login', component: LoginPage },
-    { path: '/projects', component: ProjectPage, props: project },
+    { path: '/projects', component: ProjectPage, props: true },
     { path: '/error', name: "error", component: ErrorPage, props: true},
 
     // otherwise redirect to home 
