@@ -6,12 +6,12 @@ export const authService = {
     logout,
     currentUser,
 };
-const {localStorage} = window
+const {localStorage,sessionStorage} = window
 const SESSION_AUTH_KEY = "jwt"
 const SESSION_USER_KEY = "user"
 
 function login(email, password) {
-    return apiService.writeToApi({ email, password }, '/login')
+    return apiService.writeToApi('/login', { email, password })
         .then(handleLogin)
 }
 
@@ -23,8 +23,8 @@ function logout() {
 }
 
 function handleLogin(response) {
-    if (response.jwt) {
-        signIn(response.jwt);
+    if (response.data.jwt) {
+        signIn(response.data.jwt);
     } else {
         return Promise.reject(response.error);
     }
@@ -42,7 +42,3 @@ function signIn(jwt) {
     localStorage.setItem(SESSION_USER_KEY, JSON.stringify(user))
     eventService.$emit("logged-in", user);
 }
-
-
-
-
