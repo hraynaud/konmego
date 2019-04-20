@@ -19,22 +19,30 @@ describe('Auth Service', () => {
   })
 
   describe("currentUser", () => {
-    localStorage.setItem("user", JSON.stringify(user))
-    expect(authService.currentUser()).to.eql(user)
+    it("finds user", () => {
+      localStorage.setItem("user", JSON.stringify(user));
+      expect(authService.currentUser()).to.eql(user);
+    })
   })
 
   describe("logout", () => {
-    localStorage.setItem("user", JSON.stringify(user))
-    sessionStorage.setItem("jwt", "This is encrypted")
-    authService.logout()
-    expect(sessionStorage.getItem("jwt")).to.be.null
-    expect(localStorage.getItem(user)).to.be.null
+    it("logs user out", () => {
+      localStorage.setItem("user", JSON.stringify(user))
+      sessionStorage.setItem("jwt", "This is encrypted")
+      expect(sessionStorage.getItem("jwt")).to.eql("This is encrypted")
+      expect(JSON.parse(localStorage.getItem("user"))).to.eql(user)
+
+      authService.logout()
+
+      expect(sessionStorage.getItem("jwt")).to.be.null;
+      expect(localStorage.getItem("user")).to.be.null;
+    })
   })
 
   // describe("login", () => {
 
   //   authService.login(user)
   //   expect(sessionStorage.getItem("jwt")).to.not.be.null
-  //   expect(localStorage.getItem(user)).to.not.be.null
+  //   expect(localStorage.getItem("user")).to.not.be.null
   // })
 })
