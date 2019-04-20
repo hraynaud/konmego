@@ -67,16 +67,16 @@ export default {
       }
 
       this.loading = true;
-      authService.login(email, password).then(() => {
-           this.loading = false;
-          return router.push(this.returnUrl);
-        },
-
-        error => {
-          this.error = error;
+      authService
+        .login(email, password)
+        .then(() => {
           this.loading = false;
-        }
-      );
+          return router.push(this.returnUrl);
+        })
+        .catch(error => {
+          this.error = error.message;
+          this.loading = false;
+        });
     }
   }
 };
