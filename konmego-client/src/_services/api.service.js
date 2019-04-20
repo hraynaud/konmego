@@ -2,12 +2,6 @@ import config from 'config';
 import axios from 'axios';
 
 const { sessionStorage } = window
-
-export const apiService = {
-  writeToApi,
-  readFromApi,
-};
-
 const baseConfig = {
   baseURL: `${config.apiUrl}`,
   headers: { 'Content-Type': 'application/json', 'Authorization': sessionStorage.getItem('jwt') },
@@ -31,7 +25,6 @@ function readFromApi(path, params) {
     .catch(errHandler)
 }
 
-
 function errHandler(error) {
   let msg;
   if (error.response) {
@@ -43,3 +36,8 @@ function errHandler(error) {
   }
   throw new Error(msg)
 }
+
+export const apiService = {
+  writeToApi,
+  readFromApi,
+};
