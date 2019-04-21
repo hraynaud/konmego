@@ -3,10 +3,12 @@ import { authService, __RewireAPI__ as apiServiceRewireApi } from '@/_services/a
 
 const { localStorage, sessionStorage } = window
 const user = { first: "herby", last: "plerby" }
+const session_jwt = "eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjIsImZpcnN0IjoiSGVyYnkiLCJsYXN0IjoiUmF5bmF1ZCIsImV4cCI6MTU1NTkwMzcyOH0.R8ObE0AMRyhkes7gwjWX2Vd9B0WitUx0fnccJGuSDKI";
 
 afterEach(function () {
   localStorage.clear()
   sessionStorage.clear()
+  apiServiceRewireApi.__ResetDependency__('apiService');
 })
 
 describe('Auth Service', () => {
@@ -40,7 +42,7 @@ describe('Auth Service', () => {
           writeToApi: function (path, data) {
             return Promise.resolve({
               data: {
-                jwt: "eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjIsImZpcnN0IjoiSGVyYnkiLCJsYXN0IjoiUmF5bmF1ZCIsImV4cCI6MTU1NTkwMzcyOH0.R8ObE0AMRyhkes7gwjWX2Vd9B0WitUx0fnccJGuSDKI"
+                jwt: session_jwt
               }
             })
           }
@@ -51,8 +53,7 @@ describe('Auth Service', () => {
         return authService.login("herby", "test")
           .then(() => {
             expect(sessionStorage.getItem("jwt")).to.not.be.null;
-            expect(sessionStorage.getItem("jwt")).to.eql('eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjIsImZpcnN0IjoiSGVyYnkiLCJsYXN0IjoiUmF5bmF1ZCIsImV4cCI6MTU1NTkwMzcyOH0.R8ObE0AMRyhkes7gwjWX2Vd9B0WitUx0fnccJGuSDKI');
-            apiServiceRewireApi.__ResetDependency__('apiService');
+            expect(sessionStorage.getItem("jwt")).to.eql(session_jwt);
           })
       });
 
@@ -69,6 +70,7 @@ describe('Auth Service', () => {
 
         return authService.login("herby", "test")
           .catch((error) => {
+            expect(error.response.data.error).to.equal("Wrong credentials bro")
             expect(sessionStorage.getItem("jwt")).to.be.null
           })
 
