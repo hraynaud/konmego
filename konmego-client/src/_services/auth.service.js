@@ -12,7 +12,7 @@ export const authService = {
 };
 
 function login(email, password) {
-    return apiService.writeToApi('/login', { email, password })
+    return apiService.post('/login', { email, password })
         .then(handleLogin)
 }
 

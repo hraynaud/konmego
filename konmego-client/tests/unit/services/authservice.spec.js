@@ -43,7 +43,7 @@ describe('Auth Service', () => {
     describe('login', () => {
 
       it('stores user in session when successful', () => {
-        mockApiService.writeToApi = function (path, data) {
+        mockApiService.post = function (path, data) {
           return Promise.resolve({
             data: {
               jwt: session_jwt
@@ -58,7 +58,7 @@ describe('Auth Service', () => {
       });
 
       it('throws an error on auth failure', () => {
-        mockApiService.writeToApi = function (path, data) {
+        mockApiService.post = function (path, data) {
           return Promise.reject({
             response: { data: { error: "Wrong credentials bro" } }
           })

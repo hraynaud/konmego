@@ -19,7 +19,7 @@ export default {
   },
   beforeRouteEnter: function(to, from, next) {
     apiService
-      .readFromApi("api/v1/projects")
+      .get("api/v1/projects")
       .then(function(response) {
         next();
       })
