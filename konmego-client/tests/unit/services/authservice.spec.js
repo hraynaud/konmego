@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { authService,SESSION_AUTH_KEY, __RewireAPI__ as apiServiceRewireApi } from '@/_services/auth.service'
+import { authService, SESSION_AUTH_KEY as AUTH_SVC_SESSION_TOKEN_KEY, __RewireAPI__ as apiServiceRewireApi } from '@/_services/auth.service'
 
 const { localStorage, sessionStorage } = window
 const user = { first: "herby", last: "plerby" }
@@ -29,13 +29,13 @@ describe('Auth Service', () => {
     describe("logout", () => {
       it("logs user out", () => {
         localStorage.setItem("user", JSON.stringify(user))
-        sessionStorage.setItem(SESSION_AUTH_KEY, "This is encrypted")
-        expect(sessionStorage.getItem(SESSION_AUTH_KEY)).to.eql("This is encrypted")
+        sessionStorage.setItem(AUTH_SVC_SESSION_TOKEN_KEY, "This is encrypted")
+        expect(sessionStorage.getItem(AUTH_SVC_SESSION_TOKEN_KEY)).to.eql("This is encrypted")
         expect(JSON.parse(localStorage.getItem("user"))).to.eql(user)
 
         authService.logout()
 
-        expect(sessionStorage.getItem(SESSION_AUTH_KEY)).to.be.null;
+        expect(sessionStorage.getItem(AUTH_SVC_SESSION_TOKEN_KEY)).to.be.null;
         expect(localStorage.getItem("user")).to.be.null;
       })
     })
@@ -52,8 +52,8 @@ describe('Auth Service', () => {
         }
         return authService.login("herby", "test")
           .then(() => {
-            expect(sessionStorage.getItem(SESSION_AUTH_KEY)).to.not.be.null;
-            expect(sessionStorage.getItem(SESSION_AUTH_KEY)).to.eql(session_jwt);
+            expect(sessionStorage.getItem(AUTH_SVC_SESSION_TOKEN_KEY)).to.not.be.null;
+            expect(sessionStorage.getItem(AUTH_SVC_SESSION_TOKEN_KEY)).to.eql(session_jwt);
           })
       });
 
@@ -67,7 +67,7 @@ describe('Auth Service', () => {
         return authService.login("herby", "test")
           .catch((error) => {
             expect(error.response.data.error).to.equal("Wrong credentials bro")
-            expect(sessionStorage.getItem(SESSION_AUTH_KEY)).to.be.null
+            expect(sessionStorage.getItem(AUTH_SVC_SESSION_TOKEN_KEY)).to.be.null
           })
       });
     })
