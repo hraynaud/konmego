@@ -26,10 +26,10 @@ function loggedInUser(route){
 }
 
 router.beforeEach((to, from, next) => {
-  // redirect to login page if not logged in and trying to access a restricted page
   const publicPages = ['/login', '/projects','/error'];
   const authRequired = !publicPages.includes(to.path);
 
+  // redirect to login page if not logged in and trying to access a restricted page
   if (authRequired && !authService.currentUser()) {
     return next({ 
       path: '/login', 
