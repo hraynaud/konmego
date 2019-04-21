@@ -4,6 +4,11 @@ import { authService, __RewireAPI__ as apiServiceRewireApi } from '@/_services/a
 const { localStorage, sessionStorage } = window
 const user = { first: "herby", last: "plerby" }
 const session_jwt = "eyJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjIsImZpcnN0IjoiSGVyYnkiLCJsYXN0IjoiUmF5bmF1ZCIsImV4cCI6MTU1NTkwMzcyOH0.R8ObE0AMRyhkes7gwjWX2Vd9B0WitUx0fnccJGuSDKI";
+const mockApiService = {};
+
+beforeEach(function () {
+  apiServiceRewireApi.__Rewire__('apiService', mockApiService);
+})
 
 afterEach(function () {
   localStorage.clear()
@@ -37,19 +42,14 @@ describe('Auth Service', () => {
 
     describe('login', () => {
 
-      it('should log user in', () => {
-        const mockApiService = {
-          writeToApi: function (path, data) {
-            return Promise.resolve({
-              data: {
-                jwt: session_jwt
-              }
-            })
-          }
-        };
-
-        apiServiceRewireApi.__Rewire__('apiService', mockApiService);
-
+      it('stores user in session when successful', () => {
+        mockApiService.writeToApi = function (path, data) {
+          return Promise.resolve({
+            data: {
+              jwt: session_jwt
+            }
+          })
+        }
         return authService.login("herby", "test")
           .then(() => {
             expect(sessionStorage.getItem("jwt")).to.not.be.null;
@@ -57,25 +57,19 @@ describe('Auth Service', () => {
           })
       });
 
-      it('should fail log user in', () => {
-        const mockApiService = {
-          writeToApi: function (path, data) {
-            return Promise.reject({
-              response: { data: { error: "Wrong credentials bro" } }
-            })
-          }
-        };
-
-        apiServiceRewireApi.__Rewire__('apiService', mockApiService);
+      it('throws an error on auth failure', () => {
+        mockApiService.writeToApi = function (path, data) {
+          return Promise.reject({
+            response: { data: { error: "Wrong credentials bro" } }
+          })
+        }
 
         return authService.login("herby", "test")
           .catch((error) => {
             expect(error.response.data.error).to.equal("Wrong credentials bro")
             expect(sessionStorage.getItem("jwt")).to.be.null
           })
-
       });
     })
   });
 })
-
