@@ -1,5 +1,6 @@
 import { expect } from 'chai'
-import { authService, SESSION_USER_KEY as AUTH_SVC_SESSION_USER_KEY, SESSION_AUTH_KEY as AUTH_SVC_SESSION_TOKEN_KEY, __RewireAPI__ as apiServiceRewireApi } from '@/_services/auth.service'
+import {SESSION_AUTH_KEY, SESSION_USER_KEY} from '@/_services/constants';
+import { authService, __RewireAPI__ as apiServiceRewireApi } from '@/_services/auth.service'
 
 const { localStorage, sessionStorage } = window
 const user = { first: "herby", last: "plerby" }
@@ -14,6 +15,11 @@ afterEach(function () {
   localStorage.clear()
   sessionStorage.clear()
   apiServiceRewireApi.__ResetDependency__('apiService');
+
+})
+
+after(function(){
+  global.__rewire_reset_all__();
 })
 
 describe('Auth Service', () => {
@@ -21,22 +27,22 @@ describe('Auth Service', () => {
 
     describe("currentUser", () => {
       it("finds user", () => {
-        localStorage.setItem(AUTH_SVC_SESSION_USER_KEY, JSON.stringify(user));
+        localStorage.setItem(SESSION_USER_KEY, JSON.stringify(user));
         expect(authService.currentUser()).to.eql(user);
       })
     })
 
     describe("logout", () => {
       it("logs user out", () => {
-        localStorage.setItem(AUTH_SVC_SESSION_USER_KEY, JSON.stringify(user))
-        sessionStorage.setItem(AUTH_SVC_SESSION_TOKEN_KEY, "This is encrypted")
-        expect(sessionStorage.getItem(AUTH_SVC_SESSION_TOKEN_KEY)).to.eql("This is encrypted")
-        expect(JSON.parse(localStorage.getItem(AUTH_SVC_SESSION_USER_KEY))).to.eql(user)
+        localStorage.setItem(SESSION_USER_KEY, JSON.stringify(user))
+        sessionStorage.setItem(SESSION_AUTH_KEY, "This is encrypted")
+        expect(sessionStorage.getItem(SESSION_AUTH_KEY)).to.eql("This is encrypted")
+        expect(JSON.parse(localStorage.getItem(SESSION_USER_KEY))).to.eql(user)
 
         authService.logout()
 
-        expect(sessionStorage.getItem(AUTH_SVC_SESSION_TOKEN_KEY)).to.be.null;
-        expect(localStorage.getItem(AUTH_SVC_SESSION_USER_KEY)).to.be.null;
+        expect(sessionStorage.getItem(SESSION_AUTH_KEY)).to.be.null;
+        expect(localStorage.getItem(SESSION_USER_KEY)).to.be.null;
       })
     })
 
@@ -52,8 +58,8 @@ describe('Auth Service', () => {
         }
         return authService.login("herby", "test")
           .then(() => {
-            expect(sessionStorage.getItem(AUTH_SVC_SESSION_TOKEN_KEY)).to.not.be.null;
-            expect(sessionStorage.getItem(AUTH_SVC_SESSION_TOKEN_KEY)).to.eql(session_jwt);
+            expect(sessionStorage.getItem(SESSION_AUTH_KEY)).to.not.be.null;
+            expect(sessionStorage.getItem(SESSION_AUTH_KEY)).to.eql(session_jwt);
           })
       });
 
@@ -67,7 +73,7 @@ describe('Auth Service', () => {
         return authService.login("herby", "test")
           .catch((error) => {
             expect(error.response.data.error).to.equal("Wrong credentials bro")
-            expect(sessionStorage.getItem(AUTH_SVC_SESSION_TOKEN_KEY)).to.be.null
+            expect(sessionStorage.getItem(SESSION_AUTH_KEY)).to.be.null
           })
       });
     })

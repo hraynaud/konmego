@@ -1,6 +1,6 @@
 import config from 'config';
 import axios from 'axios';
-import {SESSION_AUTH_KEY} from './auth.service';
+import {SESSION_AUTH_KEY} from './constants';
 
 const { sessionStorage } = window;
 const baseConfig = {
