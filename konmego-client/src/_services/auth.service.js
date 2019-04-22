@@ -1,9 +1,7 @@
 import JWTDecode from 'jwt-decode';
 import { apiService } from '../_services';
-
+import {SESSION_USER_KEY, SESSION_AUTH_KEY} from './constants';
 const { localStorage, sessionStorage } = window
-export const SESSION_AUTH_KEY = "jwt"
-export const SESSION_USER_KEY = "user"
 
 export const authService = {
     login,
