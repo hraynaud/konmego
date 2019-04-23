@@ -4,8 +4,9 @@ var path = require('path');
 module.exports = {
   outputDir: path.resolve('../public'),
   configureWebpack: {
+    entry: path.resolve('./konmego-client/src/main.js'),
     plugins: [new HtmlWebpackPlugin({
-      template: './src/_helpers/index.html',
+      template: './konmego-client/src/_helpers/index.html',
     })],
     externals: {
       // global app config object
