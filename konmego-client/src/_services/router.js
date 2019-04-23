@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import HomePage from '../home/HomePage'
-import ProjectPage from '../home/ProjectPage'
-import LoginPage from '../login/LoginPage'
-import ErrorPage from '../home/ErrorPage'
+import HomePage from '../pages/HomePage'
+import ProjectPage from '../pages/ProjectPage'
+import LoginPage from '../pages/LoginPage'
+import ErrorPage from '../pages/ErrorPage'
 import { authService } from './auth.service'
 
 Vue.use(Router);
@@ -16,7 +16,7 @@ export const router = new Router({
     { path: '/projects', component: ProjectPage, props: true },
     { path: '/error', name: "error", component: ErrorPage, props: true},
 
-    // otherwise redirect to home 
+    // otherwise redirect to pages 
     { path: '*', redirect: '/' }
   ]
 }); 
