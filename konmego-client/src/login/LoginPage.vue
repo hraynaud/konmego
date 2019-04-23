@@ -2,7 +2,7 @@
   <div>
     <h2>Login</h2>
     <form @submit.prevent="handleSubmit">
-      <div class="form-group">
+      <div class="">
         <label for="email">Email</label>
         <input
           type="text"
@@ -13,7 +13,7 @@
         >
         <div v-show="submitted && !email" class="invalid-feedback">Username is required</div>
       </div>
-      <div class="form-group">
+      <div class="">
         <label for="password">Password</label>
         <input
           type="password"
@@ -24,7 +24,7 @@
         >
         <div v-show="submitted && !password" class="invalid-feedback">Password is required</div>
       </div>
-      <div class="form-group">
+      <div class="">
         <button class="btn btn-primary" :disabled="loading">Login</button>
         <img
           v-show="loading"
