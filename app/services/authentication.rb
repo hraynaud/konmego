@@ -23,6 +23,8 @@ USER_ID_KEY_PARAM = "uid"
   end
 
   def self.jwt_for user
+    puts user
+    puts Rails.application.secrets.secret_key_base 
     JWT.encode({uid: user.id, first: user.first_name, last: user.last_name, exp: 1.day.from_now.to_i}, Rails.application.secrets.secret_key_base)
   end
 
