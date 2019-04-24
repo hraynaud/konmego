@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  match '*all', to: 'application#preflight', via: [:options]
+  match '*path', to: 'application#preflight', via: [:options]
 
   get 'current_user',  to: 'application#current_user'
   get 'request_token', to: 'authentication#request_token'
@@ -13,5 +13,5 @@ Rails.application.routes.draw do
     end
   end
 
-  match '*all', to: 'application#index', via: [:get]
+  match '*path', to: 'application#index', via: [:get]
 end
