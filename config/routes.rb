@@ -14,6 +14,6 @@ Rails.application.routes.draw do
   end
 
   match '*path', to: 'application#index', via: [:get], constraints: ->(request){
-    !request.xhr? && request.format.html
+    !request.xhr? && request.format.html?
   }
 end
