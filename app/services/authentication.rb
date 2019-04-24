@@ -23,14 +23,12 @@ USER_ID_KEY_PARAM = "uid"
   end
 
   def self.jwt_for user
-    puts user
-    puts Rails.application.secrets.secret_key_base 
-    JWT.encode({uid: user.id, first: user.first_name, last: user.last_name, exp: 1.day.from_now.to_i}, Rails.application.secrets.secret_key_base)
+    JWT.encode({uid: user.id, first: user.first_name, last: user.last_name, exp: 1.day.from_now.to_i}, Rails.application.credentials.secret_key_base)
   end
 
   def self.uid_from_from_request_auth_hdr auth_hdr
     begin
-      header =  JWT.decode(auth_hdr, Rails.application.secrets.secret_key_base)
+      header =  JWT.decode(auth_hdr, Rails.application.credentials.secret_key_base)
       header[0][USER_ID_KEY_PARAM]
     rescue JWT::DecodeError
       raise    "Invalid credentials"
