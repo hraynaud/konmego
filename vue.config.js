@@ -2,7 +2,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var path = require('path');
 
 module.exports = {
-  outputDir: path.resolve('../public'),
+  outputDir: './public',
   configureWebpack: {
     entry: path.resolve('./konmego-client/src/main.js'),
     plugins: [new HtmlWebpackPlugin({
@@ -11,7 +11,7 @@ module.exports = {
     externals: {
       // global app config object
       config: JSON.stringify({
-        apiUrl: 'http://localhost:3000'
+        apiUrl: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : ''
       })
     }
   }
