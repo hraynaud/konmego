@@ -11,7 +11,7 @@ class ApplicationController < ActionController::API
   end
 
   def index
-    render file: 'public/index.html'
+    render file: '/public/index.html'
   end
 
   def pwd_login_success jwt
