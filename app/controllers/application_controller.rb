@@ -1,5 +1,7 @@
 class ApplicationController < ActionController::API
 
+  include ActionController::MimeResponds
+
   before_action :authenticate_request, only: [:current_user]
 
   def preflight
@@ -11,7 +13,11 @@ class ApplicationController < ActionController::API
   end
 
   def index
-    render file: '/public/index.html'
+
+    respond_to do |format|
+      format.html { render body: Rails.root.join('public/index.html').read }
+    end
+
   end
 
   def pwd_login_success jwt
