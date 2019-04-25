@@ -2,7 +2,6 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var path = require('path');
 
 module.exports = {
-  outputDir: './public',
   configureWebpack: {
     entry: path.resolve('./konmego-client/src/main.js'),
     plugins: [new HtmlWebpackPlugin({
