@@ -83,3 +83,9 @@ production:
   database: konmego_production
   username: konmego
   password: <%= ENV['KONMEGO_DATABASE_PASSWORD'] %>
+
+
+production_local:
+  <<: *default
+  database: konmego_development
+
