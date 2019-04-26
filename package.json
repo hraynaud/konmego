@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build && npm run publicize",
-    "publicize": "rm -rf public && mv dist public",
+    "publicize": "cp -r dist/ public/",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit"
   },
