@@ -6,6 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build && npm run publicize",
     "publicize": "cp -r dist/ public/",
+    "postinstall": "if test \"$NODE_ENV\" = \"production\" ; then npm run build ; fi",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit"
   },
