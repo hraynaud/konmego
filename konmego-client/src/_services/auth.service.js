@@ -1,6 +1,7 @@
 import JWTDecode from 'jwt-decode';
 import { apiService } from '../_services';
-import {SESSION_USER_KEY, SESSION_AUTH_KEY} from './constants';
+import { SESSION_USER_KEY, SESSION_AUTH_KEY } from './constants';
+import { store } from "../store";
 const { localStorage, sessionStorage } = window
 
 export const authService = {
@@ -18,6 +19,7 @@ function logout() {
     // remove user from local storage to log user out
     localStorage.removeItem(SESSION_USER_KEY);
     sessionStorage.removeItem(SESSION_AUTH_KEY, '');
+    store.dispatch("logout");
 }
 
 function currentUser() {
@@ -38,4 +40,5 @@ function signIn(jwt) {
     //destructure using IIFE
     var user = (({ first, last }) => ({ first, last }))(JWTDecode(jwt));
     localStorage.setItem(SESSION_USER_KEY, JSON.stringify(user))
+    store.dispatch("login")
 }
