@@ -26,7 +26,7 @@ function loggedInUser(route){
 }
 
 router.beforeEach((to, from, next) => {
-  const publicPages = ['/login', '/projects','/error'];
+  const publicPages = ['/login','/error'];
   const authRequired = !publicPages.includes(to.path);
 
   // redirect to login page if not logged in and trying to access a restricted page
