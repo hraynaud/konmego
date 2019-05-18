@@ -29,7 +29,8 @@ tags
 node_modules
 /dist
 
-
+/.bundle
+/vendor/bundle
 # local env files
 .env.local
 .env.*.local
