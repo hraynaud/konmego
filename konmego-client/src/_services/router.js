@@ -31,13 +31,14 @@ router.beforeEach((to, from, next) => {
 
   // redirect to login page if not logged in and trying to access a restricted page
   if (authRequired && !authService.currentUser()) {
-    return next({ 
+     next({ 
       path: '/login', 
       query: { returnUrl: to.path }
     });
-  }
-
-  next();
+  }else{
+  //console.log("getting router");
+      next();
+}
 })
 
 router.onError(function(err){ 
