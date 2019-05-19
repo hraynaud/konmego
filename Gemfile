@@ -12,6 +12,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'rack-cors'
 gem 'oauth'
 gem 'jwt'
+gem 'neo4j', '~> 9.0.0'
 
 group :production do
   gem 'rails_12factor'
