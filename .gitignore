@@ -29,6 +29,8 @@ tags
 node_modules
 /dist
 
+/db/neo4j/test
+
 /.bundle
 /vendor/bundle
 # local env files
