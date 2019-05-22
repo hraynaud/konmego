@@ -1,0 +1,26 @@
+# This file is auto-generated from the current state of the database. Instead
+# of editing this file, please use the migrations feature of ActiveNode to
+# incrementally modify your database, and then regenerate this schema definition.
+#
+# Note that this schema.yml definition is the authoritative source for your
+# database schema. If you need to create the application database on another
+# system, you should be using neo4j:schema:load, not running all the migrations
+# from scratch. The latter is a flawed and unsustainable approach (the more migrations
+# you'll amass, the slower it'll run and the greater likelihood for issues).
+#
+# It's strongly recommended that you check this file into your version control system.
+
+---
+:constraints:
+- CONSTRAINT ON ( `neo4j::migrations::schemamigration`:`Neo4j::Migrations::SchemaMigration`
+  ) ASSERT `neo4j::migrations::schemamigration`.migration_id IS UNIQUE
+- CONSTRAINT ON ( category:Category ) ASSERT category.uuid IS UNIQUE
+- CONSTRAINT ON ( person:Person ) ASSERT person.uuid IS UNIQUE
+- CONSTRAINT ON ( project:Project ) ASSERT project.uuid IS UNIQUE
+- CONSTRAINT ON ( topic:Topic ) ASSERT topic.uuid IS UNIQUE
+:indexes: []
+:versions:
+- '20190519210246'
+- '20190519214933'
+- '20190520133606'
+- '20190521000411'

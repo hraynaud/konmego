@@ -32,5 +32,15 @@ module Konmego
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+    config.generators { |g| g.orm :neo4j }
+
+    config.neo4j.session.url = "http://neo4j:#{ENV['NEO4J_PWD']}@localhost:7474"
+    config.neo4j.session.options = {
+      faraday_configurator: proc do |faraday|
+        faraday.adapter :typhoeus
+        faraday.options[:open_timeout] = 5
+        faraday.options[:timeout] = 65
+      end
+    }
   end
 end
