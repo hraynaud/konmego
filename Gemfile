@@ -12,7 +12,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'rack-cors'
 gem 'oauth'
 gem 'jwt'
-gem 'neo4j', '~> 9.0.0'
+gem 'neo4j', '~> 9.2.0'
 
 group :production do
   gem 'rails_12factor'
@@ -21,6 +21,11 @@ end
 group :development, :test do
   gem 'pry'
   gem 'pry-nav'
+  gem 'rspec'
+  gem 'rspec-rails'
+  gem 'factory_bot' 
+  gem "factory_bot_rails"
+  gem "neo4j-rake_tasks"
 end
 
 group :development do
