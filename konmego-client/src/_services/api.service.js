@@ -1,19 +1,15 @@
+import {SESSION_AUTH_KEY} from './constants';
 import config from 'config';
 import axios from 'axios';
-import {SESSION_AUTH_KEY} from './constants';
 
 const { sessionStorage } = window;
-const baseConfig = {
-  baseURL: `${config.apiUrl}`,
-  headers: { 'Content-Type': 'application/json', 'Authorization': sessionStorage.getItem(SESSION_AUTH_KEY) },
-};
 
 function post(path, payload) {
-    return execute('POST', path,  stringify(payload))
+  return execute('POST', path,  stringify(payload))
 }
 
 function get(path, params) {
-    return execute('GET', path, {}, params)
+  return execute('GET', path, {}, params)
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -37,6 +33,12 @@ function execute(method, path, data={}, params={}){
 }
 
 function requestConfig(custConfig, path) {
+
+  let baseConfig = {
+    baseURL: `${config.apiUrl}`,
+    headers: { 'Content-Type': 'application/json', 'Authorization': sessionStorage.getItem(SESSION_AUTH_KEY)},
+  };
+
   return { ...baseConfig, ...custConfig, url: path };
 }
 

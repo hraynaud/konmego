@@ -37,8 +37,9 @@ function handleLogin(response) {
 function signIn(jwt) {
     sessionStorage.setItem(SESSION_AUTH_KEY, jwt);
 
-    //destructure using IIFE
-    var user = (({ first, last }) => ({ first, last }))(JWTDecode(jwt));
-    localStorage.setItem(SESSION_USER_KEY, JSON.stringify(user))
+    //pass the decoded jwt into IIFE then destructue and set user var.
+  var user = (({ first, last }) => ({ first, last }))(JWTDecode(jwt));
+
+  localStorage.setItem(SESSION_USER_KEY, JSON.stringify(user))
     store.dispatch("login")
 }
