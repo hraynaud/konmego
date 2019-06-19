@@ -30,6 +30,7 @@ node_modules
 /dist
 
 /db/neo4j/test
+/db/neo4j/development
 
 /.bundle
 /vendor/bundle

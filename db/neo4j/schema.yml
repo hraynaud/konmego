@@ -14,13 +14,18 @@
 :constraints:
 - CONSTRAINT ON ( `neo4j::migrations::schemamigration`:`Neo4j::Migrations::SchemaMigration`
   ) ASSERT `neo4j::migrations::schemamigration`.migration_id IS UNIQUE
-- CONSTRAINT ON ( category:Category ) ASSERT category.uuid IS UNIQUE
+- CONSTRAINT ON ( endorsement:Endorsement ) ASSERT endorsement.uuid IS UNIQUE
 - CONSTRAINT ON ( person:Person ) ASSERT person.uuid IS UNIQUE
 - CONSTRAINT ON ( project:Project ) ASSERT project.uuid IS UNIQUE
 - CONSTRAINT ON ( topic:Topic ) ASSERT topic.uuid IS UNIQUE
-:indexes: []
+:indexes:
+- INDEX ON :Endorsement(type)
 :versions:
-- '20190519210246'
-- '20190519214933'
-- '20190520133606'
-- '20190521000411'
+- '20190616005444'
+- '20190616005600'
+- '20190616005652'
+- '20190616005710'
+- '20190616010518'
+- '20190616073447'
+- '20190619121515'
+- '20190619121528'

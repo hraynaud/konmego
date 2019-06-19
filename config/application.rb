@@ -32,7 +32,6 @@ module Konmego
     config.api_only = true
     config.generators { |g| g.orm :neo4j }
 
-    config.neo4j.session.url = "http://neo4j:#{ENV['NEO4J_PWD']}@localhost:7474"
     config.neo4j.session.options = {
       faraday_configurator: proc do |faraday|
         faraday.adapter :typhoeus
