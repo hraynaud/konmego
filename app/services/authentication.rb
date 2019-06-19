@@ -1,10 +1,10 @@
 class Authentication
 USER_ID_KEY_PARAM = "uid"
   def self.login_by_password email, pwd
-    user = User.find_by email: email
+    user = Person.find_by email: email
 
     if user && user.authenticate(pwd)
-      jwt_for user
+      jwt_for user  
     else  #If authentication fails then...
       nil
     end
