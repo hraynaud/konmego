@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :topic do
-    name { "something" }
+    sequence(:name) { |n| "topic #{n}" }
   end
 end

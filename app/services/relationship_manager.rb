@@ -1,0 +1,31 @@
+class RelationshipManager
+
+  def self.create_friendship_if_none_exists(endorsement)
+    endorser = endorsement.endorser
+    endorsee = endorsement.endorsee
+    return if endorsee.friends_with?(endorser)
+
+    endorser.befriend(endorsee)
+    endorser.follow(endorsee)
+  end
+
+  def self.create_placeholder_member_if_not_on_konnosaurus(endorsement)
+    if endorsement.endorsee.nil? && endorsement.non_member_email.present?\
+        && endorsement.non_member_fname.present?  && endorsement.non_member_lname.present?
+
+      endorsement.endorsee = User.create_non_member_if_new_email(
+        :email => endorsement.non_member_email, 
+        :first_name=>endorsement.non_member_fname,
+        :last_name=>endorsement.non_member_lname,
+        :password=>"K2kM7y$2#0",
+        :is_member => false)
+    end
+  end
+
+  def self.establish_following_relationship(endorsement)
+    endorsee = endorsement.endorsee
+    endorser = endorsement.endorser
+    endorser.follow(endorsee) unless (endorser.follows?(endorsee) || endorser.blocks?(endorsee))
+  end
+
+end

@@ -19,7 +19,9 @@
 - CONSTRAINT ON ( project:Project ) ASSERT project.uuid IS UNIQUE
 - CONSTRAINT ON ( topic:Topic ) ASSERT topic.uuid IS UNIQUE
 :indexes:
+- INDEX ON :Endorsement(status)
 - INDEX ON :Endorsement(type)
+- INDEX ON :Person(is_member)
 :versions:
 - '20190616005444'
 - '20190616005600'
@@ -29,3 +31,6 @@
 - '20190616073447'
 - '20190619121515'
 - '20190619121528'
+- '20190620231407'
+- '20190620231837'
+- '20190620232156'
