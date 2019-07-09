@@ -42,10 +42,6 @@ describe Endorsement do
     expect(@endorsee.has_endorsement_for_topic?(@topic1)).to eq true
   end
 
- #it "should be valid if email is provided instead of an existing user" do
-    
-  #end
-
   #it "should be invalid if no email or user is given" do
   #end
 

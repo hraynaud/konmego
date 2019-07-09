@@ -9,6 +9,7 @@ class Endorsement
   property :description
   enum status: [:pending, :accepted, :declined], _default: :pending
 
+  before_create :add_description
   after_create :create_user_relationship
 
   validate :validate_uniqueness_of_endorsement, on: :create
@@ -26,6 +27,11 @@ class Endorsement
   end
 
   private
+
+  def add_description
+    self.description = "#{endorser.name} Endorses #{endorsee.name} for #{topic.name}"
+  end
+
   def validate_uniqueness_of_endorsement
     if Endorsement.where(endorser: endorser, endorsee: endorsee, topic: topic).any?
       errors.add(:base, "You have already endorsed #{endorsee.name} for #{topic.name}")
