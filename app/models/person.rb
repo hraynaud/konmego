@@ -9,7 +9,7 @@ class Person
   validates :email, presence: true, unless: :is_oauth?
   validates :password, :length => { :minimum => 5 }, allow_nil: true,  on: :create, unless: :is_oauth?
 
-  has_many :out, :contacts, model_class: :Person, type: :KNOWS, unique: true
+  has_many :both, :contacts, model_class: :Person, type: :KNOWS, unique: true
   has_many :out, :followings, model_class: :Person, type: :FOLLOWINGS, unique: true
   has_many :in, :followers, model_class: :Person, type: :FOLLOWINGS
   has_many :in, :incoming_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_TARGET
