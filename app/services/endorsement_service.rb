@@ -26,5 +26,15 @@ class EndorsementService
       end
     end
 
+    def accept endorsement
+      endorsement.accepted!
+      endorsement.save
+    end
+
+    def decline endorsement
+      endorsement.declined!
+      endorsement.save
+    end
+
   end
 end

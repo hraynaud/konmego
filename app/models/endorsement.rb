@@ -14,18 +14,11 @@ class Endorsement
 
   validate :validate_uniqueness_of_endorsement, on: :create
 
-  def accept
-     self.status = :accepted
-  end
-
-  def decline
-     self.status = :declined
-  end
-
   def create_user_relationship
     RelationshipManager.create_friendship_if_none_exists self
   end
 
+  scope :accepted,  ->{where(status: :accepted)}
   private
 
   def add_description
