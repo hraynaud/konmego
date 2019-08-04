@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :projects, only: [:index, :create, :show]
+      get 'skills', to: 'skill_search#index'
     end
   end
 
