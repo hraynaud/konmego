@@ -12,7 +12,6 @@
 /tmp/*
 !/log/.keep
 !/tmp/.keep
-
 # Ignore uploaded files in development
 /storage/*
 !/storage/.keep
@@ -43,6 +42,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+/tbd_spec/*
 # Editor directories and files
 .idea
 .vscode
