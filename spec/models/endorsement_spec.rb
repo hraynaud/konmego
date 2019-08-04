@@ -11,7 +11,6 @@ describe Endorsement do
     @other = FactoryBot.create(:person)
   end
 
-
   it "is invalid without endorser" do
     endorsement = Endorsement.new
     expect(endorsement.valid?(:update)).to be false
@@ -37,38 +36,5 @@ describe Endorsement do
     expect(@endorser.endorses_topic?(@topic1)).to eq true
     expect(@endorsee.has_endorsement_for_topic?(@topic1)).to eq true
   end
-
-  #it "should be invalid if no email or user is given" do
-  #end
-
-  #it "self.topic_endorsements_by_others" do
-    ##it "should return the number of endorsements for the impressor in that subject" do
-    ##i1 = FactoryBot.create(:endorsement)
-    ##Endorsement.topic_endorsements_by_others(i1).count.should ==0
-    ##user = FactoryBot.create(:user)
-    ##i2 = FactoryBot.create(:endorsement, :topic => i1.topic, :admirer => user, :impressor => i1.impressor)
-    ##Endorsement.topic_endorsements_by_others(i1).count.should ==1
-    ##end
-  #end
-
-  #pending "self.prior_endorsers_exist" do
-    #it "should return true for 1 record and false for > 1" do
-      ##i1 = FactoryBot.create(:endorsement)
-      ##Endorsement.prior_admirers_exist?(i1).should == false
-      ##user = FactoryBot.create(:user)
-      ##i2 = FactoryBot.create(:endorsement, :topic => i1.topic, :admirer => user, :impressor => i1.impressor)
-      ##Endorsement.prior_admirers_exist?(i1).should == true
-    #end
-  #end
-
-  #pending "#follow_each_other" do
-    #it "should have do two-way following" do
-      ##endorsement = FactoryBot.create(:endorsement).as_null_object
-      ##endorsement.should_receive(:follow_impressor)
-      ##endorsement.should_receive(:follow_admirer)
-      ##endorsement.follow_each_other
-    #end
-  #end
-
 
 end

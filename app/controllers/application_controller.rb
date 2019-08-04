@@ -32,7 +32,7 @@ class ApplicationController < ActionController::API
       @current_user = Person.find(uid)
     rescue 
       do_auth_failed
-     end
+    end
   end
 
 end
