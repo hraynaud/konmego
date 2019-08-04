@@ -1,12 +1,11 @@
 class RelationshipManager
 
-  def self.create_friendship_if_none_exists(endorsement)
+  def self.create_friendship_if_none_exists_for(endorsement)
     endorser = endorsement.endorser
     endorsee = endorsement.endorsee
-    return if endorsee.friends_with?(endorser)
 
-    endorser.befriend(endorsee)
-    endorser.follow(endorsee)
+    befriend(endorser, endorsee)
+    follow(endorser, endorsee)
   end
 
   def self.create_placeholder_member_if_not_on_konnosaurus(endorsement)
@@ -22,10 +21,17 @@ class RelationshipManager
     end
   end
 
-  def self.establish_following_relationship(endorsement)
-    endorsee = endorsement.endorsee
-    endorser = endorsement.endorser
-    endorser.follow(endorsee) unless (endorser.follows?(endorsee) || endorser.blocks?(endorsee))
+  def self.follow follower, followed
+    follower.followings << followed
+  end
+
+  def self.befriend endorser, endorsee
+    return if endorsee.friends_with?(endorser)
+    endorser.contacts << endorsee
+  end
+
+  def self.block follower, followed
+    #TODO 
   end
 
 end

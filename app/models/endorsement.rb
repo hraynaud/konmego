@@ -10,13 +10,9 @@ class Endorsement
   enum status: [:pending, :accepted, :declined], _default: :pending
 
   before_create :add_description
-  after_create :create_user_relationship
 
-  validate :validate_uniqueness_of_endorsement, on: :create
-
-  def create_user_relationship
-    RelationshipManager.create_friendship_if_none_exists self
-  end
+  validates :endorsee, :endorser, :topic, presence: true
+  validate :is_unique_across_endorser_endorsee_and_topic, on: :create
 
   scope :accepted,  ->{where(status: :accepted)}
   private
@@ -25,7 +21,7 @@ class Endorsement
     self.description = "#{endorser.name} Endorses #{endorsee.name} for #{topic.name}"
   end
 
-  def validate_uniqueness_of_endorsement
+  def is_unique_across_endorser_endorsee_and_topic
     if Endorsement.where(endorser: endorser, endorsee: endorsee, topic: topic).any?
       errors.add(:base, "You have already endorsed #{endorsee.name} for #{topic.name}")
     end

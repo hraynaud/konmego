@@ -21,20 +21,8 @@ class Person
   property :password_digest, type: String
   property :is_member, type: Boolean, default: false
 
-  def befriend person
-    contacts << person
-  end
-
   def name
     "#{first_name} #{last_name}"
-  end
-
-  def endorse_existing person, topic
-    Endorsement.for_existing_person self, person, topic 
-  end
-
-  def endorse_and_create_person_node details, topic
-   #TODO implement 
   end
 
   def endorses? person
@@ -51,10 +39,6 @@ class Person
 
   def has_endorsement_for_topic? topic
     incoming_endorsements.topic.include? topic
-  end
-
-  def follow person
-    followings << person
   end
 
   def friends_with? person

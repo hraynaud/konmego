@@ -11,6 +11,12 @@ describe Endorsement do
     @other = FactoryBot.create(:person)
   end
 
+
+  it "is invalid without endorser" do
+    endorsement = Endorsement.new
+    expect(endorsement.valid?(:update)).to be false
+  end
+
   it "is valid and pending" do
     expect(@endorsement).to be_valid
     expect(@endorsement.pending?).to eq true
@@ -20,16 +26,6 @@ describe Endorsement do
     endorsement2 = FactoryBot.build(:endorsement, endorser: @endorser, endorsee: @endorsee, topic: @topic1)
     expect(endorsement2.save).to be false
     expect(Endorsement.size).to eq 1
-  end
-
- it " establishes friend relationships" do
-    expect(@endorser.friends_with?(@endorsee)).to eq true
-  end
-
-  it "establishes following relationships" do
-    expect(@endorser.friends_with?(@endorsee)).to eq true
-    expect(@endorser.follows?(@endorsee)).to eq true
-    expect(@endorsee.followed_by?(@endorser)).to eq true
   end
 
   it "establishes edorser/endorsee relationships" do
