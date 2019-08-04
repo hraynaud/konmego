@@ -46,17 +46,17 @@ describe NetworkSearchService do
   end
 
   def setup_social_graph
-    @herby.befriend @tisha
-    @tisha.befriend @kendra
-    @jean.befriend @herby
-    @fauzi.befriend @herby
-    @fauzi.befriend @tisha
-    @tisha.befriend @vince
-    @kendra.befriend @vince
-    @jean.befriend @herby
-    @herby.befriend @elsa 
-    @franky.befriend @fauzi
-    @sar.befriend @elsa
+    RelationshipManager.befriend @herby, @tisha
+    RelationshipManager.befriend @tisha, @kendra
+    RelationshipManager.befriend @jean, @herby
+    RelationshipManager.befriend @fauzi, @herby
+    RelationshipManager.befriend @fauzi, @tisha
+    RelationshipManager.befriend @tisha, @vince
+    RelationshipManager.befriend @kendra, @vince
+    RelationshipManager.befriend @jean, @herby
+    RelationshipManager.befriend @herby,  @elsa 
+    RelationshipManager.befriend @franky,  @fauzi
+    RelationshipManager.befriend @sar, @elsa
   end
 
   def create_endorsements
