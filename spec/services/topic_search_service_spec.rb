@@ -10,21 +10,21 @@ describe TopicSearchService do
     set_endorsement_statuses
   end
 
-  describe ".find_skill" do
+  describe ".find_contacts_connected_to_topic_for" do
     it "finds skill through contacts" do
-      expect(TopicSearchService.find_skill(@fauzi, "Singing").to_set).to eq [@tisha].to_set
+      expect(TopicSearchService.find_contacts_connected_to_topic_for(@fauzi, "Singing").to_set).to eq [@tisha].to_set
     end
 
     it "finds skill directly and through contacts" do
-      expect(TopicSearchService.find_skill(@fauzi, "Cooking").to_set).to eq [@fauzi, @tisha].to_set
+      expect(TopicSearchService.find_contacts_connected_to_topic_for(@fauzi, "Cooking").to_set).to eq [@fauzi, @tisha].to_set
     end
 
     it "finds skill through arbitrary number of contacts" do
-      expect(TopicSearchService.find_skill(@sar, "Singing", 3)).to eq [@tisha]
+      expect(TopicSearchService.find_contacts_connected_to_topic_for(@sar, "Singing", 3)).to eq [@tisha]
     end
 
     it "doesn't find skill if skill outside of hops limit" do
-      expect(TopicSearchService.find_skill(@sar, "Singing", 2)).to eq []
+      expect(TopicSearchService.find_contacts_connected_to_topic_for(@sar, "Singing", 2)).to eq []
     end
 
   end
