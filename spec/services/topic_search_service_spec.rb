@@ -1,7 +1,7 @@
 require 'set'
 require 'rails_helper'
 
-describe NetworkSearchService do
+describe TopicSearchService do
   before do
     create_users
     create_topics
@@ -12,19 +12,19 @@ describe NetworkSearchService do
 
   describe ".find_skill" do
     it "finds skill through contacts" do
-      expect(NetworkSearchService.find_skill(@fauzi, "Singing").to_set).to eq [@tisha].to_set
+      expect(TopicSearchService.find_skill(@fauzi, "Singing").to_set).to eq [@tisha].to_set
     end
 
     it "finds skill directly and through contacts" do
-      expect(NetworkSearchService.find_skill(@fauzi, "Cooking").to_set).to eq [@fauzi, @tisha].to_set
+      expect(TopicSearchService.find_skill(@fauzi, "Cooking").to_set).to eq [@fauzi, @tisha].to_set
     end
 
     it "finds skill through arbitrary number of contacts" do
-      expect(NetworkSearchService.find_skill(@sar, "Singing", 3)).to eq [@tisha]
+      expect(TopicSearchService.find_skill(@sar, "Singing", 3)).to eq [@tisha]
     end
 
     it "doesn't find skill if skill outside of hops limit" do
-      expect(NetworkSearchService.find_skill(@sar, "Singing", 2)).to eq []
+      expect(TopicSearchService.find_skill(@sar, "Singing", 2)).to eq []
     end
 
   end
