@@ -1,5 +1,16 @@
 class TopicSearchService
 
+  def self.paths_for person, topic, hops = 3
+    person.query_as(:u)
+      .with(:u)
+      .match(match_query(hops))
+      .params(topic_name: topic)
+      .return(:p)
+      .map(&:p)
+      .map(&:nodes)
+
+  end
+
   def self.find_contacts_connected_to_topic_for person, topic, max_hops_away = 3
     p = contact_path(person, topic, max_hops_away)
     p.pluck('distinct contact')
@@ -11,7 +22,6 @@ class TopicSearchService
       .where('t.name = ?',topic)
   end
 
-
   def self.accepted_connected_endorsments person, topic, max_hops_away
     person.contacts(:contact, :r, rel_length: 0..max_hops_away)
       .outgoing_endorsements(:e)
@@ -19,18 +29,16 @@ class TopicSearchService
   end
 
 
-  def self.nodes_for person, topic, max_hops
-    #call apoc.path.expand( u, 'KNOWS', 'Person', 0, {max_hops}) yield path
-    #WITH path
-
-    Person.where(id: person.id).query_as(:u).with(:u)
-      .match("p = (u)-[r:`KNOWS`*0..3]-(contact:`Person`)
-  MATCH (contact)<-[:`ENDORSEMENT_SOURCE`]-(e:`Endorsement`) WHERE (e.status = 1)
-  MATCH (e)-[:`ENDORSE_TOPIC`]->(t:`Topic`) WHERE (t.name = {topic_name})")
-      .params(topic_name: topic, max_hops: max_hops)
-      .return(:p)
-      .map(&:p)
-      .map(&:nodes)
+  #TODO FIXME 
+  #1. Figure out how to use parameters in the relationship length clause
+  #so that we don't have to string build (i.e. #{hops})
+  #2. Is it possible to build this path query using the neo4j.rb ActiveNode DSL?
+  #
+  def self.match_query hops
+    <<-CYPHER
+ p = (u)-[r:`KNOWS`*0..#{hops}]-(contact:`Person`)
+ MATCH (contact)<-[:`ENDORSEMENT_SOURCE`]-(e:`Endorsement`) WHERE (e.status = 1)
+ MATCH (e)-[:`ENDORSE_TOPIC`]->(t:`Topic`) WHERE (t.name = {topic_name})
+    CYPHER
   end
-
 end
