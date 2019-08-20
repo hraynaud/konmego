@@ -1,6 +1,12 @@
 class TopicSearchService
 
-  def self.paths_for person, topic, hops = 3
+  def self.paths_and_connections_from person, topic, hops = 3
+    paths_for(person, topic, hops).map do |p| 
+      p.map{|u|"#{u.properties[:first_name]}, #{u.properties[:last_name]}"}
+    end
+  end
+
+  def self.paths_for person, topic, hops
     person.query_as(:u)
       .with(:u)
       .match(match_query(hops))

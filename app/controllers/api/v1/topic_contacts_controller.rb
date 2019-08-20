@@ -7,8 +7,8 @@ class Api::V1::TopicContactsController < ApplicationController
 
 
   def show
-    contacts = TopicSearchService.find_contacts_connected_to_topic_for(current_user,params[:id])
-    render json: contacts.as_json 
+    paths = TopicSearchService.paths_and_connections_from(current_user,params[:topic])
+    render json: paths.as_json 
   end
 
 end
