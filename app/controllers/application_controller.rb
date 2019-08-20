@@ -8,8 +8,12 @@ class ApplicationController < ActionController::API
     head :ok
   end
 
+  def current_user_json
+    render json: current_user, only: [:handle]
+  end
+
   def current_user
-    render json: @current_user, only: [:handle]
+    @current_user
   end
 
   def index
