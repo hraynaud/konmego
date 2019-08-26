@@ -29,11 +29,15 @@ describe Project do
     end
 
     it "is valid" do
-
       expect(@project.name).to_not be_nil
       expect(@project.description).to_not be_nil
       expect(@project.owner).to_not be_nil
       expect(@project).to be_valid
+    end
+
+
+    it "is inactive" do
+      expect(@project.inactive?).to eq true
     end
   end
 
