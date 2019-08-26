@@ -14,6 +14,7 @@ class Person
   has_many :in, :followers, model_class: :Person, type: :FOLLOWINGS
   has_many :in, :incoming_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_TARGET
   has_many :in, :outgoing_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_SOURCE
+  has_many :out, :projects, origin: :owner
 
   property :first_name, type: String
   property :last_name, type: String
