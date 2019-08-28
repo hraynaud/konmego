@@ -6,10 +6,15 @@ FactoryBot.define do
 
     trait :valid do
       with_criteria
+      with_topic
     end
 
     trait :with_criteria do
       success_criteria { build_list :success_criterium, 3 }
+    end
+
+    trait :with_topic do
+      association :topic,  factory: :topic
     end
   end
 end

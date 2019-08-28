@@ -7,12 +7,14 @@ class Project
   property :end_date, type: Date
 
   has_one :in, :owner, model_class: :Person, type: :OWNS
+  has_one :out, :topic, type: :CONCERNS
   has_many :out,:success_criteria, type: :NEEDS, model_class: :SuccessCriterium
   has_many :in, :contributors, type: :CONTRIBUTES, model_class: :Person
 
   enum status: [:inactive, :active, :canceled, :failed], _default: :inactive
   enum visibility: [:friends, :in_network, :vendor, :public], _default: :friends
   validates :owner, :name, :description, presence: true
+  validates :topic, presence: {message: "Projects must have a topic"}
   validates :success_criteria, presence: {message: "At least one success criteria required"}, on: :update
 
 end

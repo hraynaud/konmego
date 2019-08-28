@@ -2,8 +2,8 @@ require 'rails_helper'
 
 describe Project do
 
-  context "Creation" do
-    it "is invalid when newly created" do
+  context "is invalid for update when" do
+    it "newly created" do
       project = Project.new
       expect(project.name).to be_nil
       expect(project.description).to be_nil
@@ -11,7 +11,7 @@ describe Project do
       expect(project.valid?(:update)).to be false
     end
 
-    it "is invalid  without name " do
+    it "name is blank" do
       project = Project.new
       person = FactoryBot.create(:person)
       project.owner = person
@@ -20,7 +20,7 @@ describe Project do
       expect(project.valid?(:update)).to be false
     end
 
-    it "is invalid without description" do
+    it "description is blank" do
       project = Project.new
       person = FactoryBot.create(:person)
       project.owner = person
@@ -29,7 +29,7 @@ describe Project do
       expect(project.valid?(:update)).to be false
     end
 
-    it "is invalid without owner" do
+    it "owner is nil" do
       project = Project.new
       project.name = "My name"
       project.description = "My description"
@@ -38,7 +38,18 @@ describe Project do
       expect(project.valid?(:update)).to be false
     end
 
-    it "is invalid without success criteria" do
+    it "topic is nil" do
+      project = Project.new
+      person = FactoryBot.create(:person)
+      project.owner = person
+      project.name = "My name"
+      project.description = "My description"
+      project.success_criteria = [SuccessCriterium.new]
+      expect(project.topic).to be_nil
+      expect(project.valid?(:update)).to be false
+    end
+
+    it "success criteria is empty" do
       project = Project.new
       person = FactoryBot.create(:person)
       project.owner = person
@@ -48,38 +59,18 @@ describe Project do
       expect(project.valid?(:update)).to be false
     end
 
-    context "Valid" do
-      context "on build" do
-        before do 
-          @project = FactoryBot.build(:project)
-        end
 
-        it "is valid" do
-          expect(@project.name).to_not be_nil
-          expect(@project.description).to_not be_nil
-          expect(@project.owner).to_not be_nil
-          expect(@project).to be_valid
-          expect(@project.save).to be true
-        end
-
-        it "is inactive" do
-          expect(@project.inactive?).to eq true
-        end
-      end
-
-      context "on create" do
-
-        it "is valid" do
-          project = FactoryBot.create(:project)
-          expect(project.save).to be false
-        end
-
-        it "is valid" do
-          project = FactoryBot.create(:project, :valid)
-          expect(project.save).to be true
-        end
-      end
-    end
   end
 
+  context "is Valid for update when" do
+    before do 
+      @project = FactoryBot.create(:project, :valid)
+    end
+
+    it "it has all required properties and associations" do
+      expect(@project.valid?(:update)).to be true
+    end
+
+  end
 end
+
