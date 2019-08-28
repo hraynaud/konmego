@@ -70,13 +70,13 @@ describe Project do
       context "on create" do
 
         it "is valid" do
-          @project = FactoryBot.create(:project)
-          expect(@project.save).to be false
+          project = FactoryBot.create(:project)
+          expect(project.save).to be false
         end
 
         it "is valid" do
-          @project = FactoryBot.create(:project, :with_criteria)
-          expect(@project.save).to be true
+          project = FactoryBot.create(:project, :valid)
+          expect(project.save).to be true
         end
       end
     end
