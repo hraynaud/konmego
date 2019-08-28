@@ -17,12 +17,15 @@
 - CONSTRAINT ON ( endorsement:Endorsement ) ASSERT endorsement.uuid IS UNIQUE
 - CONSTRAINT ON ( person:Person ) ASSERT person.uuid IS UNIQUE
 - CONSTRAINT ON ( project:Project ) ASSERT project.uuid IS UNIQUE
+- CONSTRAINT ON ( successcriterium:SuccessCriterium ) ASSERT successcriterium.uuid
+  IS UNIQUE
 - CONSTRAINT ON ( topic:Topic ) ASSERT topic.uuid IS UNIQUE
 :indexes:
 - INDEX ON :Endorsement(status)
 - INDEX ON :Endorsement(type)
 - INDEX ON :Person(is_member)
 - INDEX ON :Project(status)
+- INDEX ON :Project(visibility)
 :versions:
 - '20190616005444'
 - '20190616005600'
@@ -35,4 +38,9 @@
 - '20190620231407'
 - '20190620231837'
 - '20190620232156'
+- '20190825111009'
+- '20190825111655'
+- '20190825112815'
 - '20190826051332'
+- '20190827161754'
+- '20190828123045'
