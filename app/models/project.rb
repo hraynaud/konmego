@@ -7,7 +7,7 @@ class Project
   property :end_date, type: Date
 
   enum status: [:inactive, :active, :canceled, :failed], _default: :inactive
-  enum visibility: [:friends, :in_network, :vendor, :public], _default: :friends
+  enum visibility: [:private, :friends, :in_network, :vendor, :public], _default: :friends
 
   has_one :in, :owner, model_class: :Person, type: :OWNS
   has_one :out, :topic, type: :CONCERNS

@@ -44,7 +44,7 @@ describe ProjectSearchService do
     @dining_project = FactoryBot.create(:project, :valid, name: "Find chef", topic: @cooking, owner: @fauzi)
     @dining_project2 = FactoryBot.create(:project, :valid, name: "Find chef", topic: @cooking, owner: @franky)
     @vocalist_project = FactoryBot.create(:project, :valid, name: "Find Vocalist", topic: @singing)
-    @vocalist_project2 = FactoryBot.create(:project, :valid, name: "Find Vocalist",  topic: @singing, visibility: 3)
+    @vocalist_project2 = FactoryBot.create(:project, :valid, name: "Find Vocalist",  topic: @singing, visibility: :public)
     @songwriter_project = FactoryBot.create(:project, :valid, name: "Find Songwriter", topic: @singing)
   end
 
