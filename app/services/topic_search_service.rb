@@ -29,6 +29,8 @@ class TopicSearchService
   end
 
   def self.accepted_connected_endorsments person, topic, max_hops_away
+    #NOTE the ':r' capturing the relationship is required here in order to use
+    #rel_length
     person.contacts(:contact, :r, rel_length: 0..max_hops_away)
       .outgoing_endorsements(:e)
       .accepted
