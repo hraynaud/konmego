@@ -14,15 +14,15 @@ describe ProjectSearchService do
     end
 
     it "finds projects by default visibility" do
-      expect(ProjectSearchService.find_by_topic_and_visibilty("Singing").to_set).to eq [@vocalist_project, @songwriter_project].to_set
+      expect(ProjectSearchService.find_by_topic_and_visibility("Singing").to_set).to eq [@vocalist_project, @songwriter_project].to_set
     end
 
     it "finds projects by specified visibility" do
-      expect(ProjectSearchService.find_by_topic_and_visibilty("Singing", :public).to_set).to eq [@vocalist_project2 ].to_set
+      expect(ProjectSearchService.find_by_topic_and_visibility("Singing", :public).to_set).to eq [@vocalist_project2 ].to_set
     end
 
     it "fails if visbility option is invalid" do
-      expect{ProjectSearchService.find_by_topic_and_visibilty("Singing", :blahddblah)}.to raise_error(Neo4j::Shared::Enum::InvalidEnumValueError)
+      expect{ProjectSearchService.find_by_topic_and_visibility("Singing", :blahddblah)}.to raise_error(Neo4j::Shared::Enum::InvalidEnumValueError)
     end
 
     it "finds projects of contacts" do

@@ -4,11 +4,11 @@ class ProjectSearchService
     base.topic.where(name: topic_name).pluck(:projects)
   end
 
-  def self.find_by_topic_and_visibilty topic_name, visibility = 0
+  def self.find_by_topic_and_visibility topic_name, visibility = 0
     with_visibility(visibility).topic.where(name: topic_name).pluck(:projects)
   end
 
-  def self.with_visibility visibility = 0
+  def self.with_visibility visibility
     base.where(visibility: visibility)
   end
 
