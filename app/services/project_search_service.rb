@@ -5,14 +5,18 @@ class ProjectSearchService
   end
 
   def self.find_by_topic_and_visibility topic_name, min_visibility = :friends
-    with_visibility(all_scope, min_visibility).topic.where(name: topic_name).pluck(:projects)
+    by_visibility(all_scope, min_visibility).topic.where(name: topic_name).pluck(:projects)
+  end
+
+  def self.find_by_topic topic_name
+    all_scope.topic.where(name: topic_name).pluck(:projects)
   end
 
   def self.find_friend_projects person, min_visibility = :friends
-    with_visibility(friend_scope(person), min_visibility)
+    by_visibility(friend_scope(person), min_visibility)
   end
 
-  def self.with_visibility project_scope, min_visibility = :public
+  def self.by_visibility project_scope, min_visibility = :public
     if min_visibility == :private
       project_scope.where("false") # Will always return empty set
     else
