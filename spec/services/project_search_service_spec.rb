@@ -10,7 +10,7 @@ describe ProjectSearchService do
 
   describe ".find_projects_by_topic" do
     it "finds all projects by topic" do
-      expect(ProjectSearchService.find_by_topic("Singing").to_set).to eq [@vocalist_project, @vocalist_project2, @songwriter_project].to_set
+      expect(ProjectSearchService.all_by_topic("Singing").to_set).to eq [@vocalist_project, @vocalist_project2, @songwriter_project].to_set
     end
 
     it "doesn't find projects with default private visibility" do

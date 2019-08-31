@@ -1,6 +1,6 @@
 class ProjectSearchService
 
-  def self.find_by_topic topic_name
+  def self.all_by_topic topic_name
     all_scope.topic.where(name: topic_name).pluck(:projects)
   end
 
@@ -8,8 +8,8 @@ class ProjectSearchService
     by_visibility(all_scope, min_visibility).topic.where(name: topic_name).pluck(:projects)
   end
 
-  def self.find_by_topic topic_name
-    all_scope.topic.where(name: topic_name).pluck(:projects)
+  def self.by_topic project_scope, topic_name
+    project_scope.topic.where(name: topic_name).pluck(:projects)
   end
 
   def self.find_friend_projects person, min_visibility = :friends
