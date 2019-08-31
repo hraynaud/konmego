@@ -9,7 +9,12 @@ class ProjectSearchService
   end
 
   def self.with_visibility visibility
-    base.where(visibility: visibility)
+    if visibility == :private
+      base.where("1 = 2")
+    else
+      base.where("projects.visibility >= ? ", Project.visibilities[visibility])
+    end
+
   end
 
   def self.base
