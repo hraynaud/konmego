@@ -31,9 +31,9 @@ describe ProjectSearchService do
 
     it "finds projects of contacts" do
       expect(ProjectSearchService.find_friend_projects(@sar)).to eq [@chef_project]
-      #expect(ProjectSearchService.find_friend_projects(@herby)).to eq [@chef_project, @dining_project]
-      #expect(ProjectSearchService.find_friend_projects(@fauzi)).to eq [@dining_project2]
-      #expect(ProjectSearchService.find_friend_projects(@jean)).to eq []
+      expect(ProjectSearchService.find_friend_projects(@herby)).to eq [@chef_project, @dining_project]
+      expect(ProjectSearchService.find_friend_projects(@fauzi)).to eq [@dining_project2]
+      expect(ProjectSearchService.find_friend_projects(@jean)).to eq []
     end
 
    #it "finds projects of contacts with specified isibility" do
@@ -51,9 +51,9 @@ describe ProjectSearchService do
 
   def setup_projects
     @chef_project = FactoryBot.create(:project, :valid, name: "Find chef", topic: @cooking, owner: @elsa, visibility: :friends)
-    @dining_project = FactoryBot.create(:project, :valid, name: "Find chef", topic: @cooking, owner: @fauzi)
-    @dining_project2 = FactoryBot.create(:project, :valid, name: "Find chef", topic: @cooking, owner: @franky)
-    @vocalist_project = FactoryBot.create(:project, :valid, name: "Find Vocalist", topic: @singing)
+    @dining_project = FactoryBot.create(:project, :valid, name: "Find chef", topic: @cooking, owner: @fauzi, visibility: :friends)
+    @dining_project2 = FactoryBot.create(:project, :valid, name: "Find chef", topic: @cooking, owner: @franky, visibility: :friends)
+    @vocalist_project = FactoryBot.create(:project, :valid, name: "Find Vocalist", topic: @singing, owner: @jean)
     @vocalist_project2 = FactoryBot.create(:project, :valid, name: "Find Vocalist",  topic: @singing, visibility: :public)
     @songwriter_project = FactoryBot.create(:project, :valid, name: "Find Songwriter", topic: @singing)
   end
