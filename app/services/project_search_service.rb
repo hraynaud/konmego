@@ -12,7 +12,7 @@ class ProjectSearchService
     with_visibility(friend_scope(person), min_visibility)
   end
 
-  def self.with_visibility project_scope, min_visibility
+  def self.with_visibility project_scope, min_visibility = :public
     if min_visibility == :private
       project_scope.where("1 = 2")
     else
