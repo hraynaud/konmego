@@ -14,7 +14,7 @@ class ProjectSearchService
 
   def self.with_visibility project_scope, min_visibility = :public
     if min_visibility == :private
-      project_scope.where("1 = 2")
+      project_scope.where("false") # Will always return empty set
     else
       project_scope.where("projects.visibility >= ? ", Project.visibilities[min_visibility])
     end
