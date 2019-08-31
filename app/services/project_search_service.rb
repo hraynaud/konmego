@@ -1,7 +1,7 @@
 class ProjectSearchService
 
   def self.all_by_topic topic_name
-    all_scope.topic.where(name: topic_name).pluck(:projects)
+    by_topic(all_scope, topic_name)
   end
 
   def self.find_by_topic_and_visibility topic_name, min_visibility = :friends
