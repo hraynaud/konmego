@@ -6,6 +6,9 @@ describe Api::V1::TopicContactsController do
     setup_relationship_data
   end
 
+  after do 
+    clear_db
+  end
  describe "get api/v1/topic_contacts/:topic" do 
    it "finds friends that have direct connection to this topic" do
 

@@ -11,6 +11,12 @@ describe Endorsement do
     @other = FactoryBot.create(:person)
   end
 
+  after do
+   Topic.delete_all
+   Endorsement.delete_all
+   Person.delete_all
+  end
+
   it "is invalid without endorser" do
     endorsement = Endorsement.new
     expect(endorsement.valid?(:update)).to be false
@@ -23,8 +29,8 @@ describe Endorsement do
 
   it "prevents duplicate endorsements topic" do
     endorsement2 = FactoryBot.build(:endorsement, endorser: @endorser, endorsee: @endorsee, topic: @topic1)
-    expect(endorsement2.save).to be false
-    expect(Endorsement.size).to eq 1
+    expect(endorsement2.valid?).to be false
+    expect{endorsement2.save}.to change{Endorsement.size}.by(0)
   end
 
   it "establishes edorser/endorsee relationships" do
@@ -36,5 +42,6 @@ describe Endorsement do
     expect(@endorser.endorses_topic?(@topic1)).to eq true
     expect(@endorsee.has_endorsement_for_topic?(@topic1)).to eq true
   end
+
 
 end

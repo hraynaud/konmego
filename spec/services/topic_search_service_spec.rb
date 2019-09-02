@@ -3,8 +3,12 @@ require 'rails_helper'
 include RelationshipHelper
 
 describe TopicSearchService do
-  before do
+  before(:all) do
     setup_relationship_data
+  end
+
+  after(:all) do
+    clear_db
   end
 
   describe ".find_contacts_connected_to_topic_for" do

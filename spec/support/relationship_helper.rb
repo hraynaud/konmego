@@ -26,14 +26,17 @@ module RelationshipHelper
 
   def setup_social_graph
     RelationshipManager.befriend @herby, @tisha
-    RelationshipManager.befriend @tisha, @kendra
+    RelationshipManager.befriend @herby,  @elsa 
     RelationshipManager.befriend @jean, @herby
     RelationshipManager.befriend @fauzi, @herby
-    RelationshipManager.befriend @fauzi, @tisha
+
+    RelationshipManager.befriend @tisha, @kendra
     RelationshipManager.befriend @tisha, @vince
-    RelationshipManager.befriend @kendra, @vince
-    RelationshipManager.befriend @herby,  @elsa 
+
+    RelationshipManager.befriend @fauzi, @tisha
     RelationshipManager.befriend @franky,  @fauzi
+
+    RelationshipManager.befriend @kendra, @vince
     RelationshipManager.befriend @sar, @elsa
   end
 
@@ -60,4 +63,10 @@ module RelationshipHelper
       EndorsementService.decline(e)
     end
   end
+
+  def clear_db
+    Neo4j::ActiveBase.current_session.query('MATCH (n) WHERE NOT n:`Neo4j::Migrations::SchemaMigration`
+DETACH DELETE n')
+  end
+
 end

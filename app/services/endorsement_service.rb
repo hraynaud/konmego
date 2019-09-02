@@ -13,7 +13,6 @@ class EndorsementService
         last_name: new_node[:last_name],
         password: SecureRandom.base64(15)
       })
-
       return create_endorsement endorser, endorsee, topic
     end
 

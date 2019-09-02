@@ -7,6 +7,12 @@ describe EndorsementService do
     @topic1 = FactoryBot.create(:topic)
   end
 
+  after do
+    Person.delete_all
+    Endorsement.delete_all
+    Topic.delete_all
+  end
+
   describe ".create_for_existing_person_node" do
     it "creates endorsement" do
       expect{
