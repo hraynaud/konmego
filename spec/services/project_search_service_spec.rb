@@ -44,12 +44,9 @@ describe ProjectSearchService do
       expect(ProjectSearchService.find_friend_projects(@elsa)).to eq []
     end
 
-    it "finds projects of friends with magic" do
+    pending "finds projects of friends  by topic" do
+      expect(ProjectSearchService.find_friend_projects_by_topic(@fauzi,@djing)).to eq [@dj_project]
     end
-
-    #it "finds projects of friends  by topic" do
-      #expect(ProjectSearchService.find_friend_projects_by_topic(@fauzi,@djing)).to eq [@dj_project]
-    #end
 
     #it "doesn't find skill if skill outside of hops limit" do
     #expect(ProjectSearchService.find_contacts_connected_to_topic_for(@sar, "Singing", 2)).to eq []
