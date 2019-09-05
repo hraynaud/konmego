@@ -33,7 +33,6 @@ module RelationshipHelper
     RelationshipManager.befriend @tisha, @kendra
     RelationshipManager.befriend @tisha, @vince
 
-    RelationshipManager.befriend @fauzi, @tisha
     RelationshipManager.befriend @franky,  @fauzi
 
     RelationshipManager.befriend @kendra, @vince

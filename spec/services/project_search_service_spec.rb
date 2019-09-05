@@ -17,7 +17,7 @@ describe ProjectSearchService do
 
       describe ".all_by_topic" do
         it "finds all projects by topic" do
-          expect(ProjectSearchService.all_by_topic(topic).to_set).to eq [@vocalist_project, @vocalist_project2, @songwriter_project].to_set
+          expect(ProjectSearchService.all_by_topic(topic).to_set).to eq [@vocalist_project, @vocalist_project2 ].to_set
         end
       end
 
@@ -52,9 +52,9 @@ describe ProjectSearchService do
       expect(ProjectSearchService.find_friend_projects_by_topic(@fauzi,@djing.name)).to eq [@dj_project]
     end
 
-    #it "doesn't find skill if skill outside of hops limit" do
-    #expect(ProjectSearchService.find_contacts_connected_to_topic_for(@sar, "Singing", 2)).to eq []
-    #end
+    it " find projects across friends network" do
+      expect(ProjectSearchService.find_all_contact_projects(@vince).to_set).to eq [@chef_project, @dining_project, @culinary_project, @vocalist_project, @dj_project].to_set
+    end
 
   end
 
@@ -65,7 +65,7 @@ describe ProjectSearchService do
     @culinary_project = FactoryBot.create(:project, :valid, name: "Culinary", topic: @cooking, owner: @franky, visibility: :friends)
     @vocalist_project = FactoryBot.create(:project, :valid, name: "The Voice", topic: @singing, owner: @jean)
     @vocalist_project2 = FactoryBot.create(:project, :valid, name: "The Range",  topic: @singing, visibility: :public)
-    @songwriter_project = FactoryBot.create(:project, :valid, name: "Songwriter", topic: @singing)
+    @songwriter_project = FactoryBot.create(:project, :valid, name: "Songwriter", topic: @fencing)
     @dj_project = FactoryBot.create(:project, :valid, name: "Find dj", topic: @djing, owner: @franky, visibility: :friends)
   end
 

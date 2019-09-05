@@ -29,6 +29,10 @@ class ProjectSearchService
     end
   end
 
+  def self.find_all_contact_projects person
+    person.contacts(:contacts, :r, rel_length: 0..5).projects(:projects).distinct
+  end
+
   def self.friend_scope person
     person.contacts.projects.as(:projects)
   end
