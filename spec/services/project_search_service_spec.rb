@@ -52,11 +52,18 @@ describe ProjectSearchService do
       expect(ProjectSearchService.find_friend_projects_by_topic(@fauzi,@djing.name)).to eq [@dj_project]
     end
 
-    it " find projects across friends network" do
-      expect(ProjectSearchService.find_all_contact_projects(@vince).to_set).to eq [@chef_project, @dining_project, @culinary_project, @vocalist_project, @dj_project].to_set
-    end
 
   end
+
+  describe ".find_all_contact_projects" do
+   it " find projects across friends network at default depth" do
+     expect(ProjectSearchService.find_all_contact_projects(@vince).to_set).to eq [@chef_project, @dining_project, @vocalist_project].to_set
+   end
+
+   it " find projects across friends network at custom depth" do
+     expect(ProjectSearchService.find_all_contact_projects(@vince, 5).to_set).to eq [@chef_project, @dining_project, @culinary_project, @vocalist_project, @dj_project].to_set
+   end
+ end
 
 
   def setup_projects
