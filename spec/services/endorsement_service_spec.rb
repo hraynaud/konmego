@@ -20,18 +20,6 @@ describe EndorsementService do
       }.to change{Endorsement.count}.by(1)
     end
 
-    it "creates Friendship" do
-      expect{
-        EndorsementService.create_for_existing_person_node(@p1, @p2, @topic1)
-      }.to change{@p1.contacts.count}.by(1)
-        .and change{@p2.contacts.count}.by(1)
-    end
-
-    it "has endorser follow endorsee" do
-      expect{
-        EndorsementService.create_for_existing_person_node(@p1, @p2, @topic1)
-      }.to change{@p1.follows?(@p2)}.to(true)
-    end
 
     it "doesn't have endorsee follow endorser" do
       EndorsementService.create_for_existing_person_node(@p1, @p2, @topic1)
@@ -54,4 +42,26 @@ describe EndorsementService do
       expect(endorsement.endorsee.is_member?).to be false
     end
   end
+
+  describe "accept" do
+    before do
+
+      @e = FactoryBot.create(:endorsement)
+      @p1 = @e.endorser
+      @p2 = @e.endorsee
+    end
+    it "creates Friendship" do
+      expect{
+        EndorsementService.accept(@e)
+      }.to change{@p1.contacts.count}.by(1)
+        .and change{@p2.contacts.count}.by(1)
+    end
+
+    it "has endorser follow endorsee" do
+      expect{
+        EndorsementService.accept(@e)
+      }.to change{@p1.follows?(@p2)}.to(true)
+    end
+  end
+
 end

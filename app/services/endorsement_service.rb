@@ -22,11 +22,11 @@ class EndorsementService
         endorsement.endorsee = endorsee
         endorsement.topic = topic
         endorsement.save
-        RelationshipManager.create_friendship_if_none_exists_for(endorsement)
       end
     end
 
     def accept endorsement
+      RelationshipManager.create_friendship_if_none_exists_for(endorsement)
       endorsement.accepted!
       endorsement.save
     end
