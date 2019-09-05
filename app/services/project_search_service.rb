@@ -16,7 +16,6 @@ class ProjectSearchService
     project_scope.topic.where(name: topic_name)
   end
 
-
   def self.find_friend_projects person, min_visibility = :friends
     by_visibility(friend_scope(person), min_visibility)
   end
@@ -29,6 +28,11 @@ class ProjectSearchService
     end
   end
 
+  def self.find_all_contact_projects_by_topic person,topic, depth = 3
+    by_topic(find_all_contact_projects(person,  depth), topic).pluck(:projects)
+  end
+
+ 
   def self.find_all_contact_projects person, depth = 3
     person.contacts(:contacts, :r, rel_length: 0..depth).projects(:projects).distinct
   end

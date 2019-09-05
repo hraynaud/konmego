@@ -13,31 +13,31 @@ describe ProjectSearchService do
   end
 
   describe "By Topic" do
-      let(:topic) {"Singing"}
+    let(:topic) {"Singing"}
 
-      describe ".all_by_topic" do
-        it "finds all projects by topic" do
-          expect(ProjectSearchService.all_by_topic(topic).to_set).to eq [@vocalist_project, @vocalist_project2 ].to_set
-        end
+    describe ".all_by_topic" do
+      it "finds all projects by topic" do
+        expect(ProjectSearchService.all_by_topic(topic).to_set).to eq [@vocalist_project, @vocalist_project2 ].to_set
+      end
+    end
+
+    describe ".all_by_topic_and_visibility" do
+      it "doesn't find projects with default private visibility" do
+        expect(ProjectSearchService.all_by_topic_and_visibility(topic).to_set).to eq [@vocalist_project2].to_set
       end
 
-      describe ".all_by_topic_and_visibility" do
-        it "doesn't find projects with default private visibility" do
-          expect(ProjectSearchService.all_by_topic_and_visibility(topic).to_set).to eq [@vocalist_project2].to_set
-        end
-
-        it "finds projects by specified visibility" do
-          expect(ProjectSearchService.all_by_topic_and_visibility(topic, :public).to_set).to eq [@vocalist_project2 ].to_set
-        end
-
-        it "does not return private projects when asked explicitly" do
-          expect(ProjectSearchService.all_by_topic_and_visibility(topic, :private).to_set).to eq [].to_set
-        end
-
-        it "finds nothing if visbility option is invalid" do
-          expect(ProjectSearchService.all_by_topic_and_visibility(topic, :blahddblah)).to eq []
-        end
+      it "finds projects by specified visibility" do
+        expect(ProjectSearchService.all_by_topic_and_visibility(topic, :public).to_set).to eq [@vocalist_project2 ].to_set
       end
+
+      it "does not return private projects when asked explicitly" do
+        expect(ProjectSearchService.all_by_topic_and_visibility(topic, :private).to_set).to eq [].to_set
+      end
+
+      it "finds nothing if visbility option is invalid" do
+        expect(ProjectSearchService.all_by_topic_and_visibility(topic, :blahddblah)).to eq []
+      end
+    end
   end
 
   describe ".find_friend_projects" do
@@ -51,20 +51,27 @@ describe ProjectSearchService do
     it "finds projects of friends  by topic" do
       expect(ProjectSearchService.find_friend_projects_by_topic(@fauzi,@djing.name)).to eq [@dj_project]
     end
-
-
   end
 
   describe ".find_all_contact_projects" do
-   it " find projects across friends network at default depth" do
-     expect(ProjectSearchService.find_all_contact_projects(@vince).to_set).to eq [@chef_project, @dining_project, @vocalist_project].to_set
-   end
+    it " find projects across friends network at default depth" do
+      expect(ProjectSearchService.find_all_contact_projects(@vince).to_set).to eq [@chef_project, @dining_project, @vocalist_project].to_set
+    end
 
-   it " find projects across friends network at custom depth" do
-     expect(ProjectSearchService.find_all_contact_projects(@vince, 5).to_set).to eq [@chef_project, @dining_project, @culinary_project, @vocalist_project, @dj_project].to_set
-   end
- end
+    it " find projects across friends network at custom depth" do
+      expect(ProjectSearchService.find_all_contact_projects(@vince, 5).to_set).to eq [@chef_project, @dining_project, @culinary_project, @vocalist_project, @dj_project].to_set
+    end
+  end
 
+  describe ".find_all_contact_projects_by_topic" do
+    it " find projects across friends network at default depth" do
+      expect(ProjectSearchService.find_all_contact_projects_by_topic(@vince, @cooking.name).to_set).to eq [@chef_project, @dining_project].to_set
+    end
+
+    it " find projects across friends network at custom depth" do
+      expect(ProjectSearchService.find_all_contact_projects_by_topic(@vince, @djing.name, 5).to_set).to eq [@dj_project].to_set
+    end
+  end
 
   def setup_projects
     @chef_project = FactoryBot.create(:project, :valid, name: "Find chef 1", topic: @cooking, owner: @elsa, visibility: :friends)
@@ -75,6 +82,5 @@ describe ProjectSearchService do
     @songwriter_project = FactoryBot.create(:project, :valid, name: "Songwriter", topic: @fencing)
     @dj_project = FactoryBot.create(:project, :valid, name: "Find dj", topic: @djing, owner: @franky, visibility: :friends)
   end
-
 
 end
