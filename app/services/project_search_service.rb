@@ -28,6 +28,11 @@ class ProjectSearchService
     end
   end
 
+  #TODO FIXME
+  def self.find_all_contact_projects_by_topic_and_visibility person,topic_name, depth = 3
+    by_visibility(find_all_contact_projects(person,  depth), :friends).topic.where(name: topic_name).pluck(:projects)
+  end
+
   def self.find_all_contact_projects_by_topic person,topic, depth = 3
     by_topic(find_all_contact_projects(person,  depth), topic).pluck(:projects)
   end
