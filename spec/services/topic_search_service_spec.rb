@@ -1,6 +1,6 @@
 require 'set'
 require 'rails_helper'
-include RelationshipHelper
+include TestDataHelper::Relationships
 
 describe TopicSearchService do
   before(:all) do

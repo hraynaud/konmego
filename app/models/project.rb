@@ -18,5 +18,8 @@ class Project
   validates :topic, presence: {message: "Projects must have a topic"}
   validates :success_criteria, presence: {message: "At least one success criteria required"}, on: :update
 
+  def as_json options = nil
+    super(root: false, except: [:neo_id, :visibility ])
+  end
 end
 

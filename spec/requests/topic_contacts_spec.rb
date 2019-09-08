@@ -1,5 +1,5 @@
 require "rails_helper"
-include RelationshipHelper
+include TestDataHelper::Relationships
 
 describe Api::V1::TopicContactsController do
   before do 
@@ -9,6 +9,7 @@ describe Api::V1::TopicContactsController do
   after do 
     clear_db
   end
+
  describe "get api/v1/topic_contacts/:topic" do 
    it "finds friends that have direct connection to this topic" do
 

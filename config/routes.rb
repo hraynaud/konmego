@@ -10,6 +10,12 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources 'topic_contacts', only: [:index, :show], param: :topic
+      resources :projects do 
+        collection do
+          post :search
+        end
+      end
+
     end
   end
 

@@ -1,6 +1,7 @@
 require 'set'
 require 'rails_helper'
-include RelationshipHelper
+include TestDataHelper::Relationships
+include TestDataHelper::Projects
 
 describe ProjectSearchService do
   before(:all) do
@@ -80,17 +81,4 @@ describe ProjectSearchService do
       expect(ProjectSearchService.find_all_contact_projects_by_topic_and_visibility(@vince, @cooking.name).to_set).to eq [@dj_project].to_set
     end
   end
-
-
-
-  def setup_projects
-    @chef_project = FactoryBot.create(:project, :valid, name: "Find chef 1", topic: @cooking, owner: @elsa, visibility: :friends)
-    @dining_project = FactoryBot.create(:project, :valid, name: "Fine Dining", topic: @cooking, owner: @fauzi, visibility: :friends)
-    @culinary_project = FactoryBot.create(:project, :valid, name: "Culinary", topic: @cooking, owner: @franky, visibility: :friends)
-    @vocalist_project = FactoryBot.create(:project, :valid, name: "The Voice", topic: @singing, owner: @jean)
-    @vocalist_project2 = FactoryBot.create(:project, :valid, name: "The Range",  topic: @singing, visibility: :public)
-    @songwriter_project = FactoryBot.create(:project, :valid, name: "Songwriter", topic: @fencing)
-    @dj_project = FactoryBot.create(:project, :valid, name: "Find dj", topic: @djing, owner: @franky, visibility: :friends)
-  end
-
 end
