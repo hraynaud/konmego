@@ -2,24 +2,23 @@ class ApplicationController < ActionController::API
 
   include ActionController::MimeResponds
 
-  before_action :authenticate_request, only: [:current_user]
+  before_action :authenticate_request, except:[:preflight, :index]
 
   def preflight
     head :ok
   end
 
-  def current_user_json
-    render json: current_user, only: [:handle]
+  def index
+    head :ok
+    #respond_to do |format|
+      #format.html { render body: Rails.root.join('public/index.html').read }
+    #end
   end
+
+  private
 
   def current_user
     @current_user
-  end
-
-  def index
-    respond_to do |format|
-      format.html { render body: Rails.root.join('public/index.html').read }
-    end
   end
 
   def pwd_login_success jwt

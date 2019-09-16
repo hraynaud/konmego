@@ -1,5 +1,7 @@
 class AuthenticationController < ApplicationController
 
+  skip_before_action :authenticate_request
+
   def request_token
     request_token = TWITTER.get_request_token(oauth_callback: ENV['OAUTH_CALLBACK'])
     Oauth.create(token: request_token.token, secret: request_token.secret)
@@ -19,11 +21,10 @@ class AuthenticationController < ApplicationController
 
   def login
     jwt = Authentication.login_by_password  params[:email], params[:password]
-    
+
     if jwt
       pwd_login_success jwt
     else
-      
       do_auth_failed "Incorrect email or password"
     end
   end
