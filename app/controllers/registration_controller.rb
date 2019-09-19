@@ -8,7 +8,7 @@ class RegistrationController < ApplicationController
        jwt = Authentication.jwt_for person
        respond_with_token jwt
      else
-       respond_with_error person.errors.full_messages.to_sentence
+       respond_with_error person.errors
      end
   end
 

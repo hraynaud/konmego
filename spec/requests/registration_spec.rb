@@ -52,9 +52,13 @@ describe "Signup and registration" do
     }
     aggregate_failures "testing response" do
       expect(response.status).to eq 422
-      expect(response.headers["X-Message"]).to eq "Email has already been taken"
+      expect( extract_errors).to match /#{I18n.t('errors.attributes.email.taken')}/ #"Email has already been taken"
       expect(Person.count).to eq(1)
     end
   end
 
+  def extract_errors
+    errors = JSON.parse(response.headers["X-Message"])
+    errors.join(",")
+  end
 end

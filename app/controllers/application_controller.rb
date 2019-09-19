@@ -25,8 +25,8 @@ class ApplicationController < ActionController::API
     render json: {jwt: jwt}, status: 200
   end
 
-  def respond_with_error error, status = 422
-    head status, {"X-Message" => error}
+  def respond_with_error errors, status = 422
+    head status, {"X-Message" => errors.full_messages.to_json}
   end
 
   def do_auth_failed
