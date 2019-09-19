@@ -1,5 +1,6 @@
 require "rails_helper"
 include TestDataHelper::Relationships
+include TestDataHelper::Utils
 
 describe Api::V1::TopicContactsController do
   before do 

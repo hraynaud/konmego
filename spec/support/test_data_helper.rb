@@ -63,12 +63,13 @@ module TestDataHelper
         EndorsementService.decline(e)
       end
     end
+  end
 
+  module Utils
     def clear_db
       Neo4j::ActiveBase.current_session.query('MATCH (n) WHERE NOT n:`Neo4j::Migrations::SchemaMigration`
 DETACH DELETE n')
     end
-
   end
 
   module Projects

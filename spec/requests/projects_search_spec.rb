@@ -1,6 +1,7 @@
 require "rails_helper"
 include TestDataHelper::Relationships
 include TestDataHelper::Projects
+include TestDataHelper::Utils
 
 describe Api::V1::ProjectsController do
   before do
@@ -19,7 +20,6 @@ describe Api::V1::ProjectsController do
 
      expect(response.status).to eq 200
      expected_project_names =  [ "Culinary", "Fine Dining", "Find chef 1" ]
-
      projects = JSON.parse(response.body)
 
      expect(projects.map{|x|x["name"]}.difference expected_project_names ).to eq([])
