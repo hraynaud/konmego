@@ -21,12 +21,16 @@ class ApplicationController < ActionController::API
     @current_user
   end
 
-  def pwd_login_success jwt
+  def respond_with_token jwt
     render json: {jwt: jwt}, status: 200
   end
 
-  def do_auth_failed error="Authentication failed"
-    render json: {error: error}, status: 401
+  def respond_with_error error, status = 422
+    head status, {"X-Message" => error}
+  end
+
+  def do_auth_failed
+    respond_with_error "Authentication failed", 401
   end
 
   def authenticate_request

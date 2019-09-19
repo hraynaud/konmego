@@ -23,10 +23,11 @@ class AuthenticationController < ApplicationController
     jwt = Authentication.login_by_password  params[:email], params[:password]
 
     if jwt
-      pwd_login_success jwt
+      respond_with_token jwt
     else
       do_auth_failed "Incorrect email or password"
     end
   end
+
 
 end
