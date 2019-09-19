@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get 'access_token',  to: 'authentication#access_token'
 
   post 'login', to: 'authentication#login'
+  post 'register', to: 'registration#create'
 
   namespace :api do
     namespace :v1 do

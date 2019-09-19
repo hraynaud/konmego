@@ -6,7 +6,7 @@ class Person
   has_secure_password
 
   validates :email, uniqueness: true
-  validates :email, presence: true, unless: :is_oauth?
+  validates :email, :first_name, :last_name, presence: true, unless: :is_oauth?
   validates :password, :length => { :minimum => 5 }, allow_nil: true,  on: :create, unless: :is_oauth?
 
   has_many :both, :contacts, model_class: :Person, type: :KNOWS, unique: true
