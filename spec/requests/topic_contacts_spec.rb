@@ -24,7 +24,7 @@ describe Api::V1::TopicContactsController do
 
      connections = JSON.parse(response.body)
      expect(response.status).to eq 200
-     expect(connections.difference connection_paths ).to eq([])
+     expect(connection_paths.difference connections).to eq([])
 
    end
 
