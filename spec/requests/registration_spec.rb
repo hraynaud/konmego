@@ -32,7 +32,7 @@ describe "Signup and registration" do
 
     aggregate_failures "testing response" do
       expect(response.status).to eq 422
-      expect(response.headers["X-Message"]).to eq "Email can't be blank"
+      expect(response.headers["X-Message"]).to eq "[\"Email can't be blank\"]"
       expect(Person.count).to eq(0)
     end
 
