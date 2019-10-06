@@ -1,0 +1,20 @@
+{
+  "nodes": [
+    {"labels":["Sar Skillz"], "type":"Person", "id":"293", "properties": {}},
+    {"labels":["Tisha Skillz"], "type":"Person", "id": "287", "properties": {}},
+    {"labels":["Cooking"], "type":"Topic", "id":"324", "properties": {}},
+    {"labels":["Tisha Skillz Endorses someone for Cooking"], "type":"Endorsement", "id":340, "properties": {}},
+    {"labels":["Sar Skillz"], "type":"Person", "id":293, "properties": {}},
+    {"labels":["Fauzi Skillz"], "type":"Person", "id":288, "properties": {}},
+    {"labels":["Cooking"], "type":"Topic", "id":324, "properties": {}},
+    {"labels":["Fauzi Skillz Endorses someone for Cooking"], "type":"Endorsement", "id":333, "properties": {}}
+  ],
+
+  "links": [
+    { "source": "340", "target":"287", "type":"ENDORSEMENT_SOURCE"},
+    { "source": "340", "target":"324", "type":"ENDORSE_TOPIC"},
+    { "source": "333", "target":"288", "type":"ENDORSEMENT_SOURCE"},
+    { "source": "333", "target":"324", "type":"ENDORSE_TOPIC"}
+  ]
+}
+
