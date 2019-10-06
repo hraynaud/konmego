@@ -27,7 +27,7 @@ module D3PresenterService
         end
       end
 
-      {nodes: nodes, links: links}
+      {nodes: nodes.uniq, links: links.uniq}
 
     end
 
