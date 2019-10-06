@@ -25,7 +25,7 @@ class TopicSearchService
   def self.match_query hops
     <<-CYPHER
  p = (u)-[:`KNOWS`*1..#{hops}]-(contact:`Person`) WITH *
- MATCH (contact)<-[r_src:`ENDORSEMENT_SOURCE`]-(e:`Endorsement`) WHERE (e.status = 1) WITH *
+ MATCH (contact)<-[r_src:`ENDORSEMENT_SOURCE`]-(e:`Endorsement`) WHERE (e.status = 1)
  MATCH (e)-[r_topic:`ENDORSE_TOPIC`]->(t:`Topic`) WHERE (t.name = {topic_name})
     CYPHER
   end
