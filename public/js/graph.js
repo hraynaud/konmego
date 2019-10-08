@@ -41,8 +41,8 @@ var D3Simulation = (function(){
     context.arc(d.x, d.y, 3, 0, 2 * Math.PI);
   }
 
-  function run(){
-    runSimulation("/api/v1/topic_contacts/Cooking")
+  function run(path){
+    runSimulation(path)
   }
 
 
@@ -50,7 +50,6 @@ var D3Simulation = (function(){
 
     d3.json(path).then(function( graph) {
       //if (error) throw error;
-     debugger
       simulation
         .nodes(graph.nodes)
         .on("tick", ticked);
