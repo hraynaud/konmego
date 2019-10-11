@@ -38,7 +38,9 @@ var D3Simulation = (function(){
 
   function drawNode(d) {
     context.moveTo(d.x + 3, d.y);
-    context.arc(d.x, d.y, 3, 0, 2 * Math.PI);
+    context.arc(d.x, d.y, 20, 0, 2 * Math.PI, true);
+    context.fillStyle = "red";
+    context.closePath();
   }
 
   function run(path){
