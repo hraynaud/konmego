@@ -22,26 +22,66 @@ class Api::V1::TopicContactsController < ApplicationController
   def graph_html
 
     <<-BASE_TEMPLATE
-    <!DOCTYPE html>
-    <html>
+<!doctype html>
+<html>
     <head>
-    <meta charset="utf-8">
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/font-awesome.min.css">
+        <link rel="stylesheet" href="css/neo4jd3.min.css?v=0.0.1">
 
-    <script src="/js/d3.min.js"></script>
-
+        <script src="/js/d3.min.js"></script>
+       <script src="/js/infobar.js"></script>
+        <script src="/js/neo4jd3.js"></script>
+        <style>
+            body,
+            html,
+            .neo4jd3 {
+                height: 100%;
+                overflow: hidden;
+            }
+        </style>
     </head>
-    <body style="background-color:lightblue">
-    <canvas width="360" height="225" style="border: 1px solid red"></canvas>
+    <body>
+        <div id="neo4jd3"></div>
 
-    <script src="/js/graph.js"></script>
 
-    <script>
-    D3Simulation.run("/api/v1/topic_contacts/#{@topic}")
-    </script>
+        <!-- Scripts -->
+        <script type="text/javascript">
+            function init() {
+                var neo4jd3 = new Neo4jD3('#neo4jd3', {
+                    // highlight: [
+                    //     {
+                    //         class: 'Project',
+                    //         property: 'name',
+                    //         value: 'neo4jd3'
+                    //     }, {
+                    //         class: 'User',
+                    //         property: 'userId',
+                    //         value: 'eisman'
+                    //     }
+                    // ],
+                    icons: {
+
+                    },
+                    images: {
+
+                    },
+                    minCollision: 60,
+                    neo4jDataUrl: '/api/v1/topic_contacts/#{@topic}',
+                    nodeRadius: 25,
+                    onRelationshipDoubleClick: function(relationship) {
+                        console.log('double click on relationship: ' + JSON.stringify(relationship));
+                    },
+                    zoomFit: true
+                });
+            }
+
+            window.onload = init;
+        </script>
 
     </body>
-
-    </html>
+</html>
     BASE_TEMPLATE
   end
 end
