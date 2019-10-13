@@ -542,10 +542,6 @@ function neo4jDataToD3Data(data) {
     relationships: data.links
   };
 
-
-  debugger
-
-
   return graph;
 }
 

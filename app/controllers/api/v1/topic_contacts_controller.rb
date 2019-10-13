@@ -5,7 +5,9 @@ class Api::V1::TopicContactsController < ApplicationController
   def index
     respond_to do |format|
       @topic = request.headers["HTTP_X_CUSTOM_HEADER_TOPIC"]
-      format.html { render plain: graph_html}
+      format.html { 
+        render plain: graph_html.html_safe
+      }
     end
   end
 
@@ -22,13 +24,13 @@ class Api::V1::TopicContactsController < ApplicationController
   def graph_html
 
     <<-BASE_TEMPLATE
-<!doctype html>
+<!DOCTYPE HTML>
 <html>
     <head>
         <meta charset="utf-8">
-        <link rel="stylesheet" href="css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/font-awesome.min.css">
-        <link rel="stylesheet" href="css/neo4jd3.min.css?v=0.0.1">
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/css/neo4jd3.min.css?v=0.0.1">
 
         <script src="/js/d3.min.js"></script>
        <script src="/js/infobar.js"></script>
@@ -45,8 +47,6 @@ class Api::V1::TopicContactsController < ApplicationController
     <body>
         <div id="neo4jd3"></div>
 
-
-        <!-- Scripts -->
         <script type="text/javascript">
             function init() {
                 var neo4jd3 = new Neo4jD3('#neo4jd3', {
@@ -61,12 +61,9 @@ class Api::V1::TopicContactsController < ApplicationController
                     //         value: 'eisman'
                     //     }
                     // ],
-                    icons: {
-
+                    icons: { 
                     },
-                    images: {
-
-                    },
+                    images: { },
                     minCollision: 60,
                     neo4jDataUrl: '/api/v1/topic_contacts/#{@topic}',
                     nodeRadius: 25,
