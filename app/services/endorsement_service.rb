@@ -7,20 +7,21 @@ class EndorsementService
     end
 
     def create_for_new_person_node endorser, new_node, topic
-      endorsee = Person.create({
-        email: new_node[:email], 
-        first_name: new_node[:first_name],
-        last_name: new_node[:last_name],
-        password: SecureRandom.base64(15)
-      })
-      return create_endorsement endorser, endorsee, topic
+      endorsee = new_endorsee(new_node)
+
+      create_endorsement(endorser, endorsee, topic)
     end
 
-    def create_endorsement endorser, endorsee, topic
+    def build_endorsement endorser, endorsee, topic
       return Endorsement.new.tap do |endorsement|
         endorsement.endorser = endorser
         endorsement.endorsee = endorsee
         endorsement.topic = topic
+      end
+    end
+
+    def create_endorsement endorser, endorsee, topic
+      return build_endorsement(endorser, endorsee, topic).tap do |endorsement|
         endorsement.save
       end
     end
@@ -35,6 +36,17 @@ class EndorsementService
       endorsement.declined!
       endorsement.save
     end
+
+    private
+
+    def new_endorsee new_node
+      Person.new({
+        email: new_node[:email], 
+        first_name: new_node[:first_name],
+        last_name: new_node[:last_name],
+        password: SecureRandom.base64(15)
+      })
+    end 
 
   end
 end

@@ -11,8 +11,10 @@ class Endorsement
 
   before_create :add_description
 
+  before_validation :save_endorsee
   validates :endorsee, :endorser, :topic, presence: true
-  validate :is_unique_across_endorser_endorsee_and_topic, on: :create
+  validate :validity_of_endorsee
+  validate :is_unique_across_endorser_endorsee_and_topic, on: :create, if: :all_valid?
 
   scope :accepted,  ->{where(status: :accepted)}
   private
@@ -24,7 +26,23 @@ class Endorsement
   def is_unique_across_endorser_endorsee_and_topic
     if Endorsement.where(endorser: endorser, endorsee: endorsee, topic: topic).any?
       errors.add(:base, "You have already endorsed #{endorsee.name} for #{topic.name}")
+      return false
     end
-    return false
+  end
+
+  def validity_of_endorsee
+    if endorsee
+      errors.add(
+        :endorsee, endorsee.errors.full_messages.to_sentence
+      ) unless endorsee.valid? 
+    end
+  end
+
+  def all_valid?
+    endorser && endorser.valid? && endorsee && endorsee.valid? && topic && topic.valid?
+  end
+
+  def save_endorsee
+    endorsee.save if endorsee && endorsee.new_record?
   end
 end
