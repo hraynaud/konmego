@@ -41,6 +41,22 @@ describe EndorsementService do
       endorsement = EndorsementService.create_for_new_person_node(@p1, new_node, @topic1)
       expect(endorsement.endorsee.is_member?).to be false
     end
+
+    it "fails with error if new person is invalid" do
+      new_node[:email] = nil
+      expect{
+        EndorsementService.create_for_new_person_node(@p1, new_node, @topic1)
+      }.to change{Endorsement.count}.by(0)
+        .and change{Person.count}.by(0)
+    end
+
+    it "fails with error if endorsment duplicated" do
+      EndorsementService.create_for_new_person_node(@p1, new_node, @topic1)
+      expect{
+        EndorsementService.create_for_new_person_node(@p1, new_node, @topic1)
+      }.to change{Endorsement.count}.by(0)
+        .and change{Person.count}.by(0)
+    end
   end
 
   describe "accept" do
