@@ -9,12 +9,12 @@ class TopicSearchService
     data.map{|d|d.send(element.to_sym)}
   end
 
-  def self.local_subgraph_from_person_and_topic person, topic, hops = 3
+  def self.local_subgraph_from_person_and_topic person, topic, hops = DEFAULT_NETWORK_HOPS
     person.query_as(:u)
       .with(:u)
       .match(match_query(hops))
       .params(topic_name: topic)
-      .return('relationships(p) as r_knows', 'nodes(p) as peeps', :r_src, :r_topic, :t, :e )
+      .return('relationships(p) as r_knows', 'nodes(p) as peeps', :r_src, :r_topic, :t, :e, :contact )
   end
 
   #TODO FIXME 
@@ -26,6 +26,7 @@ class TopicSearchService
     <<-CYPHER
  p = (u)-[:`KNOWS`*1..#{hops}]-(contact:`Person`) WITH *
  MATCH (contact)<-[r_src:`ENDORSEMENT_SOURCE`]-(e:`Endorsement`) WHERE (e.status = 1)
+ MATCH (e)-[r_target:`ENDORSEMENT_TARGET`]->(endorsee:`Person`) 
  MATCH (e)-[r_topic:`ENDORSE_TOPIC`]->(t:`Topic`) WHERE (t.name = {topic_name})
     CYPHER
   end
