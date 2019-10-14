@@ -92,11 +92,11 @@ DETACH DELETE n')
         "nodes"=> [
           {"label"=>"Sar Skillz", "type"=>"Person", "id"=>293},
           {"label"=>"Tisha Skillz", "type"=>"Person", "id"=>287},
+          {"label"=>"Fauzi Skillz", "type"=>"Person", "id"=>288},
+          {"label"=>"Elsa Skillz", "type"=>"Person", "id"=>282},
+          {"label"=>"Herby Skillz", "type"=>"Person", "id"=>251},
           {"label"=>"Cooking", "type"=>"Topic", "id"=>324},
           {"label"=>"Tisha Skillz Endorses someone for Cooking", "type"=>"Endorsement", "id"=>340},
-          {"label"=>"Sar Skillz", "type"=>"Person", "id"=>293},
-          {"label"=>"Fauzi Skillz", "type"=>"Person", "id"=>288},
-          {"label"=>"Cooking", "type"=>"Topic", "id"=>324},
           {"label"=>"Fauzi Skillz Endorses someone for Cooking", "type"=>"Endorsement", "id"=>333}
         ],
 
@@ -106,8 +106,6 @@ DETACH DELETE n')
           {"source"=>297, "target"=>287, "type"=>"KNOWS"},
           {"source"=>340, "target"=>287, "type"=>"ENDORSEMENT_SOURCE"},
           {"source"=>340, "target"=>324, "type"=>"ENDORSE_TOPIC"},
-          {"source"=>293, "target"=>314, "type"=>"KNOWS"},
-          {"source"=>297, "target"=>314, "type"=>"KNOWS"},
           {"source"=>288, "target"=>297, "type"=>"KNOWS"},
           {"source"=>333, "target"=>288, "type"=>"ENDORSEMENT_SOURCE"},
           {"source"=>333, "target"=>324, "type"=>"ENDORSE_TOPIC"}
