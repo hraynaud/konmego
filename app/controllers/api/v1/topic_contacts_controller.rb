@@ -1,12 +1,10 @@
 class Api::V1::TopicContactsController < ApplicationController
 
-  #skip_before_action :authenticate_request
   def index
-
     respond_to do |format|
        @topic = request.headers["HTTP_X_CUSTOM_HEADER_TOPIC"]
        @auth = request.headers["Authorization"]
-      format.html { 
+      format.html {
         render plain: graph_html.html_safe
       }
     end
@@ -17,10 +15,6 @@ class Api::V1::TopicContactsController < ApplicationController
     graph = D3PresenterService::Graph.new(data).to_d3
     render json: graph
   end
-
-  #def current_user
-    #Person.find_by(email: "foo6@example.com")
-  #end
 
   def graph_html
 
