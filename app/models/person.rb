@@ -8,7 +8,7 @@ class Person
   validates :email, uniqueness: true
   validates :email, :first_name, :last_name, presence: true, unless: :is_oauth?
   validates :password, :length => { :minimum => 5 }, allow_nil: true,  on: :create, unless: :is_oauth?
-  validate :is_a_valid_email?
+  validate :email_format
 
   has_many :both, :contacts, model_class: :Person, type: :KNOWS, unique: true
   has_many :out, :followings, model_class: :Person, type: :FOLLOWINGS, unique: true
@@ -57,10 +57,10 @@ class Person
 
   private
 
-  def is_a_valid_email?
-    errors.add(
-      :email, "Emails is invalid"
-    ) unless email =~ URI::MailTo::EMAIL_REGEXP
+  def email_format
+    if email && !is_valid_email?
+      errors.add( :email, "is invalid")
+    end
   end
 
   def is_oauth?
@@ -70,5 +70,9 @@ class Person
 
   def using_pwd?
     password.present? && email.present?
+  end
+
+  def is_valid_email?
+    !!(email =~ URI::MailTo::EMAIL_REGEXP)
   end
 end
