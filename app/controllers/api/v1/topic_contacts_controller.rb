@@ -1,10 +1,11 @@
 class Api::V1::TopicContactsController < ApplicationController
 
-  skip_before_action :authenticate_request
-
+  #skip_before_action :authenticate_request
   def index
+
     respond_to do |format|
-      @topic = request.headers["HTTP_X_CUSTOM_HEADER_TOPIC"]
+       @topic = request.headers["HTTP_X_CUSTOM_HEADER_TOPIC"]
+       @auth = request.headers["Authorization"]
       format.html { 
         render plain: graph_html.html_safe
       }
@@ -17,9 +18,9 @@ class Api::V1::TopicContactsController < ApplicationController
     render json: graph
   end
 
-  def current_user
-    Person.find_by(email: "foo6@example.com")
-  end
+  #def current_user
+    #Person.find_by(email: "foo6@example.com")
+  #end
 
   def graph_html
 
@@ -66,6 +67,7 @@ class Api::V1::TopicContactsController < ApplicationController
                     images: { },
                     minCollision: 60,
                     neo4jDataUrl: '/api/v1/topic_contacts/#{@topic}',
+                    neo4jJsonAuthHeader: '#{@auth}',
                     nodeRadius: 25,
                     onRelationshipDoubleClick: function(relationship) {
                         console.log('double click on relationship: ' + JSON.stringify(relationship));

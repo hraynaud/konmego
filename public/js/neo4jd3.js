@@ -21,8 +21,10 @@ function Neo4jD3(_selector, _options) {
       minCollision: undefined,
       neo4jData: undefined,
       neo4jDataUrl: undefined,
+      neo4jJsonAuthHeader: undefined,
       nodeOutlineFillColor: undefined,
       nodeRadius: 25,
+
       relationshipColor: '#a5abb6',
       zoomFit: false
     },
@@ -152,6 +154,7 @@ var InfoPanel = InfoPanelFactory();
     var n = appendNode();
 
     appendRingToNode(n);
+
     appendOutlineToNode(n);
 
     if (options.icons) {
@@ -458,7 +461,7 @@ function init(_selector, _options) {
   simulation = initSimulation();
 
   if (options.neo4jDataUrl) {
-    loadNeo4jDataFromUrl(options.neo4jDataUrl);
+    loadNeo4jDataFromUrl(options.neo4jDataUrl, options.neo4jJsonAuthHeader);
   } else {
     console.error('Error: both neo4jData and neo4jDataUrl are empty!');
   }
@@ -517,15 +520,14 @@ function initSimulation() {
   return simulation;
 }
 
-function loadNeo4jDataFromUrl(neo4jDataUrl) {
+function loadNeo4jDataFromUrl(neo4jDataUrl, auth) {
   nodes = [];
   relationships = [];
 
-  d3.json(neo4jDataUrl).then( function(data) {
+  d3.json(neo4jDataUrl, {headers:{'Authorization': auth}}).then( function(data) {
     //if (error) {
       //throw error;
     //}
-debugger
     updateWithNeo4jData(data);
   });
 }
