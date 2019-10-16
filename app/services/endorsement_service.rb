@@ -12,6 +12,18 @@ class EndorsementService
       create_endorsement(endorser, endorsee, topic)
     end
 
+    def create_for_new_person_and_topic endorser, new_node, topic_name
+      topic = TopicCreationService.create(topic_name)
+
+      create_for_new_person_node(endorser, new_node, topic)
+    end
+
+    def create_for_new_topic endorser, endorsee, topic_name
+      topic = TopicCreationService.create(topic_name)
+      create_for_existing_person_node(endorser, endorsee, topic)
+    end
+
+
     def build_endorsement endorser, endorsee, topic
       return Endorsement.new.tap do |endorsement|
         endorsement.endorser = endorser

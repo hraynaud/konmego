@@ -27,6 +27,29 @@ describe EndorsementService do
     end
   end
 
+  describe ".create_for_new_topic" do
+
+    it "creates endorsement and new person node" do
+      expect{
+        EndorsementService.create_for_new_topic(@p1, @p2, "My New Topic")
+      }.to change{Endorsement.count}.by(1)
+        .and change{Topic.count}.by(1)
+    end
+
+  end
+
+  describe ".create_for_new_person_and_topic" do
+    let(:new_node){{first_name: "Got", last_name: "Skillz", email: "goat@skillz.com"}}
+    it "creates endorsement and new person node" do
+      expect{
+        EndorsementService.create_for_new_person_and_topic(@p1, new_node, "My New Topic")
+      }.to change{Endorsement.count}.by(1)
+        .and change{Topic.count}.by(1)
+        .and change{Person.count}.by(1)
+    end
+  end
+
+
   describe ".create_for_new_person_node" do
     let(:new_node){{first_name: "Got", last_name: "Skillz", email: "goat@skillz.com"}}
 
