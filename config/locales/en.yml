@@ -33,4 +33,10 @@ en:
   errors:
     attributes:
       email: 
-        taken: 'has already been taken'
+        taken: "has already been taken"
+        invalid: "is invalid"
+        required: "can't be blank"
+      password:
+        required: "can't be blank"
+        too_short: 
+         :other: "is too short mininum is %{count} characters"

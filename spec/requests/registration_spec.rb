@@ -16,9 +16,8 @@ describe "Signup and registration" do
     post "/register", params: build_invalid_params({email:nil})
 
     aggregate_failures "testing response" do
-      expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.headers["X-Message"]).to eq "[\"Email can't be blank\"]"
-      expect(Person.count).to eq(0)
+      expect_error_response_and_person_created
+      expect(extract_errors).to match /#{I18n.t('errors.attributes.email.required')}/
     end
 
   end
@@ -30,7 +29,6 @@ describe "Signup and registration" do
 
     aggregate_failures "testing response" do
       expect(response).to have_http_status(:unprocessable_entity)
-      expect( extract_errors).to match (/#{I18n.t('errors.attributes.email.taken')}/)
       expect(Person.count).to eq(1)
     end
   end
@@ -38,22 +36,35 @@ describe "Signup and registration" do
 
   it "fails when email is invalid" do
     post "/register",  params: build_invalid_params({email: "a@.com"})
-    expect(response).to have_http_status(:unprocessable_entity)
+    aggregate_failures "testing response" do
+      expect( extract_errors).to match /#{I18n.t('errors.attributes.email.invalid')}/
+    end
   end
 
   it "fails when password is invalid" do
     post "/register",  params: build_invalid_params({password: "2shorty"})
-    expect(response).to have_http_status(:unprocessable_entity)
+    aggregate_failures "testing response" do
+      expect_error_response_and_person_created
+      expect( extract_errors).to match /#{I18n.t('errors.attributes.password.too_short.other', count: 8)}/
+    end
   end
 
   it "fails when password is nil" do
-    post "/register",  params: build_invalid_params({password: nil})
-    expect(response).to have_http_status(:unprocessable_entity)
+    aggregate_failures "testing response" do
+      post "/register",  params: build_invalid_params({password: nil})
+      expect_error_response_and_person_created
+      expect(extract_errors).to match /#{I18n.t('errors.attributes.password.required')}/
+    end
   end
 
 
   def build_invalid_params err
     person_params.merge(err)
+  end
+
+  def expect_error_response_and_person_created
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(Person.count).to eq(0)
   end
 
   def person_params
