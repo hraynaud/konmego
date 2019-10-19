@@ -2,7 +2,7 @@ class RegistrationController < ApplicationController
   skip_before_action :authenticate_request
 
   def create
-     person = Person.new(person_params)
+     person = Person.new(mapped_params)
      if person.valid?
        person.save 
        jwt = Authentication.jwt_for person
@@ -13,6 +13,15 @@ class RegistrationController < ApplicationController
   end
 
   def person_params
-    params.require(:person).permit(:first_name, :last_name, :email, :password, :password_confirmation) 
+    params.permit(:firstName, :lastName, :email, :password, :confirmPassword) 
+  end
+
+  def mapped_params
+    {
+      email: person_params[:email], 
+      password: person_params[:password],
+      first_name: person_params[:firstName],
+      last_name: person_params[:lastName]
+    }
   end
 end

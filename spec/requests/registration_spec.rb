@@ -7,13 +7,13 @@ describe "Signup and registration" do
   end
 
   it "creates  registration" do
-    expect{post "/register", params: build_params}
+    expect{post "/register", params: person_params}
       .to change{Person.count}.by(1)
   end
 
 
   it "fails on missing email" do
-    post "/register", params: build_invalid_params(:email_nil)
+    post "/register", params: build_invalid_params({email:nil})
 
     aggregate_failures "testing response" do
       expect(response).to have_http_status(:unprocessable_entity)
@@ -26,7 +26,7 @@ describe "Signup and registration" do
   it "fails on duplicate email" do
     p = FactoryBot.create(:person)
 
-    post "/register", params: build_params.merge(person: {email: p.email})
+    post "/register", params: build_invalid_params({email: p.email})
 
     aggregate_failures "testing response" do
       expect(response).to have_http_status(:unprocessable_entity)
@@ -37,26 +37,30 @@ describe "Signup and registration" do
 
 
   it "fails when email is invalid" do
-    post "/register",  params: build_invalid_params(:email_invalid)
+    post "/register",  params: build_invalid_params({email: "a@.com"})
     expect(response).to have_http_status(:unprocessable_entity)
   end
 
   it "fails when password is invalid" do
-    post "/register",  params: build_invalid_params(:password_too_short)
+    post "/register",  params: build_invalid_params({password: "2shorty"})
     expect(response).to have_http_status(:unprocessable_entity)
   end
 
   it "fails when password is nil" do
-    post "/register",  params: build_invalid_params(:password_nil)
+    post "/register",  params: build_invalid_params({password: nil})
     expect(response).to have_http_status(:unprocessable_entity)
   end
 
-  def build_params
-    {person: FactoryBot.attributes_for(:person)}
-  end
 
   def build_invalid_params err
-    {person: FactoryBot.attributes_for(:person, err)}
+    person_params.merge(err)
+  end
+
+  def person_params
+    {
+      email: "blah@zay.com", 
+      password: "password", firstName: "Firsty", lastName:"lasty"
+    }
   end
 
   def extract_errors

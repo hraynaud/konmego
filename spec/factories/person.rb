@@ -3,7 +3,7 @@ FactoryBot.define do
     sequence(:email) { |n| "foo#{n}@example.com" }
     sequence(:first_name) { |n| "foo#{n}" }
     sequence(:last_name) { |n| "bar#{n}" }
-    password {"foobar"}
+    password {"password"}
     is_member {true}
     trait :non_member do
       is_member {false}
