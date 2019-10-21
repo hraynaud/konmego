@@ -13,6 +13,7 @@ gem 'rack-cors'
 gem 'oauth'
 gem 'jwt'
 gem 'neo4j', '~> 9.2.0'
+gem 'fast_jsonapi'
 
 group :production do
   gem 'rails_12factor'
