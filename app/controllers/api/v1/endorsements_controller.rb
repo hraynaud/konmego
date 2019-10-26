@@ -5,10 +5,22 @@ class Api::V1::EndorsementsController < ApplicationController
   end
 
   def create
-    endorsement =  EndorsementService.create endorsement_params.merge({endorserId: current_user.id})
+    endorsement =  EndorsementService.create(params_with_user)
     render json: endorsement 
   end
 
+  private
+
+  def params_with_user
+    HashWithIndifferentAccess.new({
+      endorser_id: current_user.id
+    }).merge( rubify_keys(endorsement_params.to_h))
+
+  end
+
+  def rubify_keys hash
+    hash.deep_transform_keys(&:underscore)
+  end
 
   def endorsement_params
     params.permit(

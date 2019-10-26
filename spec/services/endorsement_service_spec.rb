@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe EndorsementService do
-  let(:new_endorsee){{newPerson: {first: "Got", last: "Skillz", email: "goat@skillz.com"}}}
+  let(:new_endorsee){{new_person: {first: "Got", last: "Skillz", email: "goat@skillz.com"}}}
   before do
     @p1 = FactoryBot.create(:person)
     @p2 = FactoryBot.create(:person)
@@ -15,9 +15,9 @@ describe EndorsementService do
   end
 
   describe ".create" do
-    let(:all_preexisting){{endorserId: @p1.id, endorseeId: @p2, topicId: @topic1}}
+    let(:all_preexisting){{endorser_id: @p1.id, endorsee_id: @p2, topic_id: @topic1}}
 
-    let(:new_topic){ {newTopic: {name: "My New Topic"}} }
+    let(:new_topic){ {new_topic: {name: "My New Topic"}} }
 
     it "creates endorsement" do
       expect{
@@ -35,7 +35,7 @@ describe EndorsementService do
     context "new topic" do
       it "creates endorsement and new topic node" do
         expect{
-          EndorsementService.create({endorserId: @p1.id, endorseeId: @p2}.merge new_topic)
+          EndorsementService.create({endorser_id: @p1.id, endorsee_id: @p2}.merge new_topic)
         }.to change{Endorsement.count}.by(1)
           .and change{Topic.count}.by(1)
       end
@@ -44,7 +44,7 @@ describe EndorsementService do
 
   describe ".create_for_new_person_and_topic" do
 
-    let(:params){ new_endorsee.merge({endorserId: @p1.id,}) }
+    let(:params){ new_endorsee.merge({endorser_id: @p1.id,}) }
 
     it "creates endorsement and new person node" do
       expect{
@@ -57,7 +57,7 @@ describe EndorsementService do
 
 
   describe ".create_for_new_person_node" do
-    let(:new_endorsee_only){ new_endorsee.merge({endorserId: @p1, topicId: @topic1}) }
+    let(:new_endorsee_only){ new_endorsee.merge({endorser_id: @p1, topic_id: @topic1}) }
 
     it "creates endorsement and new person node" do
       expect{
@@ -72,7 +72,7 @@ describe EndorsementService do
     end
 
     it "fails with error if new person is invalid" do
-      new_endorsee_only[:newPerson][:email] = nil
+      new_endorsee_only[:new_person][:email] = nil
 
       expect{
         EndorsementService.create(new_endorsee_only)

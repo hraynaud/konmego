@@ -10,7 +10,7 @@ class EndorsementService
     end
 
     def create params
-      create_from_nodes(Person.find(params[:endorserId]), get_endorsee(params), get_topic(params))
+      create_from_nodes(Person.find(params[:endorser_id]), get_endorsee(params), get_topic(params))
     end
 
 
@@ -59,38 +59,38 @@ class EndorsementService
     end
 
     def existing_person? params
-      params[:endorseeId].present?
+      params[:endorsee_id].present?
     end
 
     def existing_topic? params
-      params[:topicId].present? and params[:newTopic].blank?
+      params[:topic_id].present? and params[:new_topic].blank?
     end
 
     def new_person? params
-      params[:endorseeId].blank? and params[:newPerson].present?
+      params[:endorsee_id].blank? and params[:new_person].present?
     end
 
     def new_topic? params
-      params[:topicId].blank? and params[:newTopic].present?
+      params[:topic_id].blank? and params[:new_topic].present?
     end
 
     def endorsee_by_id params
-      Person.find(params[:endorseeId])
+      Person.find(params[:endorsee_id])
     end
 
     def topic_by_id params
-      Topic.find(params[:topicId])
+      Topic.find(params[:topic_id])
     end
 
     def new_topic params
-      TopicCreationService.create(params[:newTopic])
+      TopicCreationService.create(params[:new_topic])
     end
 
     def new_endorsee params
       Person.new({
-        email: params[:newPerson][:email], 
-        first_name: params[:newPerson][:first],
-        last_name: params[:newPerson][:last],
+        email: params[:new_person][:email], 
+        first_name: params[:new_person][:first],
+      last_name: params[:new_person][:last],
         password: SecureRandom.base64(15)
       })
     end 
