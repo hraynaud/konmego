@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe EndorsementService do
+  let(:new_endorsee){{newPerson: {first: "Got", last: "Skillz", email: "goat@skillz.com"}}}
   before do
     @p1 = FactoryBot.create(:person)
     @p2 = FactoryBot.create(:person)
@@ -13,36 +14,41 @@ describe EndorsementService do
     Topic.delete_all
   end
 
-  describe ".create_for_existing_person_node" do
+  describe ".create" do
+    let(:all_preexisting){{endorserId: @p1.id, endorseeId: @p2, topicId: @topic1}}
+
+    let(:new_topic){ {newTopic: {name: "My New Topic"}} }
+
     it "creates endorsement" do
       expect{
-        EndorsementService.create_for_existing_person_node(@p1, @p2, @topic1)
+        EndorsementService.create(all_preexisting)
       }.to change{Endorsement.count}.by(1)
     end
 
 
     it "doesn't have endorsee follow endorser" do
-      EndorsementService.create_for_existing_person_node(@p1, @p2, @topic1)
+      EndorsementService.create(all_preexisting)
       expect(@p2.follows?(@p1)).to be false
     end
-  end
 
-  describe ".create_for_new_topic" do
 
-    it "creates endorsement and new person node" do
-      expect{
-        EndorsementService.create_for_new_topic(@p1, @p2, "My New Topic")
-      }.to change{Endorsement.count}.by(1)
-        .and change{Topic.count}.by(1)
+    context "new topic" do
+      it "creates endorsement and new topic node" do
+        expect{
+          EndorsementService.create({endorserId: @p1.id, endorseeId: @p2}.merge new_topic)
+        }.to change{Endorsement.count}.by(1)
+          .and change{Topic.count}.by(1)
+      end
     end
-
   end
 
   describe ".create_for_new_person_and_topic" do
-    let(:new_node){{first_name: "Got", last_name: "Skillz", email: "goat@skillz.com"}}
+
+    let(:params){ new_endorsee.merge({endorserId: @p1.id,}) }
+
     it "creates endorsement and new person node" do
       expect{
-        EndorsementService.create_for_new_person_and_topic(@p1, new_node, "My New Topic")
+        EndorsementService.create(params)
       }.to change{Endorsement.count}.by(1)
         .and change{Topic.count}.by(1)
         .and change{Person.count}.by(1)
@@ -51,32 +57,33 @@ describe EndorsementService do
 
 
   describe ".create_for_new_person_node" do
-    let(:new_node){{first_name: "Got", last_name: "Skillz", email: "goat@skillz.com"}}
+    let(:new_endorsee_only){ new_endorsee.merge({endorserId: @p1, topicId: @topic1}) }
 
     it "creates endorsement and new person node" do
       expect{
-        EndorsementService.create_for_new_person_node(@p1, new_node, @topic1)
+        EndorsementService.create(new_endorsee_only)
       }.to change{Endorsement.count}.by(1)
         .and change{Person.count}.by(1)
     end
 
     it "newly created person node is not a member" do
-      endorsement = EndorsementService.create_for_new_person_node(@p1, new_node, @topic1)
+      endorsement = EndorsementService.create(new_endorsee_only)
       expect(endorsement.endorsee.is_member?).to be false
     end
 
     it "fails with error if new person is invalid" do
-      new_node[:email] = nil
+      new_endorsee_only[:newPerson][:email] = nil
+
       expect{
-        EndorsementService.create_for_new_person_node(@p1, new_node, @topic1)
+        EndorsementService.create(new_endorsee_only)
       }.to change{Endorsement.count}.by(0)
         .and change{Person.count}.by(0)
     end
 
     it "fails with error if endorsment duplicated" do
-      EndorsementService.create_for_new_person_node(@p1, new_node, @topic1)
+      EndorsementService.create(new_endorsee_only)
       expect{
-        EndorsementService.create_for_new_person_node(@p1, new_node, @topic1)
+        EndorsementService.create(new_endorsee_only)
       }.to change{Endorsement.count}.by(0)
         .and change{Person.count}.by(0)
     end

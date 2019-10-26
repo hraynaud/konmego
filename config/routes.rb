@@ -14,6 +14,7 @@ Rails.application.routes.draw do
 
       get 'friends', to: "people#index"
 
+      resources :endorsements
       resources :projects do 
         collection do
           post :search

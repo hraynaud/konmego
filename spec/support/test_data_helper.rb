@@ -45,14 +45,18 @@ module TestDataHelper
       @pending = []
       @declined = []
 
-      @accepted << EndorsementService.create_for_existing_person_node(@fauzi, @franky, @cooking)
-      @accepted << EndorsementService.create_for_existing_person_node(@tisha, @kendra, @singing)
-      @accepted << EndorsementService.create_for_existing_person_node(@tisha, @kendra, @cooking)
+      @accepted << EndorsementService.create(to_params @fauzi, @franky, @cooking)
+      @accepted << EndorsementService.create(to_params @tisha, @kendra, @singing)
+      @accepted << EndorsementService.create(to_params @tisha, @kendra, @cooking)
 
-      @declined << EndorsementService.create_for_existing_person_node(@jean, @vince, @composer)
-      @pending << EndorsementService.create_for_existing_person_node(@elsa, @sar, @acting)
+      @declined << EndorsementService.create(to_params @jean, @vince, @composer)
+      @pending << EndorsementService.create(to_params @elsa, @sar, @acting)
 
     end
+
+     def to_params(endorser, endorsee, topic)
+       {endorserId: endorser.id, endorseeId: endorsee.id, topicId: topic.id} 
+     end
 
     def set_endorsement_statuses
       @accepted.each do |e|
