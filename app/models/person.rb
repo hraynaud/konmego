@@ -55,6 +55,10 @@ class Person
     followers.include? person
   end
 
+  def endorsees
+    outgoing_endorsements.map(&:endorsee)
+  end
+
   private
 
   def email_format
