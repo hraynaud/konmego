@@ -2,17 +2,10 @@ class ApplicationController < ActionController::API
 
   include ActionController::MimeResponds
 
-  before_action :authenticate_request, except:[:preflight, :index]
+  before_action :authenticate_request, except:[:preflight]
 
   def preflight
     head :ok
-  end
-
-  def index
-    head :ok
-    #respond_to do |format|
-      #format.html { render body: Rails.root.join('public/index.html').read }
-    #end
   end
 
   private
