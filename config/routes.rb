@@ -11,6 +11,9 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources 'topic_contacts', only: [:index, :show], param: :topic
+
+      get 'friends', to: "people#index"
+
       resources :projects do 
         collection do
           post :search
