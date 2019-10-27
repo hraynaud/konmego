@@ -5,10 +5,8 @@ include TestDataHelper::Utils
 
 describe Api::V1::EndorsementsController, :type => :request do
 
-  let(:new_topic){ {new_topic: {name: "My New Topic"}} }
-
   before do
-    setup_relationship_data
+    create_social_graph
   end
 
   after do
@@ -16,6 +14,9 @@ describe Api::V1::EndorsementsController, :type => :request do
   end
 
   describe "post api/v1/endorsements" do 
+    let(:new_topic){ {new_topic: {name: "My New Topic"}} }
+
+
     it " creates endorsment for existing user and existing topic" do
 
       post "/api/v1/endorsements", params:{topicId: @cooking.id , endorseeId: @tisha.id}, headers:{'Authorization': Authentication.jwt_for(@herby)}
@@ -46,6 +47,28 @@ describe Api::V1::EndorsementsController, :type => :request do
 
     end
 
-
   end
+
+  describe "accept" do
+      it "upates the status of the endorsement" do
+        t = FactoryBot.create(:topic, name: "Skeptic")
+        e = FactoryBot.create(:endorsement, endorser: @tisha, endorsee: @herby, topic: t)
+        expect{
+          do_put @herby, "/api/v1/endorsements/#{e.id}/accept", {endorseeId: @tisha.id}
+          e.reload
+        }.to change{ e.status }.to :accepted
+      end
+  end
+
+  describe "decline" do
+    it "upates the status of the endorsement" do
+      t = FactoryBot.create(:topic, name: "Skeptic")
+      e = FactoryBot.create(:endorsement, endorser: @tisha, endorsee: @herby, topic: t)
+      expect{
+        do_put @herby, "/api/v1/endorsements/#{e.id}/decline", {endorseeId: @tisha.id}
+        e.reload
+      }.to change{ e.status }.to :declined
+    end
+  end
+
 end

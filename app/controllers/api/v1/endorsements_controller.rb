@@ -1,4 +1,5 @@
 class Api::V1::EndorsementsController < ApplicationController
+  before_action :find_endorsement, except:[:index, :create]
 
   def index
     current_users.endorsees
@@ -8,7 +9,19 @@ class Api::V1::EndorsementsController < ApplicationController
     render json: EndorsementService.create(params_with_user)
   end
 
+  def accept
+    EndorsementService.accept(@endorsement)
+  end
+
+  def decline
+    EndorsementService.decline(@endorsement)
+  end
+
   private
+
+  def find_endorsement
+    @endorsement = Endorsement.find(params[:id])
+  end
 
   def params_with_user
     HashWithIndifferentAccess.new({

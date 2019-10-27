@@ -14,7 +14,13 @@ Rails.application.routes.draw do
 
       get 'friends', to: "people#index"
 
-      resources :endorsements
+      resources :endorsements do
+        member do 
+          put :accept
+          put :decline
+        end
+      end
+
       resources :projects do 
         collection do
           post :search
