@@ -29,7 +29,7 @@ class EndorsementService
 
     def create_from_nodes endorser, endorsee, topic
       return build_endorsement(endorser, endorsee, topic).tap do |endorsement|
-        endorsement.save
+        endorsement.save!
       end
     end
 

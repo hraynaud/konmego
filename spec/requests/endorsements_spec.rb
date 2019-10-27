@@ -3,7 +3,7 @@ include TestDataHelper::Relationships
 include TestDataHelper::Projects
 include TestDataHelper::Utils
 
-describe Api::V1::EndorsementsController do
+describe Api::V1::EndorsementsController, :type => :request do
 
   let(:new_topic){ {new_topic: {name: "My New Topic"}} }
 
@@ -31,10 +31,21 @@ describe Api::V1::EndorsementsController do
       post "/api/v1/endorsements", params:{topicId: @cooking.id}, headers:{'Authorization': Authentication.jwt_for(@herby)}
 
       aggregate_failures do 
-        expect(response.status).to eq 200
+        expect(response).to have_http_status(:unprocessable_entity)
+        #TODO validate response body
       end
 
     end
+
+    it " fails when topic is missing" do
+      post "/api/v1/endorsements", params:{endorseeId: @tisha.id}, headers:{'Authorization': Authentication.jwt_for(@herby)}
+
+      aggregate_failures do 
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+    end
+
 
   end
 end

@@ -74,8 +74,4 @@ describe "Signup and registration" do
     }
   end
 
-  def extract_errors
-    errors = JSON.parse(response.headers["X-Message"])
-    errors.join(",")
-  end
 end

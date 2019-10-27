@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::API
 
   include ActionController::MimeResponds
-
+  include ExceptionHandler
   before_action :authenticate_request, except:[:preflight]
 
   def preflight
@@ -14,12 +14,21 @@ class ApplicationController < ActionController::API
     @current_user
   end
 
-  def respond_with_token jwt
-    render json: {jwt: jwt}, status: 200
+  def json_response(object, status)
+    render json: object, status: status
   end
 
-  def respond_with_error errors, status = 422
-    head status, {"X-Message" => errors.full_messages.to_json}
+  def respond_with_token jwt
+    json_response({jwt: jwt}, :ok)
+  end
+
+  def respond_with_error msg, status = :bad_request, errors={}
+    response.set_header "X-Message", msg
+    json_response(errors.to_json, status)
+  end
+
+  def respond_with_model_error model, status = :unprocessable_entity
+    respond_with_error model.errors.full_messages.to_sentence, status, model.errors
   end
 
   def do_auth_failed

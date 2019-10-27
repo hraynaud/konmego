@@ -55,7 +55,9 @@ describe EndorsementService do
 
         expect{
           EndorsementService.create(with_new_endorsee_others_existing)
-        }.to change{Endorsement.count}.by(0)
+
+        }.to raise_error(Neo4j::ActiveNode::Persistence::RecordInvalidError)
+          .and change{Endorsement.count}.by(0)
           .and change{Person.count}.by(0)
       end
 
@@ -63,7 +65,8 @@ describe EndorsementService do
         EndorsementService.create(with_new_endorsee_others_existing)
         expect{
           EndorsementService.create(with_new_endorsee_others_existing)
-        }.to change{Endorsement.count}.by(0)
+        }.to raise_error(Neo4j::ActiveNode::Persistence::RecordInvalidError)
+          .and change{Endorsement.count}.by(0)
           .and change{Person.count}.by(0)
 
       end
@@ -81,7 +84,8 @@ describe EndorsementService do
         expect{
           new_topic[:new_topic][:name] = nil 
           EndorsementService.create({endorser_id: @p1.id, endorsee_id: @p2.id}.merge new_topic)
-        }.to change{Endorsement.count}.by(0)
+        }.to raise_error(Neo4j::ActiveNode::Persistence::RecordInvalidError)
+          .and change{Endorsement.count}.by(0)
       end
     end
 
