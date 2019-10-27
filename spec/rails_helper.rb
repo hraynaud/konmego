@@ -54,6 +54,7 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
   #
   config.include TestUtils
+  config.include TestUtils::RSpec
 
   config.before(:each) do
   end

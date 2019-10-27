@@ -16,13 +16,12 @@ describe Api::V1::EndorsementsController, :type => :request do
   describe "post api/v1/endorsements" do 
     let(:new_topic){ {new_topic: {name: "My New Topic"}} }
 
-
     it " creates endorsment for existing user and existing topic" do
 
       post "/api/v1/endorsements", params:{topicId: @cooking.id , endorseeId: @tisha.id}, headers:{'Authorization': Authentication.jwt_for(@herby)}
 
       aggregate_failures do 
-        expect(response.status).to eq 200
+        expect_http response, :ok
       end
 
     end
@@ -32,7 +31,7 @@ describe Api::V1::EndorsementsController, :type => :request do
       post "/api/v1/endorsements", params:{topicId: @cooking.id}, headers:{'Authorization': Authentication.jwt_for(@herby)}
 
       aggregate_failures do 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect_http response, :unprocessable_entity
         #TODO validate response body
       end
 
@@ -42,44 +41,58 @@ describe Api::V1::EndorsementsController, :type => :request do
       post "/api/v1/endorsements", params:{endorseeId: @tisha.id}, headers:{'Authorization': Authentication.jwt_for(@herby)}
 
       aggregate_failures do 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect_http response, :unprocessable_entity
       end
 
     end
 
   end
 
-  describe "accept" do
-    it "upates the status of the endorsement" do
-      t = FactoryBot.create(:topic, name: "Skeptic")
-      e = FactoryBot.create(:endorsement, endorser: @tisha, endorsee: @herby, topic: t)
-      expect{
-        do_put @herby, "/api/v1/endorsements/#{e.id}/accept"
-        e.reload
-      }.to change{ e.status }.to :accepted
+  context "Accept and Decline" do
+
+    let(:t){FactoryBot.create(:topic, name: "Skeptic")}
+    let(:e){FactoryBot.create(:endorsement, endorser: @tisha, endorsee: @herby, topic: t)}
+    let(:bad_id){"ABC123"}
+
+    describe "accept" do
+
+      it "upates the status of the endorsement" do
+        expect{
+          do_put @herby, accept_api_v1_endorsement_path(e)
+          e.reload
+        }.to change{ e.status }.to :accepted
+      end
+
+      it "returns updated endorsement" do
+        do_put @herby, accept_api_v1_endorsement_path(e)
+        expect_response_and_model_json_to_match response, e.reload 
+      end
+
+      it "fails if endorsement doesn't exist" do
+        do_put @herby, "/api/v1/endorsements/#{bad_id}/accept"
+        expect_http response, :not_found
+      end
+
     end
 
-    it "fails if endorsement doesn't exist" do
-      do_put @herby, "/api/v1/endorsements/ABC123/accept"
-        expect(response).to have_http_status(:not_found)
+    describe "decline" do
+      it "upates the status of the endorsement" do
+        expect{
+          do_put @herby,  decline_api_v1_endorsement_path(e)
+          e.reload
+        }.to change{ e.status }.to :declined
+      end
+
+      it "returns updated endorsement" do
+        do_put @herby, decline_api_v1_endorsement_path(e)
+        expect_response_and_model_json_to_match response, e.reload 
+      end
+
+      it "fails if endorsement doesn't exist" do
+        do_put @herby, "/api/v1/endorsements/#{bad_id}/decline"
+        expect_http response, :not_found
+      end
+
     end
   end
-
-  describe "decline" do
-    it "upates the status of the endorsement" do
-      t = FactoryBot.create(:topic, name: "Skeptic")
-      e = FactoryBot.create(:endorsement, endorser: @tisha, endorsee: @herby, topic: t)
-      expect{
-        do_put @herby, "/api/v1/endorsements/#{e.id}/decline"
-        e.reload
-      }.to change{ e.status }.to :declined
-    end
-
-    it "fails if endorsement doesn't exist" do
-      do_put @herby, "/api/v1/endorsements/ABC123/decline"
-      expect(response).to have_http_status(:not_found)
-    end
-
-  end
-
 end
