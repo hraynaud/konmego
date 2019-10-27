@@ -6,7 +6,6 @@ describe Endorsement do
     @topic2 = FactoryBot.create(:topic)
     @endorsement = FactoryBot.create(:endorsement, topic: @topic1)
     @endorsee = @endorsement.endorsee
-    @endorsee = @endorsement.endorsee
     @endorser = @endorsement.endorser
     @other = FactoryBot.create(:person)
   end
@@ -17,8 +16,29 @@ describe Endorsement do
    Person.delete_all
   end
 
+  it "is invalid when new" do
+    endorsement = Endorsement.new
+    expect(endorsement.valid?(:update)).to be false
+  end
+
+  it "is invalid without endorsee" do
+    endorsement = Endorsement.new
+    endorsement.endorser = @endorser
+    endorsement.topic = @topic1
+    expect(endorsement.valid?(:update)).to be false
+  end
+
   it "is invalid without endorser" do
     endorsement = Endorsement.new
+    endorsement.endorsee = @endorsee
+    endorsement.topic = @topic1
+    expect(endorsement.valid?(:update)).to be false
+  end
+
+  it "is invalid without topic" do
+    endorsement = Endorsement.new
+    endorsement.endorsee = @endorsee
+    endorsement.endorser = @endorser
     expect(endorsement.valid?(:update)).to be false
   end
 

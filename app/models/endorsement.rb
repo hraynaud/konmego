@@ -13,7 +13,8 @@ class Endorsement
 
   before_validation :save_endorsee
   validates :endorsee, :endorser, :topic, presence: true
-  validate :validity_of_endorsee
+  validate :has_valid_topic
+  validate :has_valid_endorsee
   validate :is_unique_across_endorser_endorsee_and_topic, on: :create, if: :all_valid?
 
   scope :accepted,  ->{where(status: :accepted)}
@@ -30,11 +31,19 @@ class Endorsement
     end
   end
 
-  def validity_of_endorsee
+  def has_valid_topic
+    if topic
+      errors.add(
+        :topic, topic.errors.full_messages.to_sentence
+      ) unless topic.valid? 
+    end
+  end
+
+  def has_valid_endorsee
     if endorsee
       errors.add(
         :endorsee, endorsee.errors.full_messages.to_sentence
-      ) unless endorsee.valid? 
+      ) unless endorsee.valid?
     end
   end
 

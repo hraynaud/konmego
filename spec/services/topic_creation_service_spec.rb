@@ -14,7 +14,7 @@ describe TopicCreationService do
   describe ".get_graph_elements" do
 
     it "creates a new topic" do
-      expect{TopicCreationService.create("My topic")}.to change{Topic.count}.by(1)
+      expect{ TopicCreationService.create({name: "My topic"}) }.to change{Topic.count}.by(1)
     end
 
   end

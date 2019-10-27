@@ -25,7 +25,6 @@ class EndorsementService
       endorsement.save
     end
 
-
     private
 
     def create_from_nodes endorser, endorsee, topic
@@ -88,9 +87,9 @@ class EndorsementService
 
     def new_endorsee params
       Person.new({
-        email: params[:new_person][:email], 
-        first_name: params[:new_person][:first],
-      last_name: params[:new_person][:last],
+        email: params.dig(:new_person, :email),
+        first_name: params.dig(:new_person, :first),
+        last_name: params.dig(:new_person, :last),
         password: SecureRandom.base64(15)
       })
     end 

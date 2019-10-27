@@ -2,8 +2,8 @@ module TopicCreationService
 
   class << self
 
-    def create name
-      Topic.create(name: normalize(name))
+    def create params
+      Topic.create(name: normalize(params[:name]))
     end
 
     def find_related_or_synonym name
