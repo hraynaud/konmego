@@ -15,14 +15,18 @@ class EndorsementService
 
 
     def accept endorsement
-      RelationshipManager.create_friendship_if_none_exists_for(endorsement)
-      endorsement.accepted!
-      endorsement.save
+      return endorsement.tap do |e|
+        RelationshipManager.create_friendship_if_none_exists_for(e)
+        e.accepted!
+        e.save
+      end
     end
 
     def decline endorsement
-      endorsement.declined!
-      endorsement.save
+      return endorsement.tap do |e|
+        endorsement.declined!
+        endorsement.save
+      end
     end
 
     private

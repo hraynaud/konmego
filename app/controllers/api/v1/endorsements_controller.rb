@@ -10,11 +10,11 @@ class Api::V1::EndorsementsController < ApplicationController
   end
 
   def accept
-    EndorsementService.accept(@endorsement)
+   render json: EndorsementService.accept(@endorsement)
   end
 
   def decline
-    EndorsementService.decline(@endorsement)
+   render json: EndorsementService.decline(@endorsement)
   end
 
   private
