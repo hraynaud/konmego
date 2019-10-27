@@ -59,6 +59,10 @@ describe Api::V1::EndorsementsController, :type => :request do
       }.to change{ e.status }.to :accepted
     end
 
+    it "fails if endorsement doesn't exist" do
+      do_put @herby, "/api/v1/endorsements/ABC123/accept"
+        expect(response).to have_http_status(:not_found)
+    end
   end
 
   describe "decline" do
@@ -70,6 +74,12 @@ describe Api::V1::EndorsementsController, :type => :request do
         e.reload
       }.to change{ e.status }.to :declined
     end
+
+    it "fails if endorsement doesn't exist" do
+      do_put @herby, "/api/v1/endorsements/ABC123/decline"
+      expect(response).to have_http_status(:not_found)
+    end
+
   end
 
 end
