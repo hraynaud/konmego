@@ -16,7 +16,7 @@ describe "Signup and registration" do
     post "/register", params: build_invalid_params({email:nil})
 
     aggregate_failures "testing response" do
-      expect_error_response_and_person_created
+      expect_error_response_and_person_not_created
       expect(extract_errors).to match /#{I18n.t('errors.attributes.email.required')}/
     end
 
@@ -44,7 +44,7 @@ describe "Signup and registration" do
   it "fails when password is invalid" do
     post "/register",  params: build_invalid_params({password: "2shorty"})
     aggregate_failures "testing response" do
-      expect_error_response_and_person_created
+      expect_error_response_and_person_not_created
       expect( extract_errors).to match /#{I18n.t('errors.attributes.password.too_short.other', count: 8)}/
     end
   end
@@ -52,7 +52,7 @@ describe "Signup and registration" do
   it "fails when password is nil" do
     aggregate_failures "testing response" do
       post "/register",  params: build_invalid_params({password: nil})
-      expect_error_response_and_person_created
+      expect_error_response_and_person_not_created
       expect(extract_errors).to match /#{I18n.t('errors.attributes.password.required')}/
     end
   end
@@ -62,7 +62,7 @@ describe "Signup and registration" do
     person_params.merge(err)
   end
 
-  def expect_error_response_and_person_created
+  def expect_error_response_and_person_not_created
       expect(response).to have_http_status(:unprocessable_entity)
       expect(Person.count).to eq(0)
   end

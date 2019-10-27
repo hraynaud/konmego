@@ -10,6 +10,10 @@ class ApplicationController < ActionController::API
 
   private
 
+  def rubify_keys hash
+    hash.deep_transform_keys(&:underscore)
+  end
+
   def current_user
     @current_user
   end

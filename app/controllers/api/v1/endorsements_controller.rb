@@ -5,8 +5,7 @@ class Api::V1::EndorsementsController < ApplicationController
   end
 
   def create
-    endorsement =  EndorsementService.create(params_with_user)
-    render json: endorsement 
+    render json: EndorsementService.create(params_with_user)
   end
 
   private
@@ -16,10 +15,6 @@ class Api::V1::EndorsementsController < ApplicationController
       endorser_id: current_user.id
     }).merge( rubify_keys(endorsement_params.to_h))
 
-  end
-
-  def rubify_keys hash
-    hash.deep_transform_keys(&:underscore)
   end
 
   def endorsement_params
