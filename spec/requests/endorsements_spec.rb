@@ -50,14 +50,15 @@ describe Api::V1::EndorsementsController, :type => :request do
   end
 
   describe "accept" do
-      it "upates the status of the endorsement" do
-        t = FactoryBot.create(:topic, name: "Skeptic")
-        e = FactoryBot.create(:endorsement, endorser: @tisha, endorsee: @herby, topic: t)
-        expect{
-          do_put @herby, "/api/v1/endorsements/#{e.id}/accept", {endorseeId: @tisha.id}
-          e.reload
-        }.to change{ e.status }.to :accepted
-      end
+    it "upates the status of the endorsement" do
+      t = FactoryBot.create(:topic, name: "Skeptic")
+      e = FactoryBot.create(:endorsement, endorser: @tisha, endorsee: @herby, topic: t)
+      expect{
+        do_put @herby, "/api/v1/endorsements/#{e.id}/accept"
+        e.reload
+      }.to change{ e.status }.to :accepted
+    end
+
   end
 
   describe "decline" do
@@ -65,7 +66,7 @@ describe Api::V1::EndorsementsController, :type => :request do
       t = FactoryBot.create(:topic, name: "Skeptic")
       e = FactoryBot.create(:endorsement, endorser: @tisha, endorsee: @herby, topic: t)
       expect{
-        do_put @herby, "/api/v1/endorsements/#{e.id}/decline", {endorseeId: @tisha.id}
+        do_put @herby, "/api/v1/endorsements/#{e.id}/decline"
         e.reload
       }.to change{ e.status }.to :declined
     end

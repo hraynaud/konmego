@@ -6,11 +6,11 @@ end
 
 
 
-def do_put user, path, payload
+def do_put user, path, payload={}
   put path, params: payload, headers:{'Authorization': Authentication.jwt_for(user)}
 end
 
-def do_post user, path, payload
+def do_post user, path, payload={}
   post path, params: payload, headers:{'Authorization': Authentication.jwt_for(user)}
 end
 
