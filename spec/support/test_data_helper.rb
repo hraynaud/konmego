@@ -2,11 +2,15 @@ module TestDataHelper
   module Relationships
 
     def setup_relationship_data
-      create_users
-      create_topics
-      setup_social_graph
+      create_social_graph
       create_endorsements
       set_endorsement_statuses
+    end
+
+    def create_social_graph
+      create_users
+      create_topics
+      create_friendships
     end
 
     def create_users
@@ -25,7 +29,7 @@ module TestDataHelper
       end
     end
 
-    def setup_social_graph
+    def create_friendships
       RelationshipManager.befriend @herby, @tisha
       RelationshipManager.befriend @herby,  @elsa 
       RelationshipManager.befriend @jean, @herby
