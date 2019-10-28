@@ -13,11 +13,11 @@ describe Api::V1::TopicContactsController do
  describe "get api/v1/topic_contacts/:topic" do 
    it "finds friends that have direct connection to this topic" do
 
-     get "/api/v1/topic_contacts/Cooking", headers:{'Authorization': Authentication.jwt_for(@sar)}
+     do_get @sar, "/api/v1/topic_contacts/Cooking" 
 
-     data = JSON.parse(response.body)
+     data = parse_body(response)
 
-     expect(response.status).to eq 200
+     expect_http response,:ok
      expect(data["nodes"].size).to eq sars_cooking_network["nodes"].size
      expect(data["links"].size).to eq sars_cooking_network["links"].size
      validate_relationship_types data, sars_cooking_network

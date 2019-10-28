@@ -15,10 +15,10 @@ describe Api::V1::PeopleController do
 
       get "/api/v1/friends", headers:{'Authorization': Authentication.jwt_for(@tisha)}
 
-      data = JSON.parse(response.body)["data"]
+      data = parse_body(response)["data"]
 
       aggregate_failures "testing friends" do
-        expect(response.status).to eq 200
+        expect(response).to have_http_status :ok
         expect(data.size).to eq @tisha.contacts.size
         expect(result_contact_names(data)).to eq expected_friends(@tisha.contacts)
       end
@@ -28,15 +28,15 @@ describe Api::V1::PeopleController do
 
   def result_contact_names data
     data.map do |p|
-      full_name p['attributes']['firstName'], p['attributes']['lastName']
+      full_name p
     end.to_set
   end
 
   def expected_friends contacts
-    contacts.map{|c| full_name(c.first_name, c.last_name)}.to_set
+    contacts.map{|c| c.name}.to_set
   end
 
-  def full_name first, last
-    "#{first} #{last}"
+  def full_name p
+    "#{p['attributes']['firstName']} #{p['attributes']['lastName']}"
   end
 end

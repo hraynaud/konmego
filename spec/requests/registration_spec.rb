@@ -7,8 +7,7 @@ describe "Signup and registration" do
   end
 
   it "creates  registration" do
-    expect{post "/register", params: person_params}
-      .to change{Person.count}.by(1)
+    expect{post "/register", params: person_params}.to change{Person.count}.by(1)
   end
 
 
@@ -17,7 +16,7 @@ describe "Signup and registration" do
 
     aggregate_failures "testing response" do
       expect_error_response_and_person_not_created
-      expect(extract_errors).to match /#{I18n.t('errors.attributes.email.required')}/
+      expect(extract_errors).to match i18n_attributes_error('email.required')
     end
 
   end
@@ -28,7 +27,7 @@ describe "Signup and registration" do
     post "/register", params: build_invalid_params({email: p.email})
 
     aggregate_failures "testing response" do
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect_http response, :unprocessable_entity
       expect(Person.count).to eq(1)
     end
   end
@@ -37,7 +36,7 @@ describe "Signup and registration" do
   it "fails when email is invalid" do
     post "/register",  params: build_invalid_params({email: "a@.com"})
     aggregate_failures "testing response" do
-      expect( extract_errors).to match /#{I18n.t('errors.attributes.email.invalid')}/
+      expect( extract_errors).to match i18n_attributes_error('email.invalid')
     end
   end
 
@@ -45,7 +44,7 @@ describe "Signup and registration" do
     post "/register",  params: build_invalid_params({password: "2shorty"})
     aggregate_failures "testing response" do
       expect_error_response_and_person_not_created
-      expect( extract_errors).to match /#{I18n.t('errors.attributes.password.too_short.other', count: 8)}/
+      expect(extract_errors).to match i18n_attributes_error('password.too_short.other', count: 8)
     end
   end
 
@@ -53,7 +52,7 @@ describe "Signup and registration" do
     aggregate_failures "testing response" do
       post "/register",  params: build_invalid_params({password: nil})
       expect_error_response_and_person_not_created
-      expect(extract_errors).to match /#{I18n.t('errors.attributes.password.required')}/
+      expect(extract_errors).to match i18n_attributes_error('password.required')
     end
   end
 
@@ -63,8 +62,8 @@ describe "Signup and registration" do
   end
 
   def expect_error_response_and_person_not_created
-      expect(response).to have_http_status(:unprocessable_entity)
-      expect(Person.count).to eq(0)
+    expect_http response, :unprocessable_entity
+    expect(Person.count).to eq(0)
   end
 
   def person_params
