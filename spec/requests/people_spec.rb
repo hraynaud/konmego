@@ -13,7 +13,7 @@ describe Api::V1::PeopleController do
   describe "/friends" do 
     it "finds friends" do
 
-      get "/api/v1/friends", headers:{'Authorization': Authentication.jwt_for(@tisha)}
+      do_get @tisha, "/api/v1/friends"
 
       data = parse_body(response)["data"]
 
