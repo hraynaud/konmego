@@ -15,19 +15,19 @@ describe Api::V1::PeopleController do
 
       do_get @tisha, "/api/v1/friends"
 
-      data = parse_body(response)["data"]
+      results = parse_body(response)["data"]
 
       aggregate_failures "testing friends" do
-        expect(response).to have_http_status :ok
-        expect(data.size).to eq @tisha.contacts.size
-        expect(result_contact_names(data)).to eq expected_friends(@tisha.contacts)
+        expect_http response, :ok
+        expect(results.size).to eq @tisha.contacts.size
+        expect(result_contact_names(results)).to eq expected_friends(@tisha.contacts)
       end
     end
 
   end
 
-  def result_contact_names data
-    data.map do |p|
+  def result_contact_names contacts
+    contacts.map do |p|
       full_name p
     end.to_set
   end
