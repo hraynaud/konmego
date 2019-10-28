@@ -13,40 +13,90 @@ describe Api::V1::EndorsementsController, :type => :request do
     clear_db
   end
 
-  describe "post api/v1/endorsements" do 
-    let(:new_topic){ {new_topic: {name: "My New Topic"}} }
+  describe "creating endorsement: post api/v1/endorsements" do 
 
-    it " creates endorsment for existing user and existing topic" do
-
-      post "/api/v1/endorsements", params:{topicId: @cooking.id , endorseeId: @tisha.id}, headers:{'Authorization': Authentication.jwt_for(@herby)}
-
-      aggregate_failures do 
+    context "for pre-existing topic and endorsee" do
+      it " creates endorsment for existing user and existing topic" do
+        do_post @herby, "/api/v1/endorsements", {topicId: @cooking.id , endorseeId: @tisha.id}
         expect_http response, :ok
       end
 
-    end
-
-
-    it " fails when edorsee is missing" do
-      post "/api/v1/endorsements", params:{topicId: @cooking.id}, headers:{'Authorization': Authentication.jwt_for(@herby)}
-
-      aggregate_failures do 
-        expect_http response, :unprocessable_entity
-        #TODO validate response body
+      it " fails when edorsee is missing" do
+        do_post @herby, "/api/v1/endorsements", {topicId: @cooking.id }
+        aggregate_failures do 
+          expect_http response, :unprocessable_entity
+        end
       end
 
+      it " fails when topic is missing" do
+        do_post @herby, "/api/v1/endorsements", {endorseeId: @tisha.id}
+        aggregate_failures do 
+          expect_http response, :unprocessable_entity
+        end
+      end
     end
 
-    it " fails when topic is missing" do
-      post "/api/v1/endorsements", params:{endorseeId: @tisha.id}, headers:{'Authorization': Authentication.jwt_for(@herby)}
+    context "when either topic or endorsee or both are new" do
+      let(:new_topic){ {newTopic: {name: "My New Topic"}} }
+      let(:new_person){ {newPerson: {first: "Firstly", last: "Lastly", email: "first@last.com"}} }
 
-      aggregate_failures do 
-        expect_http response, :unprocessable_entity
+      context "new topic" do
+        let(:params){new_topic.merge({endorseeId: @tisha.id})}
+
+        it "returns ok" do
+          do_post @herby, "/api/v1/endorsements", params
+          expect_http response, :ok
+          expect_response_and_model_json_to_match response, Endorsement.last
+        end
+
+        it "creates new endorsement and new topic" do
+          expect{
+            do_post @herby, "/api/v1/endorsements", params
+          }.to change{Endorsement.count}.by(1)
+            .and change{Topic.count}.by(1)
+            .and change{Person.count}.by(0)
+        end
       end
 
+      context "new person" do
+        let(:params){new_person.merge({topicId: @singing.id})}
+
+        it "succeeds for new person" do
+          do_post @herby, "/api/v1/endorsements", params 
+          expect_http response, :ok
+          expect_response_and_model_json_to_match response, Endorsement.last
+        end
+
+        it "creates new endorsement and new person" do
+          expect{
+            do_post @herby, "/api/v1/endorsements", params
+          }.to change{Endorsement.count}.by(1)
+            .and change{Person.count}.by(1)
+            .and change{Topic.count}.by(0)
+        end
+      end
+
+      context "new person and topic" do
+        let(:new_person_and_topic){ new_topic.merge(new_person) }
+
+        it "creates new endorsement and new person" do
+          do_post @herby, "/api/v1/endorsements", new_person_and_topic
+          expect_http response, :ok
+          expect_response_and_model_json_to_match response, Endorsement.last
+        end
+
+        it "creates new endorsement and new person" do
+          expect{
+            do_post @herby, "/api/v1/endorsements", new_person_and_topic
+          }.to change{Endorsement.count}.by(1)
+            .and change{Topic.count}.by(1)
+            .and change{Person.count}.by(1)
+        end
+      end
     end
 
   end
+
 
   context "Accept and Decline" do
 

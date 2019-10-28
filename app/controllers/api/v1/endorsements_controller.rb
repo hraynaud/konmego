@@ -2,7 +2,7 @@ class Api::V1::EndorsementsController < ApplicationController
   before_action :find_endorsement, except:[:index, :create]
 
   def index
-    current_users.endorsees
+    render json: current_users.endorsees
   end
 
   def create
