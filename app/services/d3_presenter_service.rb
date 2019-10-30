@@ -46,7 +46,7 @@ module D3PresenterService
 
   def to_d3_node node
     if node.is_a? Person
-      {label: "#{node.first_name} #{node.last_name}", type: "Person", id: node.neo_id}
+      {label: "#{node.name}", type: "Person", id: node.neo_id}
     else
       {label: node.try(:name) || node.description, type: node.class.name, id: node.neo_id}
     end
