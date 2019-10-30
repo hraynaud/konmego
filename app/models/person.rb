@@ -59,6 +59,11 @@ class Person
     outgoing_endorsements.map(&:endorsee)
   end
 
+  def endorsers
+    incoming_endorsements.map(&:endorser)
+  end
+
+
   private
 
   def email_format

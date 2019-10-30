@@ -35,12 +35,9 @@ module TestDataHelper
       RelationshipManager.befriend @jean, @herby
       RelationshipManager.befriend @fauzi, @herby
 
-      RelationshipManager.befriend @tisha, @kendra
       RelationshipManager.befriend @tisha, @vince
-
-      RelationshipManager.befriend @franky,  @fauzi
-
       RelationshipManager.befriend @kendra, @vince
+
       RelationshipManager.befriend @sar, @elsa
     end
 
@@ -49,9 +46,9 @@ module TestDataHelper
       @pending = []
       @declined = []
 
-      @accepted << EndorsementService.create(to_params @fauzi, @franky, @cooking)
-      @accepted << EndorsementService.create(to_params @tisha, @kendra, @singing)
-      @accepted << EndorsementService.create(to_params @tisha, @kendra, @cooking)
+      @accepted << EndorsementService.create(to_params @fauzi, @franky, @cooking) #fauzi [KNOWS] franky
+      @accepted << EndorsementService.create(to_params @tisha, @kendra, @cooking) #tisha  [KNOWS] kendra
+      @accepted << EndorsementService.create(to_params @tisha, @kendra, @singing) #tisha  [KNOWS] kendra
 
       @declined << EndorsementService.create(to_params @jean, @vince, @composer)
       @pending << EndorsementService.create(to_params @elsa, @sar, @acting)
