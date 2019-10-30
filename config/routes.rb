@@ -10,9 +10,10 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources 'topic_contacts', only: [:index, :show], param: :topic
 
-      get 'friends', to: "people#index"
+      get 'people/:group', to: "people#index", constraints: {group: /contacts|endorsees|endorsers/}
+
+      resources 'topic_contacts', only: [:index, :show], param: :topic
 
       resources :endorsements do
         member do 
@@ -26,9 +27,8 @@ Rails.application.routes.draw do
           post :search
         end
       end
-
     end
   end
 
-  match '/*path', to: 'home#index', via: [:get]
+  root to: 'home#index'
 end

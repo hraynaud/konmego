@@ -1,6 +1,6 @@
-class HomeController < ActionController::Api
+class HomeController < ActionController::API
 
- def index
+  def index
     respond_to do |format|
       format.html { render body: Rails.root.join('public/index.html').read }
     end
