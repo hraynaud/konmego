@@ -32,7 +32,7 @@ module TestDataHelper
     def create_friendships
       RelationshipManager.befriend @herby, @tisha
       RelationshipManager.befriend @herby,  @elsa 
-      RelationshipManager.befriend @jean, @herby
+      #RelationshipManager.befriend @jean, @herby
       RelationshipManager.befriend @fauzi, @herby
 
       RelationshipManager.befriend @tisha, @vince
@@ -49,6 +49,7 @@ module TestDataHelper
       @accepted << EndorsementService.create(to_params @fauzi, @franky, @cooking) #fauzi [KNOWS] franky
       @accepted << EndorsementService.create(to_params @tisha, @kendra, @cooking) #tisha  [KNOWS] kendra
       @accepted << EndorsementService.create(to_params @tisha, @kendra, @singing) #tisha  [KNOWS] kendra
+      @accepted << EndorsementService.create(to_params @jean, @sar, @djing) #tisha  [KNOWS] kendra
 
       @declined << EndorsementService.create(to_params @jean, @vince, @composer)
       @pending << EndorsementService.create(to_params @elsa, @sar, @acting)

@@ -19,37 +19,56 @@ describe TopicSearchService do
       results = TopicSearchService.paths_to_resource @herby, "Cooking"
       expect_result_data_to_match_expected( results, [
         [@herby,  @tisha],
-        [@herby, @fauzi] 
+        [@herby, @fauzi]
       ])
     end
 
-    it "finds subgraph from person by topic" do
-      results = TopicSearchService.paths_to_resource @sar, "Cooking"
-      expect_result_data_to_match_expected( results, [
-        [@sar, @elsa, @herby, @tisha ],
-        [@sar, @elsa, @herby, @fauzi]
-      ])
+
+    it "it only finds indirect path to skill even if the endorsement target is a direct contact" do
+      obfuscator = Obfuscator.new(@elsa) 
+      results = TopicSearchService.paths_to_resource @elsa, "Djing"
+      expect_result_data_to_match_expected( results, [[@elsa, @sar, obfuscator.obfuscate(@jean)]])
     end
 
-    it "finds inidrect contacts that have endorsed the topic" do
-      results = TopicSearchService.paths_to_resource @fauzi, "Singing"
-      expect_result_data_to_match_expected( results, [[@fauzi, @herby, @tisha]])
+    context "user is @sar" do
+
+      let(:obfuscator) {Obfuscator.new(@sar)}
+
+      it "finds subgraph from person by topic" do
+        results = TopicSearchService.paths_to_resource @sar, "Cooking"
+        expect_result_data_to_match_expected( results, [
+          [@sar, @elsa, obfuscator.obfuscate(@herby), obfuscator.obfuscate(@tisha)],
+          [@sar, @elsa,obfuscator.obfuscate(@herby), obfuscator.obfuscate(@fauzi)]
+        ])
+      end
+
+      it "finds direct and indirect contacts that have endorsed the topic with specified number of hops " do
+        results = TopicSearchService.paths_to_resource @sar, "Singing"
+        expect_result_data_to_match_expected( results, [[@sar, @elsa, obfuscator.obfuscate(@herby), obfuscator.obfuscate(@tisha)]])
+      end
+
+      it "doesn't find contacts that have endorsed the topic if outside of allowed number of hops " do
+        results = TopicSearchService.paths_to_resource @sar, "Singing", 2
+        expect_result_data_to_match_expected( results, [])
+      end
+
     end
 
-    it "ignores self when search for contacts that have endorsed the topic" do
-      results = TopicSearchService.paths_to_resource @fauzi, "Cooking"
-      expect_result_data_to_match_expected( results, [[@fauzi], [@fauzi, @herby, @tisha]])
+    context "user is @fauzi" do
+
+      let(:obfuscator) {Obfuscator.new(@fauzi)}
+
+      it "finds indirect contacts that have endorsed the topic" do
+        results = TopicSearchService.paths_to_resource @fauzi, "Singing"
+        expect_result_data_to_match_expected( results, [[@fauzi, @herby, obfuscator.obfuscate(@tisha)]])
+      end
+
+      it "returns path containing root user root has endorsement for topic" do
+        results = TopicSearchService.paths_to_resource @fauzi, "Cooking"
+        expect_result_data_to_match_expected( results, [[@fauzi], [@fauzi, @herby, obfuscator.obfuscate(@tisha)]])
+      end
     end
 
-    it "finds direct and indirect contacts that have endorsed the topic with specified number of hops " do
-      results = TopicSearchService.paths_to_resource @sar, "Singing"
-      expect_result_data_to_match_expected( results, [[@sar, @elsa, @herby, @tisha]])
-    end
-
-   it "doesn't find contacts that have endorsed the topic if outside of allowed number of hops " do
-      results = TopicSearchService.paths_to_resource @sar, "Singing", 2
-      expect_result_data_to_match_expected( results, [])
-    end
 
   end
 
