@@ -16,7 +16,6 @@ describe Api::V1::TopicContactsController do
      do_get @sar, "/api/v1/topic_contacts/Cooking" 
 
      data = parse_body(response)
-
      expect_http response,:ok
      expect(data["nodes"].size).to eq sars_cooking_network["nodes"].size
      expect(data["links"].size).to eq sars_cooking_network["links"].size

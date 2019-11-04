@@ -56,7 +56,7 @@ describe ProjectSearchService do
 
   describe ".find_all_contact_projects" do
     it " find projects across friends network at default depth" do
-      expect(ProjectSearchService.find_all_contact_projects(@vince).to_set).to eq [@chef_project, @dining_project, @vocalist_project].to_set
+      expect(ProjectSearchService.find_all_contact_projects(@vince).to_set).to eq [@chef_project, @dining_project ].to_set
     end
 
     it " find projects across friends network at custom depth" do
