@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   match '*path', to: 'application#preflight', via: [:options]
 
-  get 'current_user',  to: 'application#current_user'
+  get 'current_user',  to: 'application#current_user'  #FIXME is this needed?
   get 'request_token', to: 'authentication#request_token'
   get 'access_token',  to: 'authentication#access_token'
 
