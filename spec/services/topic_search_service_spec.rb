@@ -75,7 +75,7 @@ describe TopicSearchService do
 end
 
 def expect_result_data_to_match_expected query_data, expected
-  expect(query_data.to_set).to eq expected.to_set
+  expect(query_data.to_set).to match_array expected.to_set
 end
 
 

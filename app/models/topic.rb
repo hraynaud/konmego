@@ -8,4 +8,9 @@ class Topic
 
   has_many :in, :endorsements, origin: :topic
   has_many :in, :projects, origin: :CONCERNS
+
+
+  def type
+    self.class.name
+  end
 end

@@ -18,19 +18,20 @@ class Obfuscator
         if friends_with_both? node
           return node
         else
-          return ObfuscatedEndorsement.new(node, user)
+          return ObfuscatedEndorsement.new(node, @user)
         end
       end
     end
 
     def friends_with_both? endorsement
-     @user.friends_with? node.endorsee and @user.friends_with? node.endorser 
+     @user.friends_with? endorsement.endorsee and @user.friends_with? endorsement.endorser 
     end
 
-  class ObfuscatedPerson < Person
-     delegate_missing_to :@person
+  class ObfuscatedPerson
+    delegate_missing_to :@person
 
      HIDDEN = "hidden"
+
      def initialize person
       @person  = person
      end
@@ -43,30 +44,52 @@ class Obfuscator
         HIDDEN 
      end
 
-     def last_name
-        HIDDEN 
+     def name
+       HIDDEN
      end
 
      def email
        HIDDEN
      end
 
+     def == other
+       other.uuid == @person.uuid
+     end
   end
 
 
-  class ObfuscatedEndorsement < Endorsement
+  class ObfuscatedEndorsement
+
     delegate_missing_to :@endorsement
+
+    attr_reader :endorser, :endorsee
 
     def initialize(endorsement, user)
       @endorsement = endorsement
-
-      if !user.friends_with? endorsement.endorser
-        endorsement.endorser = ObfuscatedPerson.new(endorsement.endorser)
-      end
-
-      if !user.friends_with? endorsement.endorsee
-        endorsement.endorsee = ObfuscatedPerson.new(endorsement.endorsee)
-      end
+      @user = user
+      @endorser = @endorsement.endorser
+      @endorsee = @endorsement.endorsee
+      set_people_nodes
     end
+
+    def set_people_nodes
+      if !@user.friends_with? @endorser
+        @endorser = ObfuscatedPerson.new(@endorser)
+      end
+
+      if !@user.friends_with? @endorsement.endorsee
+        @endorsee = ObfuscatedPerson.new(@endorsee)
+      end
+
+      def description
+        "#{@endorser.name} endorses #{@endorsee.name} for #{@endorsement.topic_name}"
+      end
+
+      def == other
+        other.uuid == @person.uuid
+      end
+
+    end
+
   end
 end

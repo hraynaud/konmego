@@ -12,7 +12,7 @@ class Api::V1::TopicContactsController < ApplicationController
 
   def show
     data = TopicSearchService.local_subgraph_from_person_and_topic(current_user,params[:topic])
-    graph = D3PresenterService::Graph.new(data).to_d3
+    graph = D3PresenterService::Graph.new(data, current_user).to_d3
     render json: graph
   end
 

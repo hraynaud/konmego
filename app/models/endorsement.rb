@@ -18,15 +18,24 @@ class Endorsement
   validate :is_unique_across_endorser_endorsee_and_topic, on: :create, if: :all_valid?
 
   scope :accepted,  ->{where(status: :accepted)}
+
+  def type
+    self.class.name
+  end
+
+  def topic_name
+    topic.name
+  end
+
   private
 
   def add_description
-    self.description = "#{endorser.name} endorses someone for #{topic.name}"
+    self.description = "#{endorser.name} endorses someone for #{topic_name}"
   end
 
   def is_unique_across_endorser_endorsee_and_topic
     if Endorsement.where(endorser: endorser, endorsee: endorsee, topic: topic).any?
-      errors.add(:base, "You have already endorsed #{endorsee.name} for #{topic.name}")
+      errors.add(:base, "You have already endorsed #{endorsee.name} for #{topic_name}")
       return false
     end
   end
@@ -54,4 +63,6 @@ class Endorsement
   def save_endorsee
     endorsee.save if endorsee && endorsee.new_record?
   end
+
+
 end

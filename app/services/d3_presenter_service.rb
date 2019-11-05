@@ -4,10 +4,11 @@ module D3PresenterService
 
     attr_reader :data, :nodes, :links
 
-    def initialize data
+    def initialize data, user
       @data = data
       @nodes = []
       @links = []
+      @obfuscator = Obfuscator.new(user)
     end
 
 
@@ -44,11 +45,18 @@ module D3PresenterService
     end
 
     def to_d3_node node
-      if node.is_a? Person
-        {label: "#{node.name}", type: "Person", id: node.neo_id}
-      else
-        {label: node.try(:name) || node.description, type: node.class.name, id: node.neo_id}
+
+      if (node.is_a? Person or node.is_a? Endorsement)
+        node = @obfuscator.obfuscate(node)
       end
+
+
+      if node.type == "Person"
+        {label: "#{node.name}", type: node.type, id: node.neo_id}
+      else
+        {label: node.try(:name) || node.description, type: node.type, id: node.neo_id}
+      end
+
     end
 
   end

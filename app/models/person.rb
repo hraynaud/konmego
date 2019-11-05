@@ -63,6 +63,9 @@ class Person
     incoming_endorsements.map(&:endorser)
   end
 
+  def type
+    self.class.name
+  end
 
   private
 

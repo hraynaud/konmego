@@ -3,7 +3,6 @@ class TopicSearchService
 
   class << self
     def paths_to_resource person, topic, hops = DEFAULT_NETWORK_HOPS
-      #local_subgraph_from_person_and_topic(person, topic, hops)
       obfuscate(person, get_endorsement_graph(person, topic, hops))
     end
 
