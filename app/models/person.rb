@@ -1,6 +1,6 @@
 class Person
 
-  include KonmegoActiveNode
+  include KonmegoNeo4jNode
   include ActiveModel::SecurePassword
 
   has_secure_password

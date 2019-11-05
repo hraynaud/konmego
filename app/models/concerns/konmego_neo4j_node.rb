@@ -1,4 +1,4 @@
-module KonmegoActiveNode
+module KonmegoNeo4jNode
   extend ActiveSupport::Concern
 
   included do

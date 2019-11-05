@@ -1,5 +1,5 @@
 class Project 
-  include KonmegoActiveNode
+  include KonmegoNeo4jNode
   property :name, type: String
   property :description, type: String
   property :start_date, type: Date

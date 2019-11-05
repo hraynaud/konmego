@@ -1,6 +1,6 @@
 class Topic
 
-  include KonmegoActiveNode
+  include KonmegoNeo4jNode
 
   property :category, type: String
   property :name, type: String
