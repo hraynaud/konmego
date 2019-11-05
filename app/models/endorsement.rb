@@ -1,6 +1,6 @@
 class Endorsement
 
-  include Neo4j::ActiveNode
+  include KonmegoActiveNode
 
   has_one :out, :endorser, type: :ENDORSEMENT_SOURCE, model_class: :Person
   has_one :out, :endorsee, type: :ENDORSEMENT_TARGET, model_class: :Person
@@ -18,10 +18,6 @@ class Endorsement
   validate :is_unique_across_endorser_endorsee_and_topic, on: :create, if: :all_valid?
 
   scope :accepted,  ->{where(status: :accepted)}
-
-  def type
-    self.class.name
-  end
 
   def topic_name
     topic.name

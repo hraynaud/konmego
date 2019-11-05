@@ -1,6 +1,5 @@
 class Project 
-  include Neo4j::ActiveNode
-
+  include KonmegoActiveNode
   property :name, type: String
   property :description, type: String
   property :start_date, type: Date

@@ -1,6 +1,6 @@
 class Person
 
-  include Neo4j::ActiveNode
+  include KonmegoActiveNode
   include ActiveModel::SecurePassword
 
   has_secure_password
@@ -61,10 +61,6 @@ class Person
 
   def endorsers
     incoming_endorsements.map(&:endorser)
-  end
-
-  def type
-    self.class.name
   end
 
   private
