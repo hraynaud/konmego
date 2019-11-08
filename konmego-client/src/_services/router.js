@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import HomePage from '../pages/HomePage'
-import ProjectPage from '../pages/ProjectPage'
+import ProjectsPage from '../pages/ProjectsPage'
 import LoginPage from '../pages/LoginPage'
 import ErrorPage from '../pages/ErrorPage'
 import { authService } from './auth.service'
@@ -13,7 +13,7 @@ export const router = new Router({
   routes: [
     { path: '/', component: HomePage, props: loggedInUser },
     { path: '/login', component: LoginPage },
-    { path: '/projects', component: ProjectPage, props: true },
+    { path: '/projects', component: ProjectsPage, props: true },
     { path: '/error', name: "error", component: ErrorPage, props: true},
 
     // otherwise redirect to pages 
