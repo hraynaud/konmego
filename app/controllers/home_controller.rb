@@ -1,4 +1,4 @@
-class HomeController < ActionController::API
+class HomeController < ApplicationController
 
   def index
     respond_to do |format|
