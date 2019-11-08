@@ -43,7 +43,7 @@ function requestConfig(custConfig, path) {
 }
 
 function stringify(payload){
-  return {data: JSON.stringify(payload  )}
+  return {data: JSON.stringify(payload)}
 }
 
 function errHandler(error) {

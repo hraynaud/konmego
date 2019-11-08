@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Hi {{user}}</h1>
-    <p>You're logged in.</p>
+    <p> Logged in.</p>
 
      <p>
       <router-link to="/login">logout</router-link>

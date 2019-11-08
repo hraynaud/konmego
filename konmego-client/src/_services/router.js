@@ -16,7 +16,7 @@ export const router = new Router({
     { path: '/projects', component: ProjectsPage, props: true },
     { path: '/error', name: "error", component: ErrorPage, props: true},
 
-    // otherwise redirect to pages 
+    // otherwise redirect to root
     { path: '*', redirect: '/' }
   ]
 }); 
