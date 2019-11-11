@@ -11,7 +11,7 @@
     </div>
     <div class="main">
       <ul>
-        <li v-for="p in projects">{{p.name}}</li>
+        <li v-for="p in projects" :key="p.id" >{{p.name}}</li>
       </ul>
     </div>
   </div>

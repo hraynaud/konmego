@@ -1,5 +1,6 @@
 class Api::V1::TopicContactsController < ApplicationController
-
+  #skip_before_action :authenticate_request
+  
   def index
     respond_to do |format|
        @topic = request.headers["HTTP_X_CUSTOM_HEADER_TOPIC"]
@@ -15,6 +16,11 @@ class Api::V1::TopicContactsController < ApplicationController
     graph = D3PresenterService::Graph.new(data, current_user).to_d3
     render json: graph
   end
+
+  #def current_user
+    #@user ||=Person.where(email: 'foo2@example.com').first
+  #end
+
 
   def graph_html
 
@@ -45,28 +51,10 @@ class Api::V1::TopicContactsController < ApplicationController
         <script type="text/javascript">
             function init() {
                 var neo4jd3 = new Neo4jD3('#neo4jd3', {
-                    // highlight: [
-                    //     {
-                    //         class: 'Project',
-                    //         property: 'name',
-                    //         value: 'neo4jd3'
-                    //     }, {
-                    //         class: 'User',
-                    //         property: 'userId',
-                    //         value: 'eisman'
-                    //     }
-                    // ],
-                    icons: { 
-                    },
-                    images: { },
                     minCollision: 60,
                     neo4jDataUrl: '/api/v1/topic_contacts/#{@topic}',
                     neo4jJsonAuthHeader: '#{@auth}',
                     nodeRadius: 25,
-                    onRelationshipDoubleClick: function(relationship) {
-                        console.log('double click on relationship: ' + JSON.stringify(relationship));
-                    },
-                    zoomFit: true
                 });
             }
 

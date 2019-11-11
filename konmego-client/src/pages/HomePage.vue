@@ -12,6 +12,9 @@
     <p>
       <router-link to="/projects">Projects</router-link>
     </p>
+     <p>
+      <router-link to="/graph">Graph</router-link>
+    </p>
   </div>
 </template>
 
