@@ -717,6 +717,7 @@ function appendInfoPanel(container) {
   }
 
 module.exports = InfoBar;
+
 },{}],4:[function(_dereq_,module,exports){
 /* global d3, document */
 /* jshint latedef:nofunc */

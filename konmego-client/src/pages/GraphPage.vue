@@ -10,40 +10,33 @@
       </p>
     </div>
     <div class="main">
-      <div id="neo4jd3"></div>
+      <Graph v-bind:graphData="graphData"></Graph>
     </div>
   </div>
 </template>
 
 <script>
 import { apiService } from "../_services";
-import * as d3 from "d3";
+import Graph from "../components/Graph"
 
-
-
-require("../resources/js/neo4jd3.js");
 export default {
   data() {
     return {
       graphData: []
     };
   },
+
+ components: {
+    Graph,
+  },
+
   mounted() {
     this.loadNetworkGraph();
-    window.d3 = d3;
   },
   methods: {
     loadNetworkGraph() {
       apiService.get("api/v1/topic_contacts/Cooking").then(response => {
         this.graphData = response.data;
-        var neo4j =  Neo4jd3("#neo4jd3", {
-          icons: {},
-          images: {},
-          minCollision: 60,
-          neo4jData: response.data,
-          nodeRadius: 25,
-          zoomFit: true
-        });
       });
     }
   }
