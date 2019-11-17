@@ -70,7 +70,6 @@ export default {
       authService
         .login(email, password)
         .then(() => {
-          debugger
           this.loading = false;
           return router.push(this.returnUrl);
         })

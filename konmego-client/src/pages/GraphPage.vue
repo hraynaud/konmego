@@ -10,35 +10,38 @@
       </p>
     </div>
     <div class="main">
-      <Graph v-bind:graphData="graphData"></Graph>
+      <Graph :graphData="graphData" v-if="graphData"></Graph>
     </div>
   </div>
 </template>
 
 <script>
 import { apiService } from "../_services";
-import Graph from "../components/Graph"
+import Graph from "../components/Graph";
 
 export default {
   data() {
     return {
-      graphData: []
+      graphData: undefined,
     };
   },
 
- components: {
-    Graph,
+  components: {
+    Graph
   },
 
   mounted() {
-    this.loadNetworkGraph();
+    this.loadGraphData();
   },
   methods: {
-    loadNetworkGraph() {
-      apiService.get("api/v1/topic_contacts/Cooking").then(response => {
+    loadGraphData() {
+      apiService
+      .get("api/v1/topic_contacts/Cooking")
+      .then(function(response) {
         this.graphData = response.data;
-      });
+      }.bind(this));
     }
   }
 };
 </script>
+  
