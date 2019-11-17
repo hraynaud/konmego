@@ -37,9 +37,7 @@ export default {
     loadGraphData() {
       apiService
       .get("api/v1/topic_contacts/Cooking")
-      .then(function(response) {
-        this.graphData = response.data;
-      }.bind(this));
+      .then(response => this.graphData = response.data);
     }
   }
 };
