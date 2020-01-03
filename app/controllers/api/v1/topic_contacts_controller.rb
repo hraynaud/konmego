@@ -1,6 +1,5 @@
 class Api::V1::TopicContactsController < ApplicationController
-  #skip_before_action :authenticate_request
-  
+
   def index
     respond_to do |format|
        @topic = request.headers["HTTP_X_CUSTOM_HEADER_TOPIC"]
@@ -13,14 +12,8 @@ class Api::V1::TopicContactsController < ApplicationController
 
   def show
     data = TopicSearchService.local_subgraph_from_person_and_topic(current_user,params[:topic])
-    graph = D3PresenterService::Graph.new(data, current_user).to_d3
-    render json: graph
+    render json: D3PresenterService::Graph.new(data, current_user).to_d3
   end
-
-  #def current_user
-    #@user ||=Person.where(email: 'foo2@example.com').first
-  #end
-
 
   def graph_html
 

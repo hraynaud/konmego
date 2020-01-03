@@ -5,6 +5,7 @@ import ProjectsPage from '../pages/ProjectsPage'
 import LoginPage from '../pages/LoginPage'
 import ErrorPage from '../pages/ErrorPage'
 import GraphPage from '../pages/GraphPage'
+import NakedGraphPage from '../pages/NakedGraphPage'
 import { authService } from './auth.service'
 
 Vue.use(Router);
@@ -16,6 +17,7 @@ export const router = new Router({
     { path: '/login', component: LoginPage },
     { path: '/projects', component: ProjectsPage, props: true },
     { path: '/graph', component: GraphPage, props: true },
+    { path: '/nakedGraph', component: NakedGraphPage, props: true },
     { path: '/error', name: "error", component: ErrorPage, props: true},
 
     // otherwise redirect to root
