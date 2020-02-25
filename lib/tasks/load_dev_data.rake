@@ -3,6 +3,7 @@ require 'pry'
 require Rails.root.join("spec", "support","test_data_helper.rb")
 include TestDataHelper::Relationships
 include TestDataHelper::Projects
+include TestDataHelper::Utils
 
 namespace :db do
   desc "Creates sample data for development"
