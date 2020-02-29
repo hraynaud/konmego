@@ -21,6 +21,9 @@ class Person
   property :last_name, type: String
   property :email, type: String
   property :password_digest, type: String
+  property :bio, type: String
+  property :profile_image_url, type: String
+  property :avatar_url, type: String
   property :is_member, type: Boolean, default: false
 
   def name
