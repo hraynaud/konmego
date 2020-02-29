@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
 
-      get 'people/:group', to: "people#index", constraints: {group: /contacts|endorsees|endorsers/}
+      get 'people/:relationship_group', to: "people#index", constraints: {relationship_group: /contacts|endorsees|endorsers/}
 
       resources 'topic_contacts', only: [:index, :show], param: :topic
 

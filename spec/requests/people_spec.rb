@@ -56,7 +56,7 @@ describe Api::V1::PeopleController do
   end
 
   describe "/endorss" do 
-    it "finds endorsers" do
+    it "it raises routing error " do
 
       expect{do_get @franky, "/api/v1/people/endorss"}.to raise_error(ActionController::RoutingError)
     end
