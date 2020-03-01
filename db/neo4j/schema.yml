@@ -15,10 +15,9 @@
 - CONSTRAINT ON ( `neo4j::migrations::schemamigration`:`Neo4j::Migrations::SchemaMigration`
   ) ASSERT `neo4j::migrations::schemamigration`.migration_id IS UNIQUE
 - CONSTRAINT ON ( endorsement:Endorsement ) ASSERT endorsement.uuid IS UNIQUE
+- CONSTRAINT ON ( obstacle:Obstacle ) ASSERT obstacle.uuid IS UNIQUE
 - CONSTRAINT ON ( person:Person ) ASSERT person.uuid IS UNIQUE
 - CONSTRAINT ON ( project:Project ) ASSERT project.uuid IS UNIQUE
-- CONSTRAINT ON ( successcriterium:SuccessCriterium ) ASSERT successcriterium.uuid
-  IS UNIQUE
 - CONSTRAINT ON ( topic:Topic ) ASSERT topic.uuid IS UNIQUE
 :indexes:
 - INDEX ON :Endorsement(status)
@@ -47,3 +46,5 @@
 - '20200224104808'
 - '20200224104838'
 - '20200224104908'
+- '20200301143307'
+- '20200301144256'

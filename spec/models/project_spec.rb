@@ -33,7 +33,7 @@ describe Project do
       project = Project.new
       project.name = "My name"
       project.description = "My description"
-      project.success_criteria = [SuccessCriterium.new]
+      project.obstacles = [Obstacle.new]
       expect(project.owner).to be_nil
       expect(project.valid?(:update)).to be false
     end
@@ -44,7 +44,7 @@ describe Project do
       project.owner = person
       project.name = "My name"
       project.description = "My description"
-      project.success_criteria = [SuccessCriterium.new]
+      project.obstacles = [Obstacle.new]
       expect(project.topic).to be_nil
       expect(project.valid?(:update)).to be false
     end
@@ -55,7 +55,7 @@ describe Project do
       project.owner = person
       project.name = "My name"
       project.description = "My description"
-      expect(project.success_criteria).to be_empty
+      expect(project.obstacles).to be_empty
       expect(project.valid?(:update)).to be false
     end
 

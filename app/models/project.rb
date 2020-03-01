@@ -10,12 +10,12 @@ class Project
 
   has_one :in, :owner, model_class: :Person, type: :OWNS
   has_one :out, :topic, type: :CONCERNS
-  has_many :out,:success_criteria, type: :NEEDS, model_class: :SuccessCriterium
+  has_many :out,:obstacles, type: :PREVENTS, model_class: :Obstacle
   has_many :in, :contributors, type: :CONTRIBUTES, model_class: :Person
 
   validates :owner, :name, :description, presence: true
   validates :topic, presence: {message: "Projects must have a topic"}
-  validates :success_criteria, presence: {message: "At least one success criteria required"}, on: :update
+  validates :obstacles, presence: {message: "At least one obstacle required"}, on: :update
 
   def as_json options = nil
     super(root: false, except: [:neo_id, :visibility ])

@@ -10,7 +10,7 @@ FactoryBot.define do
     end
 
     trait :with_criteria do
-      success_criteria { build_list :success_criterium, 3 }
+      obstacles { build_list :obstacle, 3 }
     end
 
     trait :with_topic do
