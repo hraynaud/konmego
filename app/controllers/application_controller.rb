@@ -35,16 +35,16 @@ class ApplicationController < ActionController::API
     respond_with_error model.errors.full_messages.to_sentence, status, model.errors
   end
 
-  def do_auth_failed
-    respond_with_error "Authentication failed", 401
+  def do_auth_failed err_msg="Incorrect email or password"
+    respond_with_error err_msg , 401
   end
 
-  def authenticate_request
+  def authenticate_request  
     begin
       uid = Authentication.uid_from_from_request_auth_hdr request.headers['Authorization']
       @current_user = Person.find(uid)
-    rescue 
-      do_auth_failed
+    rescue e
+      do_auth_failed e.message
     end
   end
 

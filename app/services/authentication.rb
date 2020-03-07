@@ -1,12 +1,14 @@
+require "ostruct"
+
 class Authentication
 USER_ID_KEY_PARAM = "uid"
   def self.login_by_password email, pwd
     user = Person.find_by email: email
 
     if user && user.authenticate(pwd)
-      jwt_for user  
-    else  #If authentication fails then...
-      nil
+      OpenStruct.new({jwt: jwt_for(user)})
+    else 
+      OpenStruct.new({jwt: nil, error: "Incorrect email or password"})
     end
   end
 
@@ -31,7 +33,7 @@ USER_ID_KEY_PARAM = "uid"
       header =  JWT.decode(auth_hdr, Rails.application.credentials.secret_key_base)
       header[0][USER_ID_KEY_PARAM]
     rescue JWT::DecodeError
-      raise    "Invalid credentials"
+      raise  "Invalid Authorization Token Credentials"
     end
   end
 
