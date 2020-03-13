@@ -2,10 +2,10 @@ class Api::V1::TopicContactsController < ApplicationController
 
   def index
     respond_to do |format|
-       @topic = request.headers["HTTP_X_CUSTOM_HEADER_TOPIC"]
-       @auth = request.headers["Authorization"]
+      @topic = request.headers["HTTP_X_CUSTOM_HEADER_TOPIC"]
+      @auth = request.headers["Authorization"]
       format.html {
-        render plain: graph_html.html_safe
+        render plain: graph_html
       }
     end
   end
@@ -23,12 +23,10 @@ class Api::V1::TopicContactsController < ApplicationController
     <head>
         <meta charset="utf-8">
         <link rel="stylesheet" href="/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/css/fontawesome.min.css">
         <link rel="stylesheet" href="/css/neo4jd3.min.css?v=0.0.1">
 
-        <script src="/js/d3.min.js"></script>
-       <script src="/js/infobar.js"></script>
-        <script src="/js/neo4jd3.js"></script>
+     
         <style>
             body,
             html,
@@ -37,12 +35,24 @@ class Api::V1::TopicContactsController < ApplicationController
                 overflow: hidden;
             }
         </style>
+         <script src="/js/d3.min.js"></script>
+        <script src="/js/infobar.js"></script>
+        <!--script src="/js/neo4jd3.js"></script-->
+        <script src="/js/neotest.js"></script>
+        <script src="/js/nativescript-webview-interface.js"></script> 
+        
     </head>
     <body>
+         <h1 id="hadder">Hello Earth</h1>
+         <h2 id="head2"></h2>
+
+
         <div id="neo4jd3"></div>
 
         <script type="text/javascript">
-            function init() {
+          window.auth = '#{@auth}';
+          window.topic = '#{@topic}';
+           window.initGraph =  function() {
                 var neo4jd3 = new Neo4jD3('#neo4jd3', {
                     minCollision: 60,
                     neo4jDataUrl: '/api/v1/topic_contacts/#{@topic}',
@@ -51,12 +61,20 @@ class Api::V1::TopicContactsController < ApplicationController
                 });
             }
 
-            window.onload = init;
+            //window.onload = init;
+
         </script>
+
+       <script src="/js/test.js"></script>
+
 
     </body>
 </html>
     BASE_TEMPLATE
   end
+
 end
+
+
+
 
