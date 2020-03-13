@@ -2,7 +2,6 @@
 var oWebViewInterface = window.nsWebViewInterface;
 
 window.changeColor = function(){
-  document.getElementById("hadder").style.color ="yellow";
  initGraph();
 }
 

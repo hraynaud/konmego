@@ -452,7 +452,7 @@ function init(_selector, _options) {
 
 
   if (options.neo4jData) {
-    loadNeo4jData(options.neo4jData);
+     loadNeo4jData(options.neo4jData);
   } else if (options.neo4jDataUrl) {
 
     loadNeo4jDataFromUrl(options.neo4jDataUrl, window.auth);
@@ -518,7 +518,6 @@ function loadNeo4jDataFromUrl(neo4jDataUrl, auth) {
   nodes = [];
   relationships = [];
 
-  document.getElementById("head2").innerText = "inside neo4j" + window.topic;
   d3.json(neo4jDataUrl, {headers:{'Authorization': auth}}).then( function(data) {
     //if (error) {
       //throw error;

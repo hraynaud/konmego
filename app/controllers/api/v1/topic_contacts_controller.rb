@@ -43,10 +43,6 @@ class Api::V1::TopicContactsController < ApplicationController
         
     </head>
     <body>
-         <h1 id="hadder">Hello Earth</h1>
-         <h2 id="head2"></h2>
-
-
         <div id="neo4jd3"></div>
 
         <script type="text/javascript">
