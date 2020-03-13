@@ -1,11 +1,6 @@
 //(function(){
 var oWebViewInterface = window.nsWebViewInterface;
 
-window.changeColor = function(){
- initGraph();
-}
-
-
 window.onload = function (){
   oWebViewInterface.emit('loaded', {"booga": "loo"});
 }
