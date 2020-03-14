@@ -1,4 +1,3 @@
-//(function(){
 var oWebViewInterface = window.nsWebViewInterface;
 
 window.onload = function (){
@@ -12,7 +11,5 @@ window.initGraph =  function() {
     neo4jJsonAuthHeader: window.auth,
     nodeRadius: 25,
   });
-
 }
-
 

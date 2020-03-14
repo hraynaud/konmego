@@ -25,8 +25,6 @@ class Api::V1::TopicContactsController < ApplicationController
         <link rel="stylesheet" href="/css/bootstrap.min.css">
         <link rel="stylesheet" href="/css/fontawesome.min.css">
         <link rel="stylesheet" href="/css/neo4jd3.min.css?v=0.0.1">
-
-     
         <style>
             body,
             html,
@@ -40,7 +38,6 @@ class Api::V1::TopicContactsController < ApplicationController
         <!--script src="/js/neo4jd3.js"></script-->
         <script src="/js/neotest.js"></script>
         <script src="/js/nativescript-webview-interface.js"></script> 
-        
     </head>
     <body>
         <div id="neo4jd3"></div>
@@ -48,17 +45,6 @@ class Api::V1::TopicContactsController < ApplicationController
         <script type="text/javascript">
           window.auth = '#{@auth}';
           window.topic = '#{@topic}';
-           window.initGraph =  function() {
-                var neo4jd3 = new Neo4jD3('#neo4jd3', {
-                    minCollision: 60,
-                    neo4jDataUrl: '/api/v1/topic_contacts/#{@topic}',
-                    neo4jJsonAuthHeader: '#{@auth}',
-                    nodeRadius: 25,
-                });
-            }
-
-            //window.onload = init;
-
         </script>
 
        <script src="/js/test.js"></script>
