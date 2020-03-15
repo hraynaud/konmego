@@ -10,7 +10,6 @@ function Neo4jD3(_selector, _options) {
       arrowSize: 4,
       colors: colors(),
       highlight: undefined,
-      //iconMap: fontAwesomeIcons(),
       icons: undefined,
       imageMap: {},
       images: undefined,
@@ -784,4 +783,3 @@ return {
 
 }
 
-//module.exports = Neo4jD3;
