@@ -44,7 +44,7 @@ class Api::V1::TopicContactsController < ApplicationController
           window.auth = '#{@auth}';
           window.topic = '#{@topic}';
         </script>
-       <script src="/js/test.js"></script>
+       <script src="/js/main.js"></script>
     </body>
 </html>
     BASE_TEMPLATE
