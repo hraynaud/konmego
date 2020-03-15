@@ -35,21 +35,16 @@ class Api::V1::TopicContactsController < ApplicationController
         </style>
          <script src="/js/d3.min.js"></script>
         <script src="/js/infobar.js"></script>
-        <!--script src="/js/neo4jd3.js"></script-->
-        <script src="/js/neotest.js"></script>
+        <script src="/js/neo4jd3.js"></script>
         <script src="/js/nativescript-webview-interface.js"></script> 
     </head>
     <body>
         <div id="neo4jd3"></div>
-
         <script type="text/javascript">
           window.auth = '#{@auth}';
           window.topic = '#{@topic}';
         </script>
-
        <script src="/js/test.js"></script>
-
-
     </body>
 </html>
     BASE_TEMPLATE

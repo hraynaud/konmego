@@ -1,11 +1,6 @@
-/* global d3, document */
-/* jshint latedef:nofunc */
 'use strict';
-//const InfoPanel = require("./infobar.js");
-//const InfoPanel = InfoPanelFactory();
 
 function Neo4jD3(_selector, _options) {
-  document.getElementById("head2").innerText = "inside neo4j" + window.topic;
 
   var container, graph, info, node, nodes, relationship, relationshipOutline, relationshipOverlay, relationshipText, relationships, selector, simulation, svg, svgNodes, svgRelationships, svgScale, svgTranslate,
     classes2colors = {},
@@ -31,7 +26,7 @@ function Neo4jD3(_selector, _options) {
     },
     VERSION = '0.0.1';
 
-var InfoPanel = InfoPanelFactory();
+  var InfoPanel = InfoPanelFactory();
 
   function appendGraph(container) {
     svg = container.append('svg')
@@ -405,10 +400,8 @@ function image(d) {
         switch (labelPropertyValue.length) {
           case 3:
             value = labelPropertyValue[2];
-            /* falls through */
           case 2:
             property = labelPropertyValue[1];
-            /* falls through */
           case 1:
             label = labelPropertyValue[0];
         }
@@ -429,11 +422,8 @@ function image(d) {
 }
 
 function init(_selector, _options) {
-
-  document.getElementById("head2").innerText = "inside neo4j" + window.topic;
-  //initIconMap();
-  /*
   merge(options, _options);
+
 
   if (options.icons) {
     options.showIcons = true;
@@ -442,10 +432,9 @@ function init(_selector, _options) {
   if (!options.minCollision) {
     options.minCollision = options.nodeRadius * 2;
   }
-  */
 
-  //initImageMap();
-    /*
+  initImageMap();
+
   selector = _selector;
 
   container = d3.select(selector);
@@ -461,15 +450,15 @@ function init(_selector, _options) {
 
   simulation = initSimulation();
 
+
   if (options.neo4jData) {
-    loadNeo4jData(options.neo4jData);
+     loadNeo4jData(options.neo4jData);
   } else if (options.neo4jDataUrl) {
 
-    loadNeo4jDataFromUrl(options.neo4jDataUrl);
+    loadNeo4jDataFromUrl(options.neo4jDataUrl, window.auth);
   } else {
     console.error('Error: both neo4jData and neo4jDataUrl are empty!');
   }
-  */
 }
 
 function initIconMap() {
@@ -792,6 +781,7 @@ return {
   updateWithNeo4jData: updateWithNeo4jData,
   version: version
 };
+
 }
 
 //module.exports = Neo4jD3;
