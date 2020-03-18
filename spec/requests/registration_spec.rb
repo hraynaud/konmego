@@ -7,7 +7,7 @@ describe "Signup and registration" do
   end
 
   it "creates  registration" do
-    expect{post "/register", params: person_params}.to change{Person.count}.by(1)
+    expect{post "/register", params: person_params}.to change{Identity.count}.by(1)
   end
 
 
@@ -28,7 +28,7 @@ describe "Signup and registration" do
 
     aggregate_failures "testing response" do
       expect_http response, :unprocessable_entity
-      expect(Person.count).to eq(1)
+      expect(Identity.count).to eq(1)
     end
   end
 
@@ -63,13 +63,13 @@ describe "Signup and registration" do
 
   def expect_error_response_and_person_not_created
     expect_http response, :unprocessable_entity
-    expect(Person.count).to eq(0)
+    expect(Identity.count).to eq(0)
   end
 
   def person_params
     {
       email: "blah@zay.com", 
-      password: "password", firstName: "Firsty", lastName:"lasty"
+      password: "password"
     }
   end
 

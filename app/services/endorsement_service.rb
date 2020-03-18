@@ -13,7 +13,6 @@ class EndorsementService
       create_from_nodes(Person.find(params[:endorser_id]), get_endorsee(params), get_topic(params))
     end
 
-
     def accept endorsement
       return endorsement.tap do |e|
         RelationshipManager.create_friendship_if_none_exists_for(e)
@@ -28,6 +27,8 @@ class EndorsementService
         endorsement.save
       end
     end
+
+
 
     private
 
@@ -89,14 +90,28 @@ class EndorsementService
       TopicCreationService.create(params[:new_topic])
     end
 
-    def new_endorsee params
-      Person.new({
-        email: params.dig(:new_person, :email),
-        first_name: params.dig(:new_person, :first),
-        last_name: params.dig(:new_person, :last),
+    def new_identity email
+      Identity.new({
+        email: email,
         password: SecureRandom.base64(15)
       })
-    end 
+    end
+
+    def new_endorsee params
+      identity = new_identity(params.dig(:new_person, :identity,:email))
+      if identity.valid?
+        create_new_person params, identity
+      end 
+    end
+
+    def create_new_person params, identity
+      Person.new({
+        first_name: params.dig(:new_person, :first),
+        last_name: params.dig(:new_person, :last),
+        identity:identity
+      })
+    end
 
   end
+
 end

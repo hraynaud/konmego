@@ -15,6 +15,7 @@
 - CONSTRAINT ON ( `neo4j::migrations::schemamigration`:`Neo4j::Migrations::SchemaMigration`
   ) ASSERT `neo4j::migrations::schemamigration`.migration_id IS UNIQUE
 - CONSTRAINT ON ( endorsement:Endorsement ) ASSERT endorsement.uuid IS UNIQUE
+- CONSTRAINT ON ( identity:Identity ) ASSERT identity.uuid IS UNIQUE
 - CONSTRAINT ON ( obstacle:Obstacle ) ASSERT obstacle.uuid IS UNIQUE
 - CONSTRAINT ON ( person:Person ) ASSERT person.uuid IS UNIQUE
 - CONSTRAINT ON ( project:Project ) ASSERT project.uuid IS UNIQUE
@@ -48,3 +49,4 @@
 - '20200224104908'
 - '20200301143307'
 - '20200301144256'
+- '20200316044509'

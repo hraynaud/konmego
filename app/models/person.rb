@@ -3,13 +3,10 @@ class Person
   include KonmegoNeo4jNode
   include ActiveModel::SecurePassword
 
-  has_secure_password
+  validates :identity, presence: true
+  validates  :first_name, :last_name, presence: true, on: :update
 
-  validates :email, uniqueness: true
-  validates :email, :first_name, :last_name, presence: true, unless: :is_oauth?
-  validates :password, :length => { :minimum => 8 }, allow_nil: true,  on: :create, unless: :is_oauth?
-  validate :email_format
-
+  has_one :out, :identity, type: :IDENTITY
   has_many :both, :contacts, model_class: :Person, type: :KNOWS, unique: true
   has_many :out, :followings, model_class: :Person, type: :FOLLOWINGS, unique: true
   has_many :in, :followers, model_class: :Person, type: :FOLLOWINGS
@@ -68,22 +65,4 @@ class Person
 
   private
 
-  def email_format
-    if email && !is_valid_email?
-      errors.add( :email, "is invalid")
-    end
-  end
-
-  def is_oauth?
-    #handle.present? && uid.present?
-    false
-  end
-
-  def using_pwd?
-    password.present? && email.present?
-  end
-
-  def is_valid_email?
-    !!(email =~ URI::MailTo::EMAIL_REGEXP)
-  end
 end

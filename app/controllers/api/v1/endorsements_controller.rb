@@ -33,7 +33,7 @@ class Api::V1::EndorsementsController < ApplicationController
   def endorsement_params
     params.permit(
       :endorseeId, :topicId,
-      newPerson: [ :first, :last, :email],
+      newPerson: [ :first, :last, identity: [:email]],
       newTopic: [:name, :description]
     )
   end

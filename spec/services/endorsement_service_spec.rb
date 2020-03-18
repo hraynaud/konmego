@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe EndorsementService do
   let(:all_preexisting){ {endorser_id: @p1.id, endorsee_id: @p2, topic_id: @topic1} }
-  let(:new_endorsee){ {new_person: {first: "Got", last: "Skillz", email: "goat@skillz.com"}} }
+  let(:new_endorsee){ {new_person: {first: "Got", last: "Skillz", identity: {email: "goat@skillz.com"}}} }
   let(:new_topic){ {new_topic: {name: "My New Topic"} } }
   let(:new_person_new_topic){ (new_endorsee.merge(new_topic)) }
 
@@ -16,6 +16,7 @@ describe EndorsementService do
     Person.delete_all
     Endorsement.delete_all
     Topic.delete_all
+    Identity.delete_all
   end
 
   describe ".create" do
@@ -51,7 +52,7 @@ describe EndorsementService do
       end
 
       it "fails with error if new person is invalid" do
-        with_new_endorsee_others_existing[:new_person][:email] = nil
+        with_new_endorsee_others_existing[:new_person][:identity][:email] = nil
 
         expect{
           EndorsementService.create(with_new_endorsee_others_existing)
