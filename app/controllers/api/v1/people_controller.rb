@@ -4,6 +4,15 @@ class Api::V1::PeopleController < ApplicationController
     render json: PersonSerializer.new(relationship_group).serialized_json
   end
 
+  def create
+
+  end
+
+  def edit
+  end
+  
+  def update
+  end
   private
 
   def relationship_group

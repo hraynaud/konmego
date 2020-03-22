@@ -9,6 +9,7 @@ class Identity
   validate :email_format
   validates :password, :length => { :minimum => 8 }, allow_nil: true,  on: :create, unless: :is_oauth?
 
+  has_one :in, :person, type: nil
   property :email, type: String
   property :password_digest, type: String
 

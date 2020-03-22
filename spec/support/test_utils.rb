@@ -8,19 +8,19 @@ module TestUtils
   end
 
   def do_put user, path, payload={}
-    put path, params: payload, headers: auth_header(user) 
+    put path, params: payload, headers: auth_header(user.identity) 
   end
 
   def do_post user, path, payload={}
-    post path, params: payload, headers: auth_header(user) 
+    post path, params: payload, headers: auth_header(user.identity) 
   end
 
   def do_get user, path
-    get path, headers: auth_header(user)
+    get path, headers: auth_header(user.identity)
   end
 
-  def auth_header user
-    {'Authorization': Authentication.jwt_for(user)}
+  def auth_header identity
+    {'Authorization': Authentication.jwt_for(identity)}
   end
 
   def i18n_attributes_error err_key, opts = {}

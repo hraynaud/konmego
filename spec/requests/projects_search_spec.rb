@@ -16,7 +16,7 @@ describe Api::V1::ProjectsController do
  describe "post api/v1/projects/:topic" do 
    it "finds friends that have direct connection to this topic" do
 
-     post "/api/v1/projects/search", params:{topic: "Cooking"}, headers:{'Authorization': Authentication.jwt_for(@herby)}
+     post "/api/v1/projects/search", params:{topic: "Cooking"}, headers:{'Authorization': Authentication.jwt_for(@herby.identity)}
 
      expect(response.status).to eq 200
      expected_project_names =  [ "Culinary", "Fine Dining", "Find chef 1" ]

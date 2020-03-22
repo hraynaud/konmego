@@ -42,7 +42,7 @@ class ApplicationController < ActionController::API
   def authenticate_request  
     begin
       uid = Authentication.uid_from_from_request_auth_hdr request.headers['Authorization']
-      @current_user = Person.find(uid)
+      @current_user = Identity.find(uid).person
     rescue => e 
       do_auth_failed e.message
     end
