@@ -22,7 +22,15 @@ USER_ID_KEY_PARAM = "uid"
   end
 
 
-  def self.jwt_for identity
+  def self.register identity
+    p = Person.new
+    identity.save 
+    p.identity = identity
+    jwt = Authentication.jwt_for p
+  end
+
+  def self.jwt_for user 
+    identity = user.identity
     JWT.encode({uid: identity.id, exp: 1.day.from_now.to_i}, Rails.application.credentials.secret_key_base)
   end
 
