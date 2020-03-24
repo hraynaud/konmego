@@ -40,3 +40,7 @@ en:
         required: "can't be blank"
         too_short: 
          :other: "is too short mininum is %{count} characters"
+      first_name: 
+        required: "can't be blank"
+      last_name: 
+        required: "can't be blank"

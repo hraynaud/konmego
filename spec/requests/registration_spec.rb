@@ -16,8 +16,7 @@ describe "Signup and registration" do
 
   it "fails on missing email" do
     post "/register", params: build_invalid_params({email:nil})
-
-    aggregate_failures "testing response" do
+    aggregate_failures "missing email" do
       expect_error_response_and_person_not_created
       expect(extract_errors).to match i18n_attributes_error('email.required')
     end
@@ -25,14 +24,20 @@ describe "Signup and registration" do
   end
 
 
-  it "fails on missing first name and last name" do
-    post "/register", params: build_invalid_params({firstName:nil, lastName: nil})
-
-    aggregate_failures "testing response" do
+  it "fails on missing first name " do
+    post "/register", params: build_invalid_params({firstName:nil, lastName: "Doe"})
+    aggregate_failures "missing first_name" do
       expect_error_response_and_person_not_created
-      expect(extract_errors).to match i18n_attributes_error('email.required')
+      expect(extract_errors).to match i18n_attributes_error('first_name.required')
     end
+  end
 
+  it "fails on missing last name" do
+    post "/register", params: build_invalid_params({firstName:nil, lastName: nil})
+    aggregate_failures "missing last_name" do
+      expect_error_response_and_person_not_created
+      expect(extract_errors).to match i18n_attributes_error('last_name.required')
+    end
   end
 
   it "fails on duplicate email" do
@@ -78,6 +83,7 @@ describe "Signup and registration" do
 
   def expect_error_response_and_person_not_created
     expect_http response, :unprocessable_entity
+    expect(Person.count).to eq(0)
     expect(Identity.count).to eq(0)
   end
 
