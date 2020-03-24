@@ -4,7 +4,7 @@ class Person
   include ActiveModel::SecurePassword
 
   validates :identity, presence: true
-  validates  :first_name, :last_name, presence: true, on: :update
+  validates  :first_name, :last_name, presence: true
 
   has_one :out, :identity, type: :IDENTITY
   has_many :both, :contacts, model_class: :Person, type: :KNOWS, unique: true
@@ -16,8 +16,6 @@ class Person
 
   property :first_name, type: String
   property :last_name, type: String
-  property :email, type: String
-  property :password_digest, type: String
   property :bio, type: String
   property :profile_image_url, type: String
   property :avatar_url, type: String

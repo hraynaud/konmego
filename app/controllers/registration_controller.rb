@@ -2,14 +2,15 @@ class RegistrationController < ApplicationController
   skip_before_action :authenticate_request
 
   def create
-    person = Person.new(mapped_params[:person])
-    person.identity = Identity.new(mapped_params[:identity])
+    @person = Person.new(mapped_params[:person])
+    @person.identity = Identity.new(mapped_params[:identity])
 
-    if person.valid?
-      jwt = Authentication.register person
+    if @person.valid? &&  @person.identity.valid?
+      jwt = Authentication.register @person
       respond_with_token jwt
     else
-      respond_with_model_error identity
+      @person.errors.merge! @person.identity.errors
+      respond_with_model_error @person
     end
   end
 
@@ -29,4 +30,5 @@ class RegistrationController < ApplicationController
       }
     }
   end
+
 end
