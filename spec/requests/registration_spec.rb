@@ -21,6 +21,17 @@ describe "Signup and registration" do
 
   end
 
+
+  it "fails on missing first name and last name" do
+    post "/register", params: build_invalid_params({firstName:nil, lastName: nil})
+
+    aggregate_failures "testing response" do
+      expect_error_response_and_person_not_created
+      expect(extract_errors).to match i18n_attributes_error('email.required')
+    end
+
+  end
+
   it "fails on duplicate email" do
     p = FactoryBot.create(:person)
 
@@ -57,6 +68,7 @@ describe "Signup and registration" do
   end
 
 
+
   def build_invalid_params err
     person_params.merge(err)
   end
@@ -69,7 +81,9 @@ describe "Signup and registration" do
   def person_params
     {
       email: "blah@zay.com", 
-      password: "password"
+      password: "password",
+      firstName: "Someone", 
+      lastName: "Special"
     }
   end
 

@@ -2,9 +2,11 @@ class RegistrationController < ApplicationController
   skip_before_action :authenticate_request
 
   def create
-    identity = Identity.new(mapped_params)
-    if identity.valid?
-      jwt = Authentication.register identity 
+    person = Person.new(mapped_params[:person])
+    person.identity = Identity.new(mapped_params[:identity])
+
+    if person.valid?
+      jwt = Authentication.register person
       respond_with_token jwt
     else
       respond_with_model_error identity
@@ -12,13 +14,19 @@ class RegistrationController < ApplicationController
   end
 
   def identity_params
-    params.permit(:email, :password, :confirmPassword) 
+    params.permit(:email, :password, :confirmPassword, :firstName, :lastName ) 
   end
 
   def mapped_params
     {
-      email: identity_params[:email], 
-      password: identity_params[:password],
+      identity: {
+        email: identity_params[:email], 
+        password: identity_params[:password],
+      },
+      person: {
+        first_name: identity_params[:firstName],
+        last_name: identity_params[:lastName]
+      }
     }
   end
 end

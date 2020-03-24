@@ -22,11 +22,9 @@ USER_ID_KEY_PARAM = "uid"
   end
 
 
-  def self.register identity
-    p = Person.new
-    identity.save 
-    p.identity = identity
-    jwt = Authentication.jwt_for p
+  def self.register person
+    person.save
+    Authentication.jwt_for person
   end
 
   def self.jwt_for user 
