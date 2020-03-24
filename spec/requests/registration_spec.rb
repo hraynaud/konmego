@@ -7,7 +7,10 @@ describe "Signup and registration" do
   end
 
   it "creates  registration" do
-    expect{post "/register", params: person_params}.to change{Identity.count}.by(1)
+    expect{
+      post "/register", params: person_params
+    }.to change{Identity.count}.by(1)
+      .and change{Person.count}.by(1)
   end
 
 
