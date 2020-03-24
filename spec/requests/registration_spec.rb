@@ -35,7 +35,7 @@ describe "Signup and registration" do
   it "fails on duplicate email" do
     p = FactoryBot.create(:person)
 
-    post "/register", params: build_invalid_params({email: p.email})
+    post "/register", params: build_invalid_params({email: p.identity.email})
 
     aggregate_failures "testing response" do
       expect_http response, :unprocessable_entity
