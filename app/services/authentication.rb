@@ -1,7 +1,8 @@
 require "ostruct"
 
 class Authentication
-USER_ID_KEY_PARAM = "uid"
+  USER_ID_KEY_PARAM = "uid"
+
   def self.login_by_password email, pwd
     identity = Identity.find_by email: email
 
@@ -19,12 +20,6 @@ USER_ID_KEY_PARAM = "uid"
     rescue JWT::DecodeError
       raise  "Invalid Authorization Token Credentials"
     end
-  end
-
-
-  def self.register person
-    person.save
-    Authentication.jwt_for person
   end
 
   def self.jwt_for user 
