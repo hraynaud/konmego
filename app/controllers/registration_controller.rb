@@ -5,13 +5,14 @@ class RegistrationController < ApplicationController
     person = Registration.register registration_params
 
     if person.errors.empty?
-      Authentication.login_by_password person.identity.email, person.identity.password
+      resp = Authentication.login_success person.identity
+      respond_with_token resp.jwt
     else
       respond_with_model_error person
     end
   end
 
   def registration_params
-    params.permit(:email, :password, :confirmPassword, :firstName, :lastName ) 
+    params.require(:registration).permit(:email, :password, :confirmPassword, :firstName, :lastName ) 
   end
 end

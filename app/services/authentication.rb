@@ -7,7 +7,7 @@ class Authentication
     identity = Identity.find_by email: email
 
     if identity && identity.authenticate(pwd)
-      OpenStruct.new({jwt: jwt_for(identity)})
+      login_success identity
     else 
       OpenStruct.new({jwt: nil, error: "Incorrect email or password"})
     end
@@ -22,9 +22,13 @@ class Authentication
     end
   end
 
-  def self.jwt_for user 
-    identity = user.identity
-    JWT.encode({uid: identity.id, exp: 1.day.from_now.to_i}, Rails.application.credentials.secret_key_base)
+  def self.login_success identity
+    OpenStruct.new({jwt: jwt_for(identity)})
+  end
+
+  def self.jwt_for identity 
+    p = identity.person
+    JWT.encode({uid: identity.id, email: identity.email, name: p.name, exp: 1.day.from_now.to_i}, Rails.application.credentials.secret_key_base)
   end
 
 
