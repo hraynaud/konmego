@@ -7,7 +7,8 @@
 
 <script>
   import * as d3 from "d3";
-  import Neo4jD3 from "../resources/js/neo4jd3.js";
+  import Neo4jd3 from "../resources/js/neo4jd3.js";
+  import InfoPanelFactory from "../resources/js/infobar.js";
 
 export default {
   props: {
