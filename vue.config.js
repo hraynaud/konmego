@@ -10,7 +10,7 @@ module.exports = {
     externals: {
       // global app config object
       config: JSON.stringify({
-        apiUrl: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : ''
+        apiUrl: process.env.NODE_ENV === 'development' ? process.env.VUE_APP_SERVER_ENDPOINT : ''
       })
     }
   }
