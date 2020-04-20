@@ -15,7 +15,7 @@ export default function Neo4jD3(_selector, _options) {
       icons: undefined,
       imageMap: {},
       images: undefined,
-      infoPanel: true,
+      infoPanel: false,
       minCollision: undefined,
       neo4jData: undefined,
       neo4jDataUrl: undefined,

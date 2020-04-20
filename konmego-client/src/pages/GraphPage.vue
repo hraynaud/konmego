@@ -10,8 +10,13 @@
       </p>
     </div>
     <div class="main">
+    <label>
+    Search: 
+    <input v-model="search">
+    </label>
       <Graph :graphData="graphData" v-if="graphData"></Graph>
     </div>
+    <button @click="loadGraphData">Go</button>
   </div>
 </template>
 
@@ -23,21 +28,21 @@ export default {
   data() {
     return {
       graphData: undefined,
+      search: undefined
     };
   },
 
   components: {
     Graph
   },
-
-  mounted() {
-    this.loadGraphData();
-  },
   methods: {
     loadGraphData() {
       apiService
-      .get("api/v1/topic_contacts/Cooking")
-      .then(response => this.graphData = response.data);
+      .get(`api/v1/topic_contacts/${this.search}`)
+      .then(response => {
+          console.log("!! search", response.data)
+          return this.graphData = response.data
+          });
     }
   }
 };

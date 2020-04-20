@@ -16,7 +16,9 @@ export default {
   },
   mounted() {
     window.d3 = d3;
-    this.initNeo4jGraph(); 
+    this.$watch('graphData', graphData => {
+        this.initNeo4jGraph()
+        }, {immediate:true})
   },
   methods: {
     initNeo4jGraph() {
