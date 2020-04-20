@@ -36,8 +36,12 @@ function InfoPanelFactory(){
     appendInfoElement(cls, false, relationship);
   }
 
+  function clearInfo() {
+    info.html('');
+  }
+
   function updateInfo(d) {
-    clearInfo();
+    //clearInfo();
 
     if (d.labels) {
       appendInfoElementClass('class', d.labels[0]);
