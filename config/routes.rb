@@ -22,11 +22,8 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :projects do 
-        collection do
-          post :search
-        end
-      end
+      post 'projects/search',  to: "project_search#index"
+
     end
   end
 
