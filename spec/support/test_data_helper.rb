@@ -22,8 +22,8 @@ module TestDataHelper
     end
 
     def create_topics
-      @cooking, @fencing, @acting, @djing, @singing, @design, @composer = %w(
-      cooking fencing acting djing singing design composer
+      @cooking, @fencing, @acting, @djing, @singing, @design, @composer, @software = %w(
+      cooking fencing acting djing singing design composer software
       ).map do |skill|
         FactoryBot.create(:topic, name: skill.titleize )
       end
@@ -85,8 +85,9 @@ DETACH DELETE n')
       @culinary_project = FactoryBot.create(:project, :valid, name: "Culinary", topic: @cooking, owner: @franky, visibility: :friends)
       @vocalist_project = FactoryBot.create(:project, :valid, name: "The Voice", topic: @singing, owner: @jean)
       @vocalist_project2 = FactoryBot.create(:project, :valid, name: "The Range",  topic: @singing, visibility: :public)
-      @songwriter_project = FactoryBot.create(:project, :valid, name: "Songwriter", topic: @fencing)
+      @fencing_project = FactoryBot.create(:project, :valid, name: "Songwriter", topic: @fencing)
       @dj_project = FactoryBot.create(:project, :valid, name: "Find dj", topic: @djing, owner: @franky, visibility: :friends)
+      @software_project = FactoryBot.create(:project, :valid, name: "Write Software", topic: @software, owner: @franky, visibility: :private)
     end
   end
 

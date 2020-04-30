@@ -1,4 +1,23 @@
 class ProjectSearchService
+  def self.search params = {}
+    scope =initial_scope params
+    visibility = params[:min_visibility]
+    topic_name = params[:topic]
+
+    if visibility.present?
+      scope = scope.where("projects.visibility >= ? ", Project.visibilities[visibility])
+    end
+
+    if topic_name.present?
+      scope = scope.topic(:t).where("t.name = ?", topic_name) #.pluck(:projects)
+    end
+
+    scope.pluck(:projects)
+  end
+
+  def self.initial_scope params
+    params[:person].present? ? current_user_scope(params[:person]) : empty_scope
+  end
 
   def self.all_by_topic topic_name
     by_topic(all_scope, topic_name).pluck(:projects)
@@ -26,9 +45,8 @@ class ProjectSearchService
 
   def self.find_all_contact_projects person, depth = 3
     person
-      .contacts(:contacts, :r, rel_length: 0..depth)
-      .projects(:projects)
-      .distinct
+      .contacts(:contacts, :r, rel_length: 0..depth).distinct
+      .projects(:projects).where("projects.visibility > ? ", Project.visibilities[:private]).distinct 
   end
 
   def self.by_topic project_scope, topic_name
@@ -50,6 +68,15 @@ class ProjectSearchService
 
   def self.friend_scope person
     person.contacts.projects.as(:projects)
+  end
+  
+  def self.current_user_scope user
+
+    user.projects.as(:projects)
+  end
+
+  def self.empty_scope
+    Project.where("false").as(:projects) # Will always return empty set
   end
 
   def self.all_scope

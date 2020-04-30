@@ -2,6 +2,7 @@ require 'set'
 require 'rails_helper'
 include TestDataHelper::Relationships
 include TestDataHelper::Projects
+include TestDataHelper::Utils
 
 describe ProjectSearchService do
   before(:all) do
@@ -11,6 +12,25 @@ describe ProjectSearchService do
 
   after(:all) do
     clear_db
+  end
+
+  describe ".search" do
+
+    it "returns no records if params empty" do
+      expect(ProjectSearchService.search({}).to_set).to eq [].to_set
+    end
+
+    it "returns project scoped by user if person param provided" do
+      expect(ProjectSearchService.search(person: @franky).to_set).to eq [@culinary_project, @dj_project, @software_project].to_set
+    end
+
+    it "returns project scoped by visibility" do
+      expect(ProjectSearchService.search(person: @franky, min_visibility: :friends).to_set).to eq [@culinary_project, @dj_project ].to_set
+    end
+
+    it "returns project scoped by topic " do
+      expect(ProjectSearchService.search(person: @franky,topic: "Software").to_set).to eq [@software_project ].to_set
+    end
   end
 
   describe "By Topic" do
@@ -60,7 +80,7 @@ describe ProjectSearchService do
     end
 
     it " find projects across friends network at custom depth" do
-      expect(ProjectSearchService.find_all_contact_projects(@vince, 5).to_set).to eq [@chef_project, @dining_project, @culinary_project, @vocalist_project, @dj_project].to_set
+      expect(ProjectSearchService.find_all_contact_projects(@vince, 5).to_set).to eq [@chef_project, @dining_project, @culinary_project, @dj_project].to_set
     end
   end
 
@@ -80,5 +100,9 @@ describe ProjectSearchService do
       pending "Method is wrong"
       expect(ProjectSearchService.find_all_contact_projects_by_topic_and_visibility(@vince, @cooking.name).to_set).to eq [@dj_project].to_set
     end
+  end
+
+  def all_projects
+    [@chef_project, @dining_project, @culinary_project, @vocalist_project, @vocalist_project2,  @songwriter_project, @dj_project]
   end
 end
