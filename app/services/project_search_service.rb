@@ -16,7 +16,11 @@ class ProjectSearchService
   end
 
   def self.initial_scope params
-    params[:person].present? ? current_user_scope(params[:person]) : empty_scope
+    if params[:person].present? 
+      params[:depth] && params[:depth] > 0 ? contacts_scope(params[:person], params[:depth]) : current_user_scope(params[:person]) 
+    else
+      empty_scope
+    end
   end
 
   def self.all_by_topic topic_name
@@ -64,6 +68,12 @@ class ProjectSearchService
     else
       project_scope.where("projects.visibility >= ? ", Project.visibilities[min_visibility])
     end
+  end
+
+  def self.contacts_scope person, depth 
+    person
+      .contacts(:contacts, :r, rel_length: 0..depth).distinct
+      .projects(:projects).where("projects.visibility > ? ", Project.visibilities[:private]).distinct 
   end
 
   def self.friend_scope person

@@ -29,8 +29,23 @@ describe ProjectSearchService do
     end
 
     it "returns project scoped by topic " do
-      expect(ProjectSearchService.search(person: @franky,topic: "Software").to_set).to eq [@software_project ].to_set
+      expect(ProjectSearchService.search(person: @elsa, topic: "Cooking").to_set).to eq [@chef_project ].to_set
     end
+
+    it "returns project scoped by topic " do
+      expect(ProjectSearchService.search(person: @franky, topic: "Software", min_visibility: :friends).to_set).to eq [ ].to_set
+    end
+
+
+     it "finds projects belonging to friends at specified depth" do
+      expect(ProjectSearchService.search(person: @vince, depth: 5).to_set).to eq  [@chef_project, @dining_project, @culinary_project, @dj_project].to_set
+     end
+
+     it "finds projects belonging to friends at default depth" do
+       expect(ProjectSearchService.search(person: @vince, depth: Person::DEFAULT_RELATIONSHIP_DEPTH).to_set).to eq  [@chef_project, @dining_project ].to_set
+     end
+
+
   end
 
   describe "By Topic" do

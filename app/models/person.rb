@@ -21,6 +21,9 @@ class Person
   property :avatar_url, type: String
   property :is_member, type: Boolean, default: false
 
+ 
+  DEFAULT_RELATIONSHIP_DEPTH = 3
+
   def name
     "#{first_name} #{last_name}"
   end
