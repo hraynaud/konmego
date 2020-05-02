@@ -22,8 +22,8 @@ module TestDataHelper
     end
 
     def create_topics
-      @cooking, @fencing, @acting, @djing, @singing, @design, @composer, @software = %w(
-      cooking fencing acting djing singing design composer software
+      @cooking, @fencing, @acting, @djing, @singing, @design, @composer, @software, @beatmaking = %w(
+      cooking fencing acting djing singing design composer software beatmaking
       ).map do |skill|
         FactoryBot.create(:topic, name: skill.titleize )
       end
@@ -49,7 +49,7 @@ module TestDataHelper
       @accepted << EndorsementService.create(to_params @fauzi, @franky, @cooking) #fauzi [KNOWS] franky
       @accepted << EndorsementService.create(to_params @tisha, @kendra, @cooking) #tisha  [KNOWS] kendra
       @accepted << EndorsementService.create(to_params @tisha, @kendra, @singing) #tisha  [KNOWS] kendra
-      @accepted << EndorsementService.create(to_params @jean, @sar, @djing) #tisha  [KNOWS] kendra
+      @accepted << EndorsementService.create(to_params @jean, @sar, @djing) 
 
       @declined << EndorsementService.create(to_params @jean, @vince, @composer)
       @pending << EndorsementService.create(to_params @elsa, @sar, @acting)
@@ -85,9 +85,12 @@ DETACH DELETE n')
       @culinary_project = FactoryBot.create(:project, :valid, name: "Culinary", topic: @cooking, owner: @franky, visibility: :friends)
       @vocalist_project = FactoryBot.create(:project, :valid, name: "The Voice", topic: @singing, owner: @jean)
       @vocalist_project2 = FactoryBot.create(:project, :valid, name: "The Range",  topic: @singing, visibility: :public)
-      @fencing_project = FactoryBot.create(:project, :valid, name: "Songwriter", topic: @fencing)
+      @fencing_project = FactoryBot.create(:project, :valid, name: "En Guarde", topic: @fencing)
       @dj_project = FactoryBot.create(:project, :valid, name: "Find dj", topic: @djing, owner: @franky, visibility: :friends)
       @software_project = FactoryBot.create(:project, :valid, name: "Write Software", topic: @software, owner: @franky, visibility: :private)
+
+      #TODO Add new in_network project
+      #@producer_project = FactoryBot.create(:project, :valid, name: "Make beats", topic: @beatmaking, owner: @fauzi, visibility: :in_network)
     end
   end
 
