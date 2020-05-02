@@ -3,14 +3,7 @@ class ProjectSearchService
 
   def self.search user, params = {}
     scope = contacts_scope(user, params[:depth] || Person::DEFAULT_NETWORK_SEARCH_DEPTH)
-
-
-    visibility = params[:min_visibility]
     topic_name = params[:topic]
-
-    if visibility.present?
-      scope = scope.where("projects.visibility >= ? ", Project.visibilities[visibility])
-    end
 
     if topic_name.present?
       scope = scope.topic(:t).where("t.name = ?", topic_name)
