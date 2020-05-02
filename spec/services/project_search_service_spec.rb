@@ -16,107 +16,19 @@ describe ProjectSearchService do
 
   describe ".search" do
 
-    it "returns no records if params empty" do
-      expect(ProjectSearchService.search({}).to_set).to eq [].to_set
-    end
-
-    it "returns project scoped by user if person param provided" do
-      expect(ProjectSearchService.search(person: @franky).to_set).to eq [@culinary_project, @dj_project, @software_project].to_set
-    end
-
-    it "returns project scoped by visibility" do
-      expect(ProjectSearchService.search(person: @franky, min_visibility: :friends).to_set).to eq [@culinary_project, @dj_project ].to_set
-    end
-
-    it "returns project scoped by topic " do
-      expect(ProjectSearchService.search(person: @elsa, topic: "Cooking").to_set).to eq [@chef_project ].to_set
-      expect(ProjectSearchService.search(person: @franky, topic: "Software", min_visibility: :friends).to_set).to eq [ ].to_set
-    end
-
     context "friend projects" do
       it "finds projects belonging to friends at specified depth" do
-        expect(ProjectSearchService.search(person: @vince, depth: 5).to_set).to eq  [@chef_project, @dining_project, @culinary_project, @dj_project].to_set
-        expect(ProjectSearchService.search(person:@sar, depth: 1)).to eq [@chef_project]
+        expect(ProjectSearchService.search(@vince, depth: 5).to_set).to eq  [@chef_project, @dining_project, @culinary_project, @dj_project].to_set
+        expect(ProjectSearchService.search(@sar, depth: 1).to_set).to eq [@chef_project].to_set
       end
 
       it "finds projects belonging to friends at default depth" do
-        expect(ProjectSearchService.search(person: @vince, depth: Person::DEFAULT_RELATIONSHIP_DEPTH).to_set).to eq  [@chef_project, @dining_project ].to_set
+        expect(ProjectSearchService.search(@vince, depth: Person::DEFAULT_RELATIONSHIP_DEPTH).to_set).to eq  [@chef_project, @dining_project ].to_set
 
       end
     end
   end
 
- # TODO Delete these test one search is method is fully working
-
-
-  describe "By Topic" do
-    let(:topic) {"Singing"}
-
-    describe ".all_by_topic" do
-      it "finds all projects by topic" do
-        expect(ProjectSearchService.all_by_topic(topic).to_set).to eq [@vocalist_project, @vocalist_project2 ].to_set
-      end
-    end
-
-    describe ".all_by_topic_and_visibility" do
-      it "doesn't find projects with default private visibility" do
-        expect(ProjectSearchService.all_by_topic_and_visibility(topic).to_set).to eq [@vocalist_project2].to_set
-      end
-
-      it "finds projects by specified visibility" do
-        expect(ProjectSearchService.all_by_topic_and_visibility(topic, :public).to_set).to eq [@vocalist_project2 ].to_set
-      end
-
-      it "does not return private projects when asked explicitly" do
-        expect(ProjectSearchService.all_by_topic_and_visibility(topic, :private).to_set).to eq [].to_set
-      end
-
-      it "finds nothing if visbility option is invalid" do
-        expect(ProjectSearchService.all_by_topic_and_visibility(topic, :blahddblah)).to eq []
-      end
-    end
-  end
-
-  describe ".find_friend_projects" do
-    it "finds projects of friends" do
-      expect(ProjectSearchService.find_friend_projects(@sar)).to eq [@chef_project]
-      #expect(ProjectSearchService.find_friend_projects(@herby).to_set).to eq [@chef_project, @dining_project].to_set
-      #expect(ProjectSearchService.find_friend_projects(@fauzi).to_set).to eq [@culinary_project, @dj_project].to_set
-      #expect(ProjectSearchService.find_friend_projects(@elsa)).to eq []
-    end
-
-    it "finds projects of friends  by topic" do
-      expect(ProjectSearchService.find_friend_projects_by_topic(@fauzi,@djing.name)).to eq [@dj_project]
-    end
-  end
-
-  describe ".find_all_contact_projects" do
-    it " find projects across friends network at default depth" do
-      expect(ProjectSearchService.find_all_contact_projects(@vince).to_set).to eq [@chef_project, @dining_project ].to_set
-    end
-
-    it " find projects across friends network at custom depth" do
-      expect(ProjectSearchService.find_all_contact_projects(@vince, 5).to_set).to eq [@chef_project, @dining_project, @culinary_project, @dj_project].to_set
-    end
-  end
-
-  describe ".find_all_contact_projects_by_topic" do
-    it " find projects across friends network at default depth" do
-      expect(ProjectSearchService.find_all_contact_projects_by_topic(@vince, @cooking.name).to_set).to eq [@chef_project, @dining_project].to_set
-    end
-
-    it " find projects across friends network at custom depth" do
-      expect(ProjectSearchService.find_all_contact_projects_by_topic(@vince, @djing.name, 5).to_set).to eq [@dj_project].to_set
-    end
-  end
-
-
-  describe ".find_all_contact_projects_by_topic_and_visibility" do
-    it " find projects across friends network at custom depth" do
-      pending "Method is wrong"
-      expect(ProjectSearchService.find_all_contact_projects_by_topic_and_visibility(@vince, @cooking.name).to_set).to eq [@dj_project].to_set
-    end
-  end
 
   def all_projects
     [@chef_project, @dining_project, @culinary_project, @vocalist_project, @vocalist_project2,  @songwriter_project, @dj_project]
