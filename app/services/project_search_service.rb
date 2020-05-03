@@ -1,36 +1,38 @@
 class ProjectSearchService
 
+  DEFAULT_PROJECT_SEARCH_DEPTH = 1
 
   def self.search user, params = {}
-    scope = contacts_scope(user, params[:depth] || Person::DEFAULT_NETWORK_SEARCH_DEPTH)
-    topic_name = params[:topic]
-
-    if topic_name.present?
-      scope = scope.topic(:t).where("t.name = ?", topic_name)
-    end
-
+    scope = initial_scope user, params
+    scope = by_topic(scope, params[:topic])
     scope.pluck(:projects)
   end
 
-  def self.contacts_scope person, depth 
+
+  def self.initial_scope user, params
+    friend = are_first_friends? user, params[:friend]
+
+    friend ? projects_for(friend) : projects_for(all_contacts(user,params[:depth] || DEFAULT_PROJECT_SEARCH_DEPTH))
+  end
+
+  def self.are_first_friends? user, friend
+    user.friends_with?(friend) ? friend : nil
+  end
+
+  def self.all_contacts person, depth 
     person
       .contacts(:contacts, :r, rel_length: 0..depth).distinct
-      .projects(:projects).where("projects.visibility > ? ", Project.visibilities[:private]).distinct 
   end
 
-  def self.friend_scope person
-    person.contacts.projects.as(:projects)
-  end
-  
-  def self.current_user_scope user
-    user.projects.as(:projects)
+  def self.projects_for scope
+    scope.projects(:projects).where("projects.visibility > ? ", Project.visibilities[:private]).distinct 
   end
 
-  def self.empty_scope
-    Project.where("false").as(:projects) # Will always return empty set
+  def self.by_topic scope, topic_name
+    if topic_name
+      scope = scope.topic.where(name: topic_name)
+    end
+    scope
   end
 
-  def self.all_scope
-    Project.all.as(:projects)
-  end
 end

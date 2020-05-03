@@ -32,7 +32,6 @@ module TestDataHelper
     def create_friendships
       RelationshipManager.befriend @herby, @tisha
       RelationshipManager.befriend @herby,  @elsa 
-      #RelationshipManager.befriend @jean, @herby
       RelationshipManager.befriend @fauzi, @herby
 
       RelationshipManager.befriend @tisha, @vince
@@ -56,9 +55,9 @@ module TestDataHelper
 
     end
 
-     def to_params(endorser, endorsee, topic)
-       {endorser_id: endorser.id, endorsee_id: endorsee.id, topic_id: topic.id} 
-     end
+    def to_params(endorser, endorsee, topic)
+      {endorser_id: endorser.id, endorsee_id: endorsee.id, topic_id: topic.id} 
+    end
 
     def set_endorsement_statuses
       @accepted.each do |e|
@@ -79,15 +78,21 @@ DETACH DELETE n')
   end
 
   module Projects
+
+    # vince -> kendra -> tisha -> Herby -> franky
+    # vince -> 
+
+
     def setup_projects
-      @chef_project = FactoryBot.create(:project, :valid, name: "Find chef 1", topic: @cooking, owner: @elsa, visibility: :friends)
+      @chef_project = FactoryBot.create(:project, :valid, name: "Find Chef", topic: @cooking, owner: @elsa, visibility: :friends)
       @dining_project = FactoryBot.create(:project, :valid, name: "Fine Dining", topic: @cooking, owner: @fauzi, visibility: :friends)
       @culinary_project = FactoryBot.create(:project, :valid, name: "Culinary", topic: @cooking, owner: @franky, visibility: :friends)
       @vocalist_project = FactoryBot.create(:project, :valid, name: "The Voice", topic: @singing, owner: @jean)
-      @vocalist_project2 = FactoryBot.create(:project, :valid, name: "The Range",  topic: @singing, visibility: :public)
+      @programming_project = FactoryBot.create(:project, :valid, name: "Build App", topic: @software, owner: @jean, visibility: :friends)
       @fencing_project = FactoryBot.create(:project, :valid, name: "En Guarde", topic: @fencing)
       @dj_project = FactoryBot.create(:project, :valid, name: "Find dj", topic: @djing, owner: @franky, visibility: :friends)
       @software_project = FactoryBot.create(:project, :valid, name: "Write Software", topic: @software, owner: @franky, visibility: :private)
+      @vocalist_project2 = FactoryBot.create(:project, :valid, name: "The Range", topic: @singing, visibility: :public)
 
       #TODO Add new in_network project
       #@producer_project = FactoryBot.create(:project, :valid, name: "Make beats", topic: @beatmaking, owner: @fauzi, visibility: :in_network)
