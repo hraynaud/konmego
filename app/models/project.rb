@@ -16,6 +16,10 @@ class Project
   validates :owner, :name, :description, presence: true
   validates :topic, presence: {message: "Projects must have a topic"}
   validates :obstacles, presence: {message: "At least one obstacle required"}, on: :update
+ 
+  def topic_name
+    topic.name
+  end
 
   def as_json options = nil
     super(root: false, except: [:neo_id, :visibility ])
