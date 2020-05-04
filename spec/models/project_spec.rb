@@ -72,5 +72,23 @@ describe Project do
     end
 
   end
+
+
+  context "filtering projects" do
+
+    pending "returns projects user" do
+      expect(Project.filter(@franky).to_set).to eq [@culinary_project, @dj_project, @software_project].to_set
+    end
+
+    pending "returns project scoped by topic " do
+      expect(Project.filter(person: @elsa, topic: "Cooking").to_set).to eq [@chef_project ].to_set
+      expect(Project.filter(person: @franky, topic: "Software", min_visibility: :friends).to_set).to eq [ ].to_set
+    end
+
+    pending "returns project scoped by visibility" do
+      expect(Project.filter(person: @franky, min_visibility: :friends).to_set).to eq [@culinary_project, @dj_project ].to_set
+    end
+
+  end
 end
 
