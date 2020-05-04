@@ -60,35 +60,42 @@ export default {
         .then(function(response) {
           vm.setFriends(response.data);
           vm.setProjects(response.data);
-          vm.setTopics(vm.projects);
         })
         .catch(function(error) {
           vm.$router.push("/error");
         });
     },
-    extractData(data, key) {
-      return data[key];
+
+    setProjects(jsonResponse) {
+      this.projects = this.setSortedData(jsonResponse, "projects", "name");
+      this.setProjectTopics(this.projects);
     },
-    setTopics(projects) {
-      //let projects = this.extractData(payload, "projects");
+
+    setFriends(jsonResponse) {
+      this.friends = this.setSortedData(jsonResponse, "friends", "firstName");
+    },
+
+    setProjectTopics(projects) {
       let topics = new Set();
-      debugger;
       projects.forEach(project => {
         topics.add(project.attributes.topicName);
       });
       this.topics = Array.from(topics);
     },
 
-    setProjects(payload) {
-      let projects = this.extractData(payload, "projects");
-      this.projects = projects.data.sort(function(a, b) {
-        return a.attributes.name > b.attributes.name ? 1 : -1;
-      });
+    setSortedData(jsonResponse, collectionName, sortField) {
+      return this.sortData(
+        this.extractJsonData(jsonResponse, collectionName).data,
+        sortField
+      );
     },
-    setFriends(payload) {
-      let friends = this.extractData(payload, "friends");
-      this.friends = friends.data.sort(function(a, b) {
-        return a.attributes.firstName > b.attributes.firstName ? 1 : -1;
+
+    extractJsonData(data, key) {
+      return data[key];
+    },
+    sortData(collection, key) {
+      return collection.sort(function(a, b) {
+        return a.attributes[key] > b.attributes[key] ? 1 : -1;
       });
     }
   },
