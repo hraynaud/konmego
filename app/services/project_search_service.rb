@@ -20,8 +20,7 @@ class ProjectSearchService
   end
 
   def self.all_contacts person, depth 
-    person
-      .contacts(:contacts, :r, rel_length: 0..depth).distinct
+    person.contacts(:contacts, :r, rel_length: 0..depth).distinct
   end
 
   def self.projects_for scope
