@@ -13,13 +13,20 @@
       <form @submit="onSubmit">
         <h2>Filter By:</h2>
         <label for="person">Friend</label>
-        <!--input type="text" v-model="friend" name="friend" class="form-control" /-->
         <select v-model="friend">
-          <option v-for="friend in friends" :key="friend.id" value>{{friend.attributes.firstName}}</option>
+          <option
+            v-for="friend in friends"
+            :key="friend.id"
+            :value="friend.id"
+          >{{friend.attributes.firstName}}</option>
         </select>
         <label for="topic">Topic</label>
         <select v-model="topic">
-          <option v-for="topic in topics" :key="topic">{{topic}}</option>
+          <option
+            v-for="topic in topics"
+            :key="topic.id"
+            :value="topic.id"
+          >{{topic.attributes.name}}</option>
         </select>
         <button class="btn btn-primary">Go</button>
       </form>
@@ -50,7 +57,6 @@ export default {
   methods: {
     onSubmit(e) {
       this.submitted = true;
-      const { friend, topic } = this;
       this.loadProjects();
     },
     loadProjects(vm) {
@@ -60,6 +66,7 @@ export default {
         .then(function(response) {
           vm.setFriends(response.data);
           vm.setProjects(response.data);
+          vm.setTopics(response.data);
         })
         .catch(function(error) {
           vm.$router.push("/error");
@@ -68,19 +75,14 @@ export default {
 
     setProjects(jsonResponse) {
       this.projects = this.setSortedData(jsonResponse, "projects", "name");
-      this.setProjectTopics(this.projects);
     },
 
     setFriends(jsonResponse) {
       this.friends = this.setSortedData(jsonResponse, "friends", "firstName");
     },
 
-    setProjectTopics(projects) {
-      let topics = new Set();
-      projects.forEach(project => {
-        topics.add(project.attributes.topicName);
-      });
-      this.topics = Array.from(topics);
+    setTopics(jsonResponse) {
+      this.topics = this.setSortedData(jsonResponse, "topics", "name");
     },
 
     setSortedData(jsonResponse, collectionName, sortField) {

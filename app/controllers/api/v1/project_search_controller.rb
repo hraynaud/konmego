@@ -12,8 +12,9 @@ class Api::V1::ProjectSearchController < ApplicationController
 
   def payload
     {
-      projects: ProjectSerializer.new(ProjectSearchService.search(current_user, resolved_params)),
-      friends: PersonSerializer.new(friends)
+      projects: ProjectSerializer.new(projects),
+      friends: PersonSerializer.new(friends),
+      topics: TopicSerializer.new(projects.map(&:topic).uniq)
     }
   end
 
@@ -27,6 +28,10 @@ class Api::V1::ProjectSearchController < ApplicationController
 
   def get_friend
     filter_params[:friend] ? Person.find(filter_params[:friend]) : nil
+  end
+
+  def projects
+    ProjectSearchService.search(current_user, resolved_params)
   end
 
   def filter_params
