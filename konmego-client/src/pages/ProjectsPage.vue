@@ -10,7 +10,7 @@
       </p>
     </div>
     <div class="main">
-      <form @submit="onSubmit">
+      <form @submit.prevent="onSubmit">
         <h2>Filter By:</h2>
         <label for="person">Friend</label>
         <select v-model="friend">
@@ -40,6 +40,7 @@
 
 <script>
 import { apiService } from "../_services";
+import { jsonResponseHandler } from "../_services";
 export default {
   data() {
     return {
@@ -50,60 +51,55 @@ export default {
       projects: []
     };
   },
-  mounted() {
-    //alert(this.projects.size);
-  },
 
   methods: {
     onSubmit(e) {
       this.submitted = true;
-      this.loadProjects();
-    },
-    loadProjects(vm) {
-      const { friend, topic } = this;
-      apiService
-        .post("api/v1/projects/search", { friend, topic })
-        .then(function(response) {
-          vm.setFriends(response.data);
-          vm.setProjects(response.data);
-          vm.setTopics(response.data);
-        })
+      this.loadProjects()
+        .then(response => this.setData(response))
         .catch(function(error) {
-          vm.$router.push("/error");
+          console.log(error);
         });
+    },
+    loadProjects() {
+      const { friend, topic } = this;
+      return apiService.post("api/v1/projects/search", { friend, topic });
+    },
+
+    setData(response) {
+      this.setFriends(response.data);
+      this.setProjects(response.data);
+      this.setTopics(response.data);
     },
 
     setProjects(jsonResponse) {
-      this.projects = this.setSortedData(jsonResponse, "projects", "name");
+      this.projects = this.getSortedData(jsonResponse, "projects", "name");
     },
 
     setFriends(jsonResponse) {
-      this.friends = this.setSortedData(jsonResponse, "friends", "firstName");
+      this.friends = this.getSortedData(jsonResponse, "friends", "firstName");
     },
 
     setTopics(jsonResponse) {
-      this.topics = this.setSortedData(jsonResponse, "topics", "name");
+      this.topics = this.getSortedData(jsonResponse, "topics", "name");
     },
-
-    setSortedData(jsonResponse, collectionName, sortField) {
-      return this.sortData(
-        this.extractJsonData(jsonResponse, collectionName).data,
-        sortField
-      );
-    },
-
-    extractJsonData(data, key) {
-      return data[key];
-    },
-    sortData(collection, key) {
-      return collection.sort(function(a, b) {
-        return a.attributes[key] > b.attributes[key] ? 1 : -1;
-      });
+    getSortedData(jsonResponse, data, key) {
+      return jsonResponseHandler.setSortedData(jsonResponse, data, key);
     }
   },
 
   beforeRouteEnter: function(to, from, next) {
-    next(vm => vm.loadProjects(vm));
+    next(vm =>
+      vm
+        .loadProjects()
+        .then(function(response) {
+          vm.setData(response);
+        })
+        .catch(function(error) {
+          console.log(error);
+          vm.$router.push("/error");
+        })
+    );
   }
 };
 </script>
