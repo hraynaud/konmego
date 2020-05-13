@@ -11,7 +11,6 @@ class ProjectSearchService
 
   def self.initial_scope user, params
     friend = are_first_friends? user, params[:friend]
-
     friend ? projects_for(friend) : projects_for(all_contacts(user,params[:depth] || DEFAULT_PROJECT_SEARCH_DEPTH))
   end
 
@@ -27,9 +26,9 @@ class ProjectSearchService
     scope.projects(:projects).where("projects.visibility > ? ", Project.visibilities[:private]).distinct 
   end
 
-  def self.by_topic scope, topic_name
-    if topic_name
-      scope = scope.topic.where(name: topic_name)
+  def self.by_topic scope, topic_id
+    if topic_id
+      scope = scope.topic.where(id: topic_id)
     end
     scope
   end
