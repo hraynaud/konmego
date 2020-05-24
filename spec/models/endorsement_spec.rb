@@ -1,7 +1,9 @@
 require 'rails_helper'
+include TestDataHelper::Utils
 
 describe Endorsement do
   before do 
+    clear_db
     @topic1 = FactoryBot.create(:topic)
     @topic2 = FactoryBot.create(:topic)
     @endorsement = FactoryBot.create(:endorsement, topic: @topic1)
@@ -11,9 +13,6 @@ describe Endorsement do
   end
 
   after do
-   Topic.delete_all
-   Endorsement.delete_all
-   Person.delete_all
   end
 
   it "is invalid when new" do

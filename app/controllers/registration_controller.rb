@@ -13,6 +13,6 @@ class RegistrationController < ApplicationController
   end
 
   def registration_params
-    params.require(:registration).permit(:email, :password, :confirmPassword, :firstName, :lastName ) 
+    params.permit(:email, :password, :confirmPassword, :firstName, :lastName ) 
   end
 end

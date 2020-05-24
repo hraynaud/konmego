@@ -13,13 +13,13 @@ describe TopicSearchService do
     clear_db
   end
 
-  describe ".get_graph_elements" do
+  pending ".get_graph_elements" do
 
     it "finds subgraph from person by topic" do
       results = TopicSearchService.paths_to_resource @herby, "Cooking"
       expect_result_data_to_match_expected( results, [
-        [@herby,  @tisha],
-        [@herby, @fauzi]
+        [@herby,  @franky],
+        [@herby, @fauzi, @franky]
       ])
     end
 
@@ -74,8 +74,9 @@ describe TopicSearchService do
 
 end
 
-def expect_result_data_to_match_expected query_data, expected
-  expect(query_data.to_set).to match_array expected.to_set
+def expect_result_data_to_match_expected results, expected
+  resolved = results.map{|path|path.map(&:name)}
+  expect(results.to_set).to match_array expected.to_set
 end
 
 

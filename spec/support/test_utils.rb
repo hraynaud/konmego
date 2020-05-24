@@ -20,7 +20,7 @@ module TestUtils
   end
 
   def auth_header user 
-    {'Authorization': Authentication.jwt_for(user)}
+    {'Authorization': Authentication.jwt_for(user.identity)}
   end
 
   def i18n_attributes_error err_key, opts = {}

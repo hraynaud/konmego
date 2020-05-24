@@ -1,7 +1,7 @@
 class Api::V1::ProjectSearchController < ApplicationController
 
   def index
-    render json: payload
+    render json: projects_and_topics
   end
 
   private
@@ -10,12 +10,29 @@ class Api::V1::ProjectSearchController < ApplicationController
     current_user.contacts
   end
 
-  def payload
+  def projects_and_topics
+    if params[:friend].blank? && params[:topic].blank?
+      found_projects.merge(friends_and_topics)
+    else
+      found_projects
+    end
+  end
+
+  def found_projects
     {
-      projects: ProjectSerializer.new(projects),
+      projects: ProjectSerializer.new(projects)
+    }
+  end
+
+  def friends_and_topics
+    {
       friends: PersonSerializer.new(friends),
       topics: TopicSerializer.new(projects.map(&:topic).uniq)
     }
+  end
+
+  def projects
+    ProjectSearchService.search(current_user, resolved_params)
   end
 
   def resolved_params
@@ -30,11 +47,9 @@ class Api::V1::ProjectSearchController < ApplicationController
     filter_params[:friend] ? Person.find(filter_params[:friend]) : nil
   end
 
-  def projects
-    ProjectSearchService.search(current_user, resolved_params)
-  end
 
   def filter_params
     params.permit(:topic, :friend ) 
   end
+
 end

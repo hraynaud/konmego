@@ -32,7 +32,9 @@ module TestDataHelper
     def create_friendships
       RelationshipManager.befriend @herby, @tisha
       RelationshipManager.befriend @herby,  @elsa 
-      RelationshipManager.befriend @fauzi, @herby
+      RelationshipManager.befriend @herby, @fauzi
+      RelationshipManager.befriend @herby,  @jean 
+      RelationshipManager.befriend @herby,  @franky 
 
       RelationshipManager.befriend @tisha, @vince
       RelationshipManager.befriend @kendra, @vince
@@ -46,9 +48,12 @@ module TestDataHelper
       @declined = []
 
       @accepted << EndorsementService.create(to_params @fauzi, @franky, @cooking) #fauzi [KNOWS] franky
-      @accepted << EndorsementService.create(to_params @tisha, @kendra, @cooking) #tisha  [KNOWS] kendra
+      @accepted << EndorsementService.create(to_params @tisha, @kendra, @composer) #tisha  [KNOWS] kendra
       @accepted << EndorsementService.create(to_params @tisha, @kendra, @singing) #tisha  [KNOWS] kendra
       @accepted << EndorsementService.create(to_params @jean, @sar, @djing) 
+    
+     # DECLINED OR PENDING
+     # -----------------------
 
       @declined << EndorsementService.create(to_params @jean, @vince, @composer)
       @pending << EndorsementService.create(to_params @elsa, @sar, @acting)
@@ -79,19 +84,28 @@ DETACH DELETE n')
 
   module Projects
 
-    # vince -> kendra -> tisha -> Herby -> franky
-    # vince -> 
-
 
     def setup_projects
+      # elsa
       @chef_project = FactoryBot.create(:project, :valid, name: "Find Chef", topic: @cooking, owner: @elsa, visibility: :friends)
+      
+      # fauzi
       @dining_project = FactoryBot.create(:project, :valid, name: "Fine Dining", topic: @cooking, owner: @fauzi, visibility: :friends)
-      @culinary_project = FactoryBot.create(:project, :valid, name: "Culinary", topic: @cooking, owner: @franky, visibility: :friends)
-      @vocalist_project = FactoryBot.create(:project, :valid, name: "The Voice", topic: @singing, owner: @jean)
-      @programming_project = FactoryBot.create(:project, :valid, name: "Build App", topic: @software, owner: @jean, visibility: :friends)
-      @fencing_project = FactoryBot.create(:project, :valid, name: "En Guarde", topic: @fencing)
+
+      #franky
       @dj_project = FactoryBot.create(:project, :valid, name: "Find dj", topic: @djing, owner: @franky, visibility: :friends)
+      @culinary_project = FactoryBot.create(:project, :valid, name: "Culinary", topic: @cooking, owner: @franky, visibility: :friends)
       @software_project = FactoryBot.create(:project, :valid, name: "Write Software", topic: @software, owner: @franky, visibility: :private)
+
+      # jean
+      @app_project = FactoryBot.create(:project, :valid, name: "Build App", topic: @software, owner: @jean, visibility: :friends)
+      @vocalist_project = FactoryBot.create(:project, :valid, name: "The Voice", topic: @singing, owner: @jean) #private
+
+      # sar
+      @acting_project = FactoryBot.create(:project, :valid, name: "Take a bow", topic: @acting, owner: @sar, visibility: :friends)
+
+      # NO OWNERS
+      @fencing_project = FactoryBot.create(:project, :valid, name: "En Guarde", topic: @fencing)
       @vocalist_project2 = FactoryBot.create(:project, :valid, name: "The Range", topic: @singing, visibility: :public)
 
       #TODO Add new in_network project
@@ -128,6 +142,44 @@ DETACH DELETE n')
       }
     end
   end 
+
+
+#
+  # vince    --> tisha --> kendra
+  #                    \
+  #                      herby  --> franky 
+  #                           : --> fauzi
+  #                           : --> elsa
+  #                                      \__ --> sar
+  #                                      /
+  #                           : --> jean
+  #
+  #
+  # tisha --> herby  : --> franky
+  #                  : --> fauzi
+  #                  : --> elsa
+  #                  : --> jean
+  #
+  #
+  #
+  #
+  # herby -->  : --> franky 
+  #            : --> fauzi
+  #            : --> elsa  ---\
+  #                            --> sar
+  #            : --> jean  ---/     /
+  #                           \ --> vince
+  #            : --> tisha ---/
+  #
+  #            : --> tisha  --> Kendra
+  #            :
+  #
+  #
+  #
+  #
+  #
+  #
+  #
 
 
 end
