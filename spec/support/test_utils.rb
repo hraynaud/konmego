@@ -27,7 +27,6 @@ module TestUtils
     /#{I18n.t("errors.attributes.#{err_key}", opts)}/
   end
 
-
   #method to map random simple to actually enums on model returns nil if key not in enum_options 
   def match_enum_key_from_options enum_options, key
     enum_options.key(enum_options[key])

@@ -19,7 +19,8 @@ describe Api::V1::ProjectsController do
      post "/api/v1/projects/search", params:{topic: @cooking.id}, headers:{'Authorization': Authentication.jwt_for(@herby.identity)}
 
      expect(response.status).to eq 200
-     expected_project_names =  [ "Culinary", "Fine Dining", "Find Chef" ].to_set
+
+     expected_project_names =  [ "Culinary"].to_set
      results = extract_project_names(JSON.parse(response.body))
 
      expect(expected_project_names).to eq(results.to_set)

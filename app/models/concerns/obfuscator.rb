@@ -30,7 +30,7 @@ class Obfuscator
   class ObfuscatedPerson
     delegate_missing_to :@person
 
-     HIDDEN = "hidden"
+     HIDDEN = "Hidden"
 
      def initialize person
       @person  = person
@@ -45,7 +45,7 @@ class Obfuscator
      end
 
      def name
-       HIDDEN
+       "#{first_name} #{last_name}"
      end
 
      def email

@@ -14,11 +14,13 @@ module TestDataHelper
     end
 
     def create_users
-      @herby, @tisha, @franky, @fauzi, @kendra, @sar, @elsa, @vince, @jean = %w(
-      herby tisha franky fauzi kendra sar elsa vince jean
+      @herby, @tisha, @franky, @fauzi, @kendra, @sar, @elsa, @vince, @jean, @nuno, @gilbert= %w(
+      herby tisha franky fauzi kendra sar elsa vince jean nuno gilbert
       ).map do |fname|
         FactoryBot.create(:person, first_name: fname.titleize, last_name: "Skillz")
       end
+
+      @hidden = FactoryBot.build(:person,first_name: "Hidden", last_name: "Hidden")
     end
 
     def create_topics
@@ -31,15 +33,19 @@ module TestDataHelper
 
     def create_friendships
       RelationshipManager.befriend @herby, @tisha
-      RelationshipManager.befriend @herby,  @elsa 
-      RelationshipManager.befriend @herby, @fauzi
-      RelationshipManager.befriend @herby,  @jean 
+      #RelationshipManager.befriend @herby,  @elsa 
+      #RelationshipManager.befriend @herby, @fauzi
+      #RelationshipManager.befriend @herby,  @jean 
       RelationshipManager.befriend @herby,  @franky 
+      RelationshipManager.befriend @franky,  @sar
 
-      RelationshipManager.befriend @tisha, @vince
+
+      #RelationshipManager.befriend @tisha, @vince
       RelationshipManager.befriend @kendra, @vince
 
       RelationshipManager.befriend @sar, @elsa
+      RelationshipManager.befriend @gilbert, @nuno
+      RelationshipManager.befriend @gilbert, @jean
     end
 
     def create_endorsements
@@ -48,10 +54,12 @@ module TestDataHelper
       @declined = []
 
       @accepted << EndorsementService.create(to_params @fauzi, @franky, @cooking) #fauzi [KNOWS] franky
-      @accepted << EndorsementService.create(to_params @tisha, @kendra, @composer) #tisha  [KNOWS] kendra
+      @accepted << EndorsementService.create(to_params @tisha, @vince, @composer) #tisha  [KNOWS] kendra
       @accepted << EndorsementService.create(to_params @tisha, @kendra, @singing) #tisha  [KNOWS] kendra
       @accepted << EndorsementService.create(to_params @jean, @sar, @djing) 
-    
+
+      @accepted << EndorsementService.create(to_params @nuno, @sar, @djing) 
+
      # DECLINED OR PENDING
      # -----------------------
 
@@ -73,6 +81,18 @@ module TestDataHelper
         EndorsementService.decline(e)
       end
     end
+
+    def extract_names items
+      items.map(&:name).to_set
+    end
+
+    def empty_set
+      [].to_set
+    end
+    
+    def hidden_resource
+    end
+
   end
 
   module Utils
@@ -87,26 +107,26 @@ DETACH DELETE n')
 
     def setup_projects
       # elsa
-      @chef_project = FactoryBot.create(:project, :valid, name: "Find Chef", topic: @cooking, owner: @elsa, visibility: :friends)
+      @chef_project = FactoryBot.create(:project, :valid, name: "Chef", topic: @cooking, owner: @elsa, visibility: :friends)
       
       # fauzi
-      @dining_project = FactoryBot.create(:project, :valid, name: "Fine Dining", topic: @cooking, owner: @fauzi, visibility: :friends)
+      @dining_project = FactoryBot.create(:project, :valid, name: "Dining", topic: @cooking, owner: @fauzi, visibility: :friends)
 
       #franky
-      @dj_project = FactoryBot.create(:project, :valid, name: "Find dj", topic: @djing, owner: @franky, visibility: :friends)
+      @dj_project = FactoryBot.create(:project, :valid, name: "DJ", topic: @djing, owner: @franky, visibility: :friends)
       @culinary_project = FactoryBot.create(:project, :valid, name: "Culinary", topic: @cooking, owner: @franky, visibility: :friends)
-      @software_project = FactoryBot.create(:project, :valid, name: "Write Software", topic: @software, owner: @franky, visibility: :private)
+      @software_project = FactoryBot.create(:project, :valid, name: "Software", topic: @software, owner: @franky, visibility: :private)
 
       # jean
-      @app_project = FactoryBot.create(:project, :valid, name: "Build App", topic: @software, owner: @jean, visibility: :friends)
-      @vocalist_project = FactoryBot.create(:project, :valid, name: "The Voice", topic: @singing, owner: @jean) #private
+      @app_project = FactoryBot.create(:project, :valid, name: "App", topic: @software, owner: @jean, visibility: :friends)
+      @vocalist_project = FactoryBot.create(:project, :valid, name: "Vocalist", topic: @singing, owner: @jean) #private
 
       # sar
-      @acting_project = FactoryBot.create(:project, :valid, name: "Take a bow", topic: @acting, owner: @sar, visibility: :friends)
+      @acting_project = FactoryBot.create(:project, :valid, name: "Acting", topic: @acting, owner: @sar, visibility: :friends)
 
       # NO OWNERS
-      @fencing_project = FactoryBot.create(:project, :valid, name: "En Guarde", topic: @fencing)
-      @vocalist_project2 = FactoryBot.create(:project, :valid, name: "The Range", topic: @singing, visibility: :public)
+      @fencing_project = FactoryBot.create(:project, :valid, name: "Fencing", topic: @fencing)
+      @vocalist2_project = FactoryBot.create(:project, :valid, name: "Vocalist 2", topic: @singing, visibility: :public)
 
       #TODO Add new in_network project
       #@producer_project = FactoryBot.create(:project, :valid, name: "Make beats", topic: @beatmaking, owner: @fauzi, visibility: :in_network)
@@ -156,7 +176,6 @@ DETACH DELETE n')
   #
   #
   # tisha --> herby  : --> franky
-  #                  : --> fauzi
   #                  : --> elsa
   #                  : --> jean
   #

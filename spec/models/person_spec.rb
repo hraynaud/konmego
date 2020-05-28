@@ -12,13 +12,13 @@ describe Person do
 
   describe ".contacts" do 
     it "finds all friends of given user" do
-      expect(@tisha.contacts.to_set).to eq [@kendra,@herby,@vince].to_set
+      expect(extract_names(@tisha.contacts)).to eq extract_names([@kendra,@herby,@vince])
     end
   end
 
   describe ".endorsees" do 
-    it "finds all friends of given user" do
-      expect(@tisha.endorsees.to_set).to eq [@kendra].to_set
+    it "finds all endorsees of given user" do
+      expect(extract_names(@tisha.endorsees)).to eq extract_names([@kendra, @vince])
     end
   end
 end

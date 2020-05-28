@@ -19,10 +19,8 @@ describe ProjectSearchService do
     context "friend projects" do
       it "finds projects belonging to contacts at specified depth" do
 
-        expected_projects = [@chef_project, @dining_project, @dj_project, @culinary_project, @app_project].map(&:name).to_set
-
+        expected_projects = project_names([@dj_project, @culinary_project])
         expect( project_names(search_by(@tisha, depth: 2))).to eq  expected_projects
-
         expect(project_names(search_by(@vince, depth: 2))).to eq empty_set
         expect(project_names(search_by(@vince, depth: 3))).to eq  expected_projects 
 
@@ -33,27 +31,29 @@ describe ProjectSearchService do
       end
 
       it "ignores private projects" do
-        expect(project_names(search_by(@sar))).to eq project_names([@chef_project, @app_project, @acting_project])
+        expect(project_names(search_by(@sar))).to eq project_names([@chef_project, @acting_project, @dj_project, @culinary_project, @app_project])
       end
     end
 
     context "by topic" do
       it "finds projects by topic" do
-        expect(project_names(search_by(@herby, { topic: @cooking.id}))).to eq project_names([@chef_project, @dining_project, @culinary_project])
+        expect(project_names(search_by(@herby, { topic: @cooking.id}))).to eq project_names([@culinary_project])
       end
 
       it "finds projects by depth and topic" do
-        expect(project_names(search_by(@herby, {depth: 2, topic: @cooking.id}))).to eq project_names([ @chef_project,@dining_project, @culinary_project ])
+        expect(project_names(search_by(@herby, {depth: 2, topic: @cooking.id}))).to eq project_names([@dining_project, @culinary_project ])
+        expect(project_names(search_by(@herby, {depth: 3, topic: @cooking.id}))).to eq project_names([@chef_project, @dining_project, @culinary_project ])
       end
+
     end
 
     context "by friend" do
       it "finds projects by friend" do
-        expect(project_names(search_by(@herby, {friend: @jean}))).to eq project_names([ @app_project])
+        expect(project_names(search_by(@sar, {friend: @jean}))).to eq project_names([ @app_project])
       end
 
       it "finds projects by friend and topic" do
-        expect(project_names(search_by(@herby, {friend: @elsa, topic: @cooking.id}))).to eq project_names([ @chef_project])
+        expect(project_names(search_by(@herby, {friend: @franky, topic: @cooking.id}))).to eq project_names([ @culinary_project])
       end
 
       it "returns nothing if user and friend are not directly connected" do
