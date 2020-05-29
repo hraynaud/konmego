@@ -16,7 +16,7 @@ class TopicSearchService
         .with(:u)
         .match(match_query(hops))
         .params(topic_name: topic)
-        .return('relationships(p) as r_knows', 'nodes(p) as full_path', :r_src, :r_topic, :t, :e, :contact, :endorsee)
+        .return('relationships(p) as r_knows', 'nodes(p) as full_path', :r_src, :r_topic, :t, :e, :endorser, :endorsee)
     end
     private
 
@@ -44,8 +44,8 @@ class TopicSearchService
     #
     def match_query hops
       <<-CYPHER
- p = (u)-[:`KNOWS`*0..#{hops}]-(contact:`Person`) WITH *
- MATCH (contact)<-[r_src:`ENDORSEMENT_SOURCE`]-(e:`Endorsement`) WHERE (e.status = 1)
+ p = (u)-[:`KNOWS`*0..#{hops}]-(endorser:`Person`) WITH *
+ MATCH (endorser)<-[r_src:`ENDORSEMENT_SOURCE`]-(e:`Endorsement`) WHERE (e.status = 1)
  MATCH (e)-[r_target:`ENDORSEMENT_TARGET`]->(endorsee:`Person`) 
  MATCH (e)-[r_topic:`ENDORSE_TOPIC`]->(t:`Topic`) WHERE (t.name = {topic_name})
       CYPHER
