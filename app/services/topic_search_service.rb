@@ -16,7 +16,7 @@ class TopicSearchService
         .with(:u)
         .match(match_query(hops))
         .params(topic_name: topic)
-        .return('relationships(p) as r_knows', 'nodes(p) as full_path', :r_src, :r_topic, :t, :e, :contact)
+        .return('relationships(p) as r_knows', 'nodes(p) as full_path', :r_src, :r_topic, :t, :e, :contact, :endorsee)
     end
     private
 
