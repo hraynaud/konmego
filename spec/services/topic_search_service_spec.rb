@@ -56,6 +56,31 @@ describe TopicSearchService do
       end
 
 
+
+    end
+
+
+
+    context "endorser is NOT part of continous friend chain from root node" do
+
+      it "finds path if depth param exceeds actual distance to endorser node by at least 1" do
+        #------------------------------------------------------------------------------
+        #elsa -- KNOWS --> sar <-- ENORSED_BY -- (jean:hidden) (elsa !KOWS jean)
+        #elsa -- KNOWS --> sar <-- ENORSED_BY -- (nuno:hidden) (elsa !KOWS nuno)
+        #elsa -- KNOWS --> sar -> ENORSES(djing) --> (jerry:hidden) 
+
+        #------------------------------------------------------------------------------
+        results = TopicSearchService.paths_to_resource @elsa, "Djing", 2
+        expect_result_data_to_match_expected( results, [[@elsa, @sar],[@elsa, @sar, @hidden]])
+
+        #------------------------------------------------------------------------------
+        # tish --> KNOWS --> herby --> KNOWS --> franky <-- ENORSED_BY -- (fauzi:hidden) (herby !KOWS fauzi)
+        #  ( A--> KNOWS -->B --> KNOWS C --> KNOWS & IS ENORSED_BY --> D)
+        #------------------------------------------------------------------------------
+        results = TopicSearchService.paths_to_resource @tisha, "Cooking", 3
+        expect_result_data_to_match_expected( results, [[@tisha, @herby,  @hidden, @hidden]])
+      end
+
       context "multiple paths to endorsee" do
 
         it "doesn't include routes exceeding max distance" do
@@ -76,74 +101,28 @@ describe TopicSearchService do
 
     end
 
-
-
-    context "endorser is NOT part of continous friend chain from root node" do
-
-      it "finds path if depth param exceeds actual distance to endorser node by at least 1" do
-        #------------------------------------------------------------------------------
-        #elsa -- KNOWS --> sar <-- ENORSED_BY -- (jean:hidden) (sar !KOWS jean)
-        # ( A--> KNOWS -->B KNOWS & IS ENORSED_BY --> C)
-        #------------------------------------------------------------------------------
-        results = TopicSearchService.paths_to_resource @elsa, "Djing", 2
-        expect_result_data_to_match_expected( results, [[@elsa, @sar, @hidden]])
-
-        #------------------------------------------------------------------------------
-        # tish --> KNOWS --> herby --> KNOWS --> franky <-- ENORSED_BY -- (fauzi:hidden) (herby !KOWS fauzi)
-        #  ( A--> KNOWS -->B --> KNOWS C --> KNOWS & IS ENORSED_BY --> D)
-        #------------------------------------------------------------------------------
-        results = TopicSearchService.paths_to_resource @tisha, "Cooking", 3
-        expect_result_data_to_match_expected( results, [[@tisha, @herby,  @hidden, @hidden]])
-      end
-
-
-
-      it "finds path if depth param is exact distance to closest endorser node " do
-        pending "depth should be distance to friend closest to topic"
-
-        # In order to get the expected results we have to pass depth value large
-        # enough to encompass the distance to endorser when the endorser is 
-        # not in friend chain between the root node and the endorsee
-
-        #------------------------------------------------------------------------------
-        #elsa -- KNOWS --> sar <-- ENORSED_BY -- (jean:hidden) (sar !KOWS jean)
-        # ( A--> KNOWS -->B KNOWS & IS ENORSED_BY --> C)
-        #------------------------------------------------------------------------------
-        results = TopicSearchService.paths_to_resource @elsa, "Djing", 1
-        expect_result_data_to_match_expected( results, [[@elsa, @sar ]])
-
-        #------------------------------------------------------------------------------
-        # tish --> KNOWS --> herby --> KNOWS --> franky <-- ENORSED_BY -- (fauzi:hidden) (herby !KOWS fauzi)
-        #  ( A--> KNOWS -->B --> KNOWS C --> KNOWS & IS_ENDORSED_BY --> D)
-        #------------------------------------------------------------------------------
-        results = TopicSearchService.paths_to_resource @tisha, "Cooking", 2
-        expect_result_data_to_match_expected( results, [[@tisha, @herby,  @hidden]])
-
-      end
-    end
-
     context "mixed direct and indirect path to endorser" do
       it "does a mixed thing" do
         #------------------------------------------------------------------------------
-        # nuno --> ENDORSES shr(:djing) 
+        # nuno --> ENDORSES sar(:djing) 
         # nuno --> KONWS --> gilbert --> KNOWS --> jean(:hidden) -->ENDORSES sar(:djing) 
         # numo --> KNOWS --> sar <-- KNOWS & IS_ENDORSED_BY(:djing) -- jean(:hidden)
         #
         results = TopicSearchService.paths_to_resource @nuno, "Djing"
-        expect_result_data_to_match_expected( results, [[@nuno], [@nuno, @gilbert, @hidden ], [@nuno, @sar, @hidden ]])
+        expect_result_data_to_match_expected( results, [[@nuno], [@nuno, @gilbert, @hidden ], [@nuno, @gilbert, @hidden, @sar ],[@nuno, @sar ], [@nuno, @sar, @hidden ]])
       end
     end
 
-    pending "doesn't show circular references routes when endorser endorsed directly and reachable through friend path" do
+    pending "doesn't show circular references routes when endorser endorsed directly and reachable through friend path" #do
 
       #------------------------------------------------------------------------------
       # [["Tisha Skillz"], ["Tisha Skillz", "Kendra Skillz", "Vince Skillz", "Tisha Skillz"],
       # ["Tisha Skillz", "Vince Skillz", "Kendra Skillz", "Tisha Skillz"]]
       #------------------------------------------------------------------------------
 
-      results = TopicSearchService.paths_to_resource @tisha, "Composer"
-      expect_result_data_to_match_expected( results, [[@tisha ], [@tisha, @kendra, @vince]])
-    end
+      #results = TopicSearchService.paths_to_resource @tisha, "Composer"
+      #expect_result_data_to_match_expected( results, [[@tisha ], [@tisha, @kendra, @vince]])
+    #end
 
   end
 

@@ -14,8 +14,8 @@ module TestDataHelper
     end
 
     def create_users
-      @herby, @tisha, @franky, @fauzi, @kendra, @sar, @elsa, @vince, @jean, @nuno, @gilbert= %w(
-      herby tisha franky fauzi kendra sar elsa vince jean nuno gilbert
+      @herby, @tisha, @franky, @fauzi, @kendra, @sar, @elsa, @vince, @jean, @nuno, @gilbert, @jerry= %w(
+      herby tisha franky fauzi kendra sar elsa vince jean nuno gilbert jerry
       ).map do |fname|
         FactoryBot.create(:person, first_name: fname.titleize, last_name: "Skillz")
       end
@@ -57,6 +57,7 @@ module TestDataHelper
       @accepted << EndorsementService.create(to_params @tisha, @vince, @composer) #tisha  [KNOWS] kendra
       @accepted << EndorsementService.create(to_params @tisha, @kendra, @singing) #tisha  [KNOWS] kendra
       @accepted << EndorsementService.create(to_params @jean, @sar, @djing) 
+      @accepted << EndorsementService.create(to_params @sar, @jerry, @djing) 
 
       @accepted << EndorsementService.create(to_params @nuno, @sar, @djing) 
 
