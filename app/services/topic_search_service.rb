@@ -7,7 +7,8 @@ class TopicSearchService
     end
 
     def local_subgraph_from_person_and_topic person, topic, hops = DEFAULT_NETWORK_HOPS
-      get_endorsement_graph(person, topic, hops).response
+      data = get_endorsement_graph(person, topic, hops)
+      data.response
     end
 
 
