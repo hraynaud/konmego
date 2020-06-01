@@ -11,6 +11,7 @@ class TopicSearchService
       data.response
     end
 
+    private
 
     def get_endorsement_graph current_user, topic, hops
       current_user.query_as(:u)
@@ -19,7 +20,6 @@ class TopicSearchService
         .params(topic_name: topic)
         .return('relationships(p) as r_knows', 'nodes(p) as full_path', :r_src, :r_topic, :t, :e, :endorser, :endorsee)
     end
-    private
 
     def transform person, data
       topic_paths = extract_paths(person, data)
@@ -28,18 +28,11 @@ class TopicSearchService
       end
     end
 
-    def rolified_path data
-      data.map do |item|
-
-      end
-    end
-
     def extract_paths person, data
       data.map do |path|
        TopicPath.new(person, path)
       end
     end
-
 
 
     class TopicPath
