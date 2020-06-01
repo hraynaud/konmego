@@ -47,9 +47,13 @@ class TopicSearchService
 
       def path
          @path.map do |node|
-           @obfuscator.obfuscate(node)
+           @obfuscator.for_person(node)
         end
-      end 
+      end
+
+      def endorsement
+        #TODO 
+      end
     
     end
 

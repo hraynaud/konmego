@@ -20,15 +20,12 @@ class Obfuscator
     @endorsee = endorsee
   end
 
-  def obfuscate node
+  def for_person node
+    if node === @user
+      return wrapped_person(node,role(node))
+    else
 
-    if node.is_a? Person
-      if node === @user
-        return wrapped_person(node,role(node))
-      else
-
-        return @user.friends_with?(node) ? wrapped_person(node,role(node)) : obfuscated_person(role(node))
-      end
+      return @user.friends_with?(node) ? wrapped_person(node,role(node)) : obfuscated_person(role(node))
     end
   end
 
