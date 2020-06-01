@@ -42,17 +42,14 @@ class Obfuscator
     end
 
   class WrappedPerson
-    delegate_missing_to :@person
-
+   attr_reader :name, :avatar_url, :profile_image_url, :role
     def initialize person, role="contact"
-      @person  = person
+      @avatar_url  = person.avatar_url
+      @profile_image_url  = person.profile_image_url
+      @name  = person.name
+      @first_name  = person.avatar_url
+      @last_name  = person.avatar_url
       @role = role
-    end
-
-    def 
-
-    def role 
-      @role
     end
 
   end
@@ -73,7 +70,15 @@ class Obfuscator
      def email
        HIDDEN
      end
-    
+
+     def avatar_url
+
+     end 
+
+     def profile_image_url
+
+     end
+
     def name 
       "#{HIDDEN} #{HIDDEN}"
     end
