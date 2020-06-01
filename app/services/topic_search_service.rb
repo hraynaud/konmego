@@ -2,8 +2,8 @@ class TopicSearchService
   DEFAULT_NETWORK_HOPS = 3
 
   class << self
-    def paths_to_resource person, topic, hops = DEFAULT_NETWORK_HOPS
-      obfuscate(person, get_endorsement_graph(person, topic, hops))
+    def paths_to_resource current_user, topic, hops = DEFAULT_NETWORK_HOPS
+      transform(current_user, get_endorsement_graph(current_user, topic, hops))
     end
 
     def local_subgraph_from_person_and_topic person, topic, hops = DEFAULT_NETWORK_HOPS
@@ -12,8 +12,8 @@ class TopicSearchService
     end
 
 
-    def get_endorsement_graph person, topic, hops
-      person.query_as(:u)
+    def get_endorsement_graph current_user, topic, hops
+      current_user.query_as(:u)
         .with(:u)
         .match(match_query(hops))
         .params(topic_name: topic)
@@ -21,22 +21,44 @@ class TopicSearchService
     end
     private
 
-    def obfuscate person, data
-      o =  Obfuscator.new(person)
-      data.map(&:full_path).map do |path| 
-        path.map do |n|
-          o.obfuscate(n)
-        end
+    def transform person, data
+      topic_paths = extract_paths(person, data)
+       topic_paths.map do |topc_path| 
+        topc_path.path
+      end
+    end
+
+    def rolified_path data
+      data.map do |item|
+
+      end
+    end
+
+    def extract_paths person, data
+      data.map do |path|
+       TopicPath.new(person, path)
       end
     end
 
 
-    def extract_paths data
-      data.map(&:full_path)
+
+    class TopicPath
+      attr_reader :endorser, :endorsee, :path
+      def initialize person, path
+        @path = path.full_path
+        @endorser = path.endorser
+        @endorsee = path.endorsee
+        @endorsement = path.e
+        @obfuscator = ::Obfuscator.new(person,@endorser, @endorsee)
+      end
+
+      def path
+         @path.map do |node|
+           @obfuscator.obfuscate(node)
+        end
+      end 
+    
     end
-
-
-
 
     #TODO FIXME 
     #1. Figure out how to use parameters in the relationship length clause

@@ -1,16 +1,19 @@
 class Obfuscator
 
-    def initialize user
+    def initialize user, endorser, endorsee
       @user = user
+      @endorser = endorser
+      @endorsee = endorsee
     end
 
     def obfuscate node
 
       if node.is_a? Person
         if node === @user
-          return node
+          return WrappedPerson.new(node, role(node))
         else
-          return @user.friends_with?(node) ? node : ObfuscatedPerson.new(node)
+          
+          return @user.friends_with?(node) ? WrappedPerson.new(node, role(node)) : ObfuscatedPerson.new(node, role(node))
         end
       end
 
@@ -23,18 +26,41 @@ class Obfuscator
       end
     end
 
+    def role person
+      case 
+      when person == @endorser
+        "endorser"
+      when person == @endorsee
+        "endorsee"
+      else
+        "contact"
+      end
+    end
+
     def friends_with_both? endorsement
      @user.friends_with? endorsement.endorsee and @user.friends_with? endorsement.endorser 
     end
 
-  class ObfuscatedPerson
+  class WrappedPerson
     delegate_missing_to :@person
 
-     HIDDEN = "Hidden"
-
-     def initialize person
+    def initialize person, role="contact"
       @person  = person
-     end
+      @role = role
+    end
+
+    def 
+
+    def role 
+      @role
+    end
+
+  end
+
+   
+  class ObfuscatedPerson < WrappedPerson
+
+    HIDDEN = "Hidden"
 
      def first_name
         HIDDEN 
@@ -44,17 +70,13 @@ class Obfuscator
         HIDDEN 
      end
 
-     def name
-       "#{first_name} #{last_name}"
-     end
-
      def email
        HIDDEN
      end
-
-     def == other
-       other.uuid == @person.uuid
-     end
+    
+    def name 
+      "#{HIDDEN} #{HIDDEN}"
+    end
   end
 
 
@@ -83,10 +105,6 @@ class Obfuscator
 
       def description
         "#{@endorser.name} endorses #{@endorsee.name} for #{@endorsement.topic_name}"
-      end
-
-      def == other
-        other.uuid == @person.uuid
       end
 
     end
