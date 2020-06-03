@@ -23,6 +23,7 @@ describe TopicSearchService do
         #------------------------------------------------------------------------------
         results = TopicSearchService.paths_to_resource @fauzi, "Cooking", 0
         expect_result_data_to_match_expected( results, [[@fauzi]])
+        #expect(results.map(:endorsment)).to not_be nil
       end
 
       it "returns path for topic endorsed indirectly through direct contact" do
@@ -54,8 +55,6 @@ describe TopicSearchService do
         results = TopicSearchService.paths_to_resource @elsa, "Singing", 4
         expect_result_data_to_match_expected( results, [[@elsa, @sar, @hidden, @hidden, @hidden ]])
       end
-
-
 
     end
 
@@ -156,7 +155,8 @@ describe TopicSearchService do
 end
 
 def expect_result_data_to_match_expected results, expected
-  result_names = results.map{|path|path.map(&:name)}
+  paths =  results.map(&:path)
+  result_names = paths.map{|path|path.map(&:name)}
   expected_names =  expected.map{|path|path.map(&:name)}
   expect(result_names.to_set).to match_array expected_names.to_set
 end

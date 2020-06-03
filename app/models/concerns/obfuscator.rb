@@ -14,20 +14,10 @@ class Obfuscator
     end
   end
 
-  def initialize user, endorser, endorsee
-    @user = user
-    @endorser = endorser
-    @endorsee = endorsee
+  def self.wrapped_endorsement endorsement
+    WrappedEndorsement.new(endorser: endorsement.endorser, endorsee: endorsement.endorsee)
   end
 
-  def for_person node
-    if node === @user
-      return wrapped_person(node,role(node))
-    else
-
-      return @user.friends_with?(node) ? wrapped_person(node,role(node)) : obfuscated_person(role(node))
-    end
-  end
 
   def role person
     case 
@@ -40,16 +30,12 @@ class Obfuscator
     end
   end
 
-  def friends_with_both? endorsement
-    @user.friends_with? endorsement.endorsee and @user.friends_with? endorsement.endorser 
-  end
-
-  def wrapped_person node, role
+  def self.wrapped_person node, role
     WrappedPerson.new(first_name: node.first_name, last_name: node.last_name,
                       avatar_url: node.avatar_url, profile_image_url: node.profile_image_url, role: role)
   end
 
-  def obfuscated_person role
+  def self.obfuscated_person role
     WrappedPerson.new(first_name: HIDDEN, last_name: HIDDEN, avatar_url: nil, profile_image_url: nil, role: role)
   end
 

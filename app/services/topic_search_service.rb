@@ -24,7 +24,7 @@ class TopicSearchService
     def transform person, data
       topic_paths = extract_paths(person, data)
        topic_paths.map do |topc_path| 
-        topc_path.path
+        topc_path
       end
     end
 
@@ -36,25 +36,19 @@ class TopicSearchService
 
 
     class TopicPath
-      attr_reader :endorser, :endorsee, :path
       def initialize person, path
-        @path = path.full_path
-        @endorser = path.endorser
-        @endorsee = path.endorsee
-        @endorsement = path.e
-        @obfuscator = ::Obfuscator.new(person,@endorser, @endorsee)
+        @obfuscator = ::PathObfuscator.new(person,path)
+        @obfuscator.obfuscate
       end
 
       def path
-         @path.map do |node|
-           @obfuscator.for_person(node)
-        end
+        @obfuscator.obfuscated_path
       end
 
       def endorsement
-        #TODO 
+        @obfuscator.for_endorsement()
       end
-    
+
     end
 
     #TODO FIXME 
