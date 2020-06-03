@@ -52,9 +52,6 @@ module Obfuscation
       end
     end
 
-    def friends_with_both? 
-      @user.friends_with? @endorsee and @user.friends_with? @endorser 
-    end
 
   end
 end
