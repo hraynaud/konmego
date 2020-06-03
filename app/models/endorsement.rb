@@ -23,6 +23,12 @@ class Endorsement
     topic.name
   end
 
+  Extract = Struct.new(:endorser, :endorsee, :description, keyword_init: true) do
+    def name 
+      "#{first_name} #{last_name}"
+    end
+  end
+
   private
 
   def add_description

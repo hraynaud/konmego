@@ -24,6 +24,12 @@ class Person
  
   DEFAULT_RELATIONSHIP_DEPTH = 3
 
+  Extract = Struct.new(:first_name, :last_name, :avatar_url, :profile_image_url, :role , keyword_init: true) do
+    def name 
+      "#{first_name} #{last_name}"
+    end
+  end
+
   def name
     "#{first_name} #{last_name}"
   end

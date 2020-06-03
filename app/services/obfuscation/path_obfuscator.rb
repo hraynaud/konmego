@@ -2,12 +2,12 @@ module Obfuscation
   class PathObfuscator
     attr_reader :path, :obfuscated_endorsement
 
-    def initialize user, path
+    def initialize user, people
       @user = user
-      @endorser = path.endorser
-      @endorsee = path.endorsee
-      @endorsement = path.e
-      obfuscate path.full_path
+      @endorser = people.endorser
+      @endorsee = people.endorsee
+      @endorsement = people.e
+      obfuscate people.full_path
     end
 
     def obfuscate full_path
