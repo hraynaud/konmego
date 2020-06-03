@@ -7,9 +7,15 @@ module Obfuscation
       end
     end
 
-    def self.do_partial endorsement
-      WrappedEndorsement.new(endorser: endorsement.endorser, endorsee: endorsement.endorsee)
-    end
+   class << self
+     def do_partial endorsement
+       WrappedEndorsement.new(endorser: endorsement.endorser, endorsee: endorsement.endorsee)
+     end
+
+     def do_total endorsement
+       WrappedEndorsement.new(endorser: endorsement.endorser, endorsee: endorsement.endorsee)
+     end
+   end
 
   end
 end

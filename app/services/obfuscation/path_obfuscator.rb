@@ -11,21 +11,37 @@ module Obfuscation
     end
 
     def obfuscate full_path
-      @path =  full_path.map do |node|
-        for_person(node)
-      end
+      @path =  process_path full_path
       @obfuscated_endorsement = EndorsementObfuscator.do_partial(@endorsement)
     end
 
-    def for_person node
-      if node === @user
-        return PersonObfuscator.do_partial(node,role(node))
-      else
-        return @user.friends_with?(node) ? PersonObfuscator.do_partial(node,role(node)) : PersonObfuscator.do_total(role(node))
+    private
+
+    def process_path path
+      path.map do |node|
+        handle_person(node)
       end
     end
 
-    def role person
+    def handle_person node
+      role = get_role(node) 
+
+      if is_current_user? node
+        return PersonObfuscator.do_partial node,role
+      else
+        return handle_non_current_user node, role
+      end
+    end
+
+    def is_current_user? node
+      node === @user
+    end
+
+    def handle_non_current_user node, role
+      return @user.friends_with?(node) ? PersonObfuscator.do_partial(node,role) : PersonObfuscator.do_total(role)
+    end
+
+    def get_role person
       case 
       when person == @endorser
         "endorser"
