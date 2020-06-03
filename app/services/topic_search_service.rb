@@ -37,16 +37,15 @@ class TopicSearchService
 
     class TopicPath
       def initialize person, path
-        @obfuscator = ::PathObfuscator.new(person,path)
-        @obfuscator.obfuscate
+        @obfuscator = ::Obfuscation::PathObfuscator.new(person,path)
       end
 
       def path
-        @obfuscator.obfuscated_path
+        @obfuscator.path
       end
 
       def endorsement
-        @obfuscator.for_endorsement()
+        @obfuscator.obfuscated_endorsement
       end
 
     end
