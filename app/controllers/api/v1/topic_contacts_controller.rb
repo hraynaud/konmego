@@ -11,8 +11,9 @@ class Api::V1::TopicContactsController < ApplicationController
   end
 
   def show
-    data = TopicSearchService.local_subgraph_from_person_and_topic(current_user,params[:topic])
-    render json: D3PresenterService::Graph.new(data, current_user).to_d3
+    results = TopicSearchService.paths_to_resource(current_user,params[:topic])
+   binding.pry
+    #render json: D3PresenterService::Graph.new(data, current_user).to_d3
   end
 
   def graph_html

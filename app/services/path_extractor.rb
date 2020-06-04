@@ -42,8 +42,16 @@ class PathExtractor
   end
 
   def handle_non_current_user node, role
-    return @user.friends_with?(node) ? extract_node(node, role) : Obfuscation::PersonObfuscator.obfuscate(role)
+    if @user.friends_with?(node) 
+      extract_node(node, role) 
+    else 
+      person = Obfuscation::PersonObfuscator.obfuscate node
+      person.role = role
+      person
+    end
   end
+
+
 
   def get_role person
     case 
