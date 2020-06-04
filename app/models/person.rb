@@ -24,6 +24,8 @@ class Person
   property :avatar_url, type: String
   property :is_member, type: Boolean, default: false
 
+  #TODO Add profile model
+
  
   DEFAULT_RELATIONSHIP_DEPTH = 3
 

@@ -32,9 +32,7 @@ class PathExtractor
   end
 
   def extract_node node, role
-    person = node.extract
-    person.role = role
-    person
+    add_role(node.extract, role)
   end
 
   def is_current_user? node
@@ -45,13 +43,14 @@ class PathExtractor
     if @user.friends_with?(node) 
       extract_node(node, role) 
     else 
-      person = Obfuscation::PersonObfuscator.obfuscate node
-      person.role = role
-      person
+      add_role(Obfuscation::PersonObfuscator.obfuscate(node), role)
     end
   end
 
-
+  def add_role person, role
+      person.role = role
+      person
+  end
 
   def get_role person
     case 
