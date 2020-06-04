@@ -1,3 +1,4 @@
+require 'ostruct'
 class Endorsement
 
   include KonmegoNeo4jNode
@@ -23,10 +24,8 @@ class Endorsement
     topic.name
   end
 
-  Extract = Struct.new(:endorser, :endorsee, :description, keyword_init: true) do
-    def name 
-      "#{first_name} #{last_name}"
-    end
+  def extract
+    OpenStruct.new(endorser: endorsement.endorser, endorsee: endorsement.endorsee, description:endorsement.description)
   end
 
   private

@@ -1,3 +1,6 @@
+
+require 'ostruct'
+
 class Person
 
   include KonmegoNeo4jNode
@@ -24,10 +27,9 @@ class Person
  
   DEFAULT_RELATIONSHIP_DEPTH = 3
 
-  Extract = Struct.new(:first_name, :last_name, :avatar_url, :profile_image_url, :role , keyword_init: true) do
-    def name 
-      "#{first_name} #{last_name}"
-    end
+  def extract
+    OpenStruct.new(first_name: first_name, last_name: last_name,
+                avatar_url: avatar_url, profile_image_url: profile_image_url, name: "#{first_name} #{last_name}")
   end
 
   def name

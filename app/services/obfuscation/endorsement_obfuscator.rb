@@ -3,24 +3,22 @@ module Obfuscation
 
    class << self
      def obfuscate user, endorsement
-       if friends_with_both? user, endorsee, endorser
-         do_partial endorsement
+       if friends_with_both? user, endorsement
+         endorsement.extract
        else
          do_total endorsement
        end
      end
 
-     def do_partial endorsement
-       Endorsement::Extract.new(endorser: endorsement.endorser, endorsee: endorsement.endorsee, description:endorsement.description)
-     end
 
      def do_total endorsement
-       Endorsement::Extract.new(endorser: endorsement.endorser, endorsee: endorsement.endorsee, description: HIDDEN)
+       OpenStruct.new(endorser:nil, endorsee: nil, description: nil)
+     end
+
+     def friends_with_both? user, endorsement
+       user.friends_with? endorsement.endorsee and user.friends_with? endorsement.endorser 
      end
    end
 
-   def friends_with_both? user, endorsee, endorser
-     user.friends_with? endorsee and user.friends_with? endorser 
-   end
   end
 end

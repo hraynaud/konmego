@@ -11,7 +11,7 @@ class PathExtractor
 
   def obfuscate full_path
     @path =  process_path full_path
-    @obfuscated_endorsement = Obfuscation::EndorsementObfuscator.do_partial(@endorsement)
+    @obfuscated_endorsement = Obfuscation::EndorsementObfuscator.obfuscate(@user, @endorsement)
   end
 
   private
@@ -24,12 +24,17 @@ class PathExtractor
 
   def handle_person node
     role = get_role(node) 
-
     if is_current_user? node
-      return Obfuscation::PersonObfuscator.do_partial node,role
+      return extract_node node, role 
     else
       return handle_non_current_user node, role
     end
+  end
+
+  def extract_node node, role
+    person = node.extract
+    person.role = role
+    person
   end
 
   def is_current_user? node
@@ -37,7 +42,7 @@ class PathExtractor
   end
 
   def handle_non_current_user node, role
-    return @user.friends_with?(node) ? Obfuscation::PersonObfuscator.do_partial(node,role) : Obfuscation::PersonObfuscator.do_total(role)
+    return @user.friends_with?(node) ? extract_node(node, role) : Obfuscation::PersonObfuscator.obfuscate(role)
   end
 
   def get_role person
