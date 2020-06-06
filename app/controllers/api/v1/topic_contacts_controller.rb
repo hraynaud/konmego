@@ -10,10 +10,11 @@ class Api::V1::TopicContactsController < ApplicationController
     end
   end
 
+
+
   def show
-    results = TopicSearchService.paths_to_resource(current_user,params[:topic])
-   binding.pry
-    #render json: D3PresenterService::Graph.new(data, current_user).to_d3
+    results = TopicSearchService.paths_to_resource(current_user, params[:topic])
+    render json: results.to_json
   end
 
   def graph_html

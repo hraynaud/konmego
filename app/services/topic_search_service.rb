@@ -1,3 +1,4 @@
+require 'ostruct'
 class TopicSearchService
   DEFAULT_NETWORK_HOPS = 3
 
@@ -23,32 +24,32 @@ class TopicSearchService
 
     def transform person, data
       topic_paths = extract_paths(person, data)
-       topic_paths.map do |topc_path| 
+       topic_paths.map do |topc_path|
         topc_path
+      end
+    end
+
+    def openstruct_to_hash(object, hash = {})
+      case object
+      when OpenStruct then
+        object.each_pair do |key, value|
+          hash[key] = openstruct_to_hash(value)
+        end
+        hash
+      when Array then
+        object.map { |v| openstruct_to_hash(v) }
+      else object
       end
     end
 
     def extract_paths person, data
       data.map do |path|
-       TopicPath.new(person, path)
-      end
-    end
-
-
-    class TopicPath
-      def initialize person, path
         @extractor = ::PathExtractor.new(person,path)
+        openstruct_to_hash(OpenStruct.new(path: @extractor.path, endorsement: @extractor.obfuscated_endorsement))
       end
-
-      def path
-        @extractor.path
-      end
-
-      def endorsement
-        @extractor.obfuscated_endorsement
-      end
-
     end
+
+
 
     #TODO FIXME 
     #1. Figure out how to use parameters in the relationship length clause

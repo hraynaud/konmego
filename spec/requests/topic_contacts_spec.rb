@@ -14,7 +14,6 @@ describe Api::V1::TopicContactsController do
    it "finds friends that have direct connection to this topic" do
 
      do_get @fauzi, "/api/v1/topic_contacts/Singing" 
-
      data = parse_body(response)
      expect_http response,:ok
    end

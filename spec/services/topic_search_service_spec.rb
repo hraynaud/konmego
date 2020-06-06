@@ -155,8 +155,8 @@ describe TopicSearchService do
 end
 
 def expect_result_data_to_match_expected results, expected
-  paths =  results.map(&:path)
-  result_names = paths.map{|path|path.map(&:name)}
+  paths =  results.map{|x|x[:path]}
+  result_names = results.map{|res|res[:path].map{|p|p[:name]}}
   expected_names =  expected.map{|path|path.map(&:name)}
   expect(result_names.to_set).to match_array expected_names.to_set
 end
