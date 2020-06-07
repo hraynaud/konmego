@@ -18,7 +18,4 @@ describe Api::V1::TopicContactsController do
    end
 
  end
-
-
-
 end
