@@ -15,6 +15,7 @@ Rails.application.routes.draw do
 
       get 'topic_contacts/:topic', to: 'topic_contacts#index' 
 
+      resources :contacts, only: [:index, :show]
       resources :endorsements do
         member do 
           put :accept
