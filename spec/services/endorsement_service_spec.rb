@@ -23,7 +23,7 @@ describe EndorsementService do
 
     context "all preexisting nodes" do
 
-      it "creates succeeds" do
+      it "create succeeds" do
         expect{
           EndorsementService.create(all_preexisting)
         }.to change{Endorsement.count}.by(1)
