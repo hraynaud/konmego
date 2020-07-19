@@ -13,7 +13,7 @@ Rails.application.routes.draw do
 
       get 'people/:relationship_group', to: "people#index", constraints: {relationship_group: /contacts|endorsees|endorsers/}
 
-      resources 'topic_contacts', only: [:index, :show], param: :topic
+      get 'topic_contacts/:topic', to: 'topic_contacts#index' 
 
       resources :endorsements do
         member do 

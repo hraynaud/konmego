@@ -38,7 +38,7 @@ export default {
   methods: {
     loadGraphData() {
       apiService
-      .get(`api/v1/topic_contacts/${this.search}`)
+      .get(`api/v1/graph_view/${this.search}`)
       .then(response => {
           console.log("!! search", response.data)
           return this.graphData = response.data
