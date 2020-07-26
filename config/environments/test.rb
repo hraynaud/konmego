@@ -37,4 +37,9 @@ Rails.application.configure do
   config.neo4j.session.path = 'http://localhost:7575'
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  config.neo4j.logger = Rails.logger
+  config.neo4j.pretty_logged_cypher_queries = true
+
 end
+
