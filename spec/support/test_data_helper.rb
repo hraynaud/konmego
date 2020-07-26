@@ -46,18 +46,18 @@ module TestDataHelper
       @pending = []
       @declined = []
 
-      @accepted << EndorsementService.create(to_params @fauzi, @franky, @cooking) #fauzi [KNOWS] franky
-      @accepted << EndorsementService.create(to_params @tisha, @vince, @composer) #tisha  [KNOWS] kendra
-      @accepted << EndorsementService.create(to_params @tisha, @kendra, @singing) #tisha  [KNOWS] kendra
-      @accepted << EndorsementService.create(to_params @jean, @sar, @djing) 
-      @accepted << EndorsementService.create(to_params @sar, @jerry, @djing) 
-      @accepted << EndorsementService.create(to_params @nuno, @sar, @djing) 
+      @accepted << EndorsementService.create(to_params( @fauzi, @franky, @cooking))#fauzi [KNOWS] franky
+      @accepted << EndorsementService.create(to_params( @tisha, @vince, @composer)) #tisha  [KNOWS] kendra
+      @accepted << EndorsementService.create(to_params( @tisha, @kendra, @singing)) #tisha  [KNOWS] kendra
+      @accepted << EndorsementService.create(to_params( @jean, @sar, @djing)) 
+      @accepted << EndorsementService.create(to_params( @sar, @jerry, @djing)) 
+      @accepted << EndorsementService.create(to_params( @nuno, @sar, @djing))
 
      # DECLINED OR PENDING
      # -----------------------
 
-      @declined << EndorsementService.create(to_params @jean, @vince, @composer)
-      @pending << EndorsementService.create(to_params @elsa, @sar, @acting)
+      @declined << EndorsementService.create(to_params(@jean, @vince, @composer))
+      @pending << EndorsementService.create(to_params(@elsa, @sar, @acting))
 
     end
 

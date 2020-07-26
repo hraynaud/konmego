@@ -4,13 +4,9 @@ class TopicSearchService
 
   class << self
     def paths_to_resource current_user, topic, hops = DEFAULT_NETWORK_HOPS
-      transform(current_user, get_endorsement_graph(current_user, topic, hops))
+      transform(current_user, get_endorsement_graph(current_user, topic, hops).response)
     end
 
-    def local_subgraph_from_person_and_topic person, topic, hops = DEFAULT_NETWORK_HOPS
-      data = get_endorsement_graph(person, topic, hops)
-      data.response
-    end
 
     private
 
@@ -24,8 +20,8 @@ class TopicSearchService
 
     def transform person, data
       topic_paths = extract_paths(person, data)
-       topic_paths.map do |topc_path|
-        topc_path
+       topic_paths.map do |topic_path|
+         topic_path
       end
     end
 

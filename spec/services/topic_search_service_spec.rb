@@ -124,37 +124,9 @@ describe TopicSearchService do
 
   end
 
- pending "validate graph structure"
-
- 
-     #expect(data["nodes"].size).to eq sars_cooking_network["nodes"].size
-     #expect(data["links"].size).to eq sars_cooking_network["links"].size
-     #validate_relationship_types data, sars_cooking_network
-     #validate_node_types data, sars_cooking_network
-
- def validate_node_types data, expected
-   ["Person","Endorsement","Topic"].each do |type| 
-     expect( node_type_count(data, type)).to eq node_type_count(expected, type)
-   end
- end
-
- def validate_relationship_types data, expected
-   ["KNOWS","ENDORSEMENT_SOURCE","ENDORSE_TOPIC"].each do |type| 
-     expect( link_type_count(data, type)).to eq link_type_count(expected, type)
-   end
- end
-
- def link_type_count link_data, type
-   link_data["links"].select{|l|l["type"] == type}.size
- end
-
- def node_type_count node_data, type
-   node_data["nodes"].select{|l|l["type"] == type}.size
- end
 end
 
 def expect_result_data_to_match_expected results, expected
-  paths =  results.map{|x|x[:path]}
   result_names = results.map{|res|res[:path].map{|p|p[:name]}}
   expected_names =  expected.map{|path|path.map(&:name)}
   expect(result_names.to_set).to match_array expected_names.to_set
