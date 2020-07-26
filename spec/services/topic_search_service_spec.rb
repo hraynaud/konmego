@@ -110,18 +110,17 @@ describe TopicSearchService do
         results = TopicSearchService.paths_to_resource @nuno, "Djing"
         expect_result_data_to_match_expected( results, [[@nuno], [@nuno, @gilbert, @hidden ], [@nuno, @gilbert, @hidden, @sar ],[@nuno, @sar ], [@nuno, @sar, @hidden ]])
       end
+
+      it "doesn't show circular references routes when endorser endorsed directly and reachable through friend path" do
+
+        #------------------------------------------------------------------------------
+        # [["Tisha Skillz"]]
+        #------------------------------------------------------------------------------
+
+        results = TopicSearchService.paths_to_resource @tisha, "Composer"
+        expect_result_data_to_match_expected( results, [[@tisha ]])
+      end
     end
-
-    pending "doesn't show circular references routes when endorser endorsed directly and reachable through friend path" #do
-
-      #------------------------------------------------------------------------------
-      # [["Tisha Skillz"], ["Tisha Skillz", "Kendra Skillz", "Vince Skillz", "Tisha Skillz"],
-      # ["Tisha Skillz", "Vince Skillz", "Kendra Skillz", "Tisha Skillz"]]
-      #------------------------------------------------------------------------------
-
-      #results = TopicSearchService.paths_to_resource @tisha, "Composer"
-      #expect_result_data_to_match_expected( results, [[@tisha ], [@tisha, @kendra, @vince]])
-    #end
 
   end
 
