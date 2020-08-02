@@ -25,6 +25,46 @@ class Project
     super(root: false, except: [:neo_id, :visibility ])
   end
 
+  class << self
+    def default_scope person
+       person.projects.public_projects
+
+
+         # Project.where(owner_id: person_id)
+      # .or person_id in participants.map(&;id)
+      # .or owner.friends.include(person_id) && visibility == friends
+      # .or owner.contacts_at_dept(3).map(&id).includes(person_id) && visibility
+      # = in_network
+      # or visibility == :public
+      #
+    end 
+
+
+    def public_projects
+      by_visibilty(:public)
+    end
+
+    def active_projects
+      by_status(:active)
+    end
+
+    def by_topic topic_id
+      where.topic(id: topic_id)
+    end
+   
+    def private_projects
+      by_visibilty :private
+    end
+
+    def by_visibilty viz
+      Project.where(visibility: Project.visibilities[viz])
+    end
+
+    def by_status status
+      Project.where(status: Project.statuses[status])
+    end
+
+  end
 
 end
 
