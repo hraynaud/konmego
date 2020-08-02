@@ -1,74 +1,70 @@
 require 'rails_helper'
-
-include TestDataHelper::Relationships
 include TestDataHelper::Utils
+
 describe Project do
-  before do
-    clear_db
-  end
-
-
-  context "is invalid for update when" do
-    let(:project){Project.new}
+  context "for single project" do
 
     before do
       clear_db
     end
 
-    after do
-      expect(project.valid?(:update)).to be false
-    end
+    context "is invalid for update when" do
+      let(:project){Project.new}
 
-    it "owner is nil" do
-      project.name = "My name"
-      project.description = "My description"
-      project.obstacles = [Obstacle.new]
-      expect(project.owner).to be_nil
-    end
-
-    context "has owner" do 
-
-      before do 
-        person = FactoryBot.create(:person)
-        project.owner = person
+      after do
+        expect(project.valid?(:update)).to be false
       end
 
-      it "has blank name" do
-        project.description = "My description"
-        expect(project.name).to be_nil
-      end
-
-      it "has blank description" do
-        project.name = "My name"
-        expect(project.description).to be_nil
-      end
-
-      it "has no topic" do
+      it "owner is nil" do
         project.name = "My name"
         project.description = "My description"
         project.obstacles = [Obstacle.new]
-        expect(project.topic).to be_nil
+        expect(project.owner).to be_nil
       end
 
-      it "has no obstacles" do
-        project.name = "My name"
-        project.description = "My description"
-        expect(project.obstacles).to be_empty
+      context "has owner" do 
+
+        before do 
+          person = FactoryBot.create(:person)
+          project.owner = person
+        end
+
+        it "has blank name" do
+          project.description = "My description"
+          expect(project.name).to be_nil
+        end
+
+        it "has blank description" do
+          project.name = "My name"
+          expect(project.description).to be_nil
+        end
+
+        it "has no topic" do
+          project.name = "My name"
+          project.description = "My description"
+          project.obstacles = [Obstacle.new]
+          expect(project.topic).to be_nil
+        end
+
+        it "has no obstacles" do
+          project.name = "My name"
+          project.description = "My description"
+          expect(project.obstacles).to be_empty
+        end
+
+      end
+    end
+
+    context "is Valid for update when" do
+      before do 
+        @project = FactoryBot.create(:project, :valid)
       end
 
-    end
-  end
-
-  context "is Valid for update when" do
-    before do 
-      @project = FactoryBot.create(:project, :valid)
-    end
-
-    it "it has all required properties and associations" do
-      expect(@project.valid?(:update)).to be true
+      it "it has all required properties and associations" do
+        expect(@project.valid?(:update)).to be true
+      end
     end
 
   end
-
 end
 
