@@ -1,11 +1,13 @@
 development:
-  type: http
-  url: http://localhost:7474
+    url: neo4j://localhost:7474
 
 test:
-  type: http
-  url: http://localhost:7575
+  url: neo4j://localhost:7575
 
 production:
-  type: http
-  url: http://neo4j:password@localhost:7000
+  url:
+    - neo4j://core1:7687
+    - neo4j://core2:7687
+    - neo4j://core3:7687
+  username: neo4j
+  password: password

@@ -8,7 +8,7 @@ require "active_job/railtie"
 require "active_storage/engine"
 require "action_controller/railtie"
 require "action_cable/engine"
-require 'neo4j/railtie'
+require 'active_graph/railtie'
 # require "action_mailer/railtie"
 # require "rails/test_unit/railtie"
 
@@ -30,7 +30,7 @@ module Konmego
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
-    config.generators { |g| g.orm :neo4j }
+    config.generators { |g| g.orm :active_graph }
 
     config.neo4j.session.options = {
       faraday_configurator: proc do |faraday|
