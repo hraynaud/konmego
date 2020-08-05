@@ -1,5 +1,5 @@
 class Activity
-  include Neo4j::ActiveRel
+  include ActiveGraph::Relationship
 
   from_class :Person
   to_class   :Project

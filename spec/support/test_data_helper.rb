@@ -1,4 +1,6 @@
+
 module TestDataHelper
+
   module Relationships
 
     def setup_relationship_data
@@ -90,7 +92,7 @@ module TestDataHelper
 
   module Utils
     def clear_db
-      Neo4j::ActiveBase.current_session.query('MATCH (n) WHERE NOT n:`Neo4j::Migrations::SchemaMigration`
+      ActiveGraph::Base.session.query('MATCH (n) WHERE NOT n:`Neo4j::Migrations::SchemaMigration`
 DETACH DELETE n')
     end
   end

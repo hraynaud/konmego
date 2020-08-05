@@ -1,6 +1,5 @@
 class Category
-
-  include Neo4j::ActiveNode
+  include KonmegoNeo4jNode
 
   property :id, type: Integer
   property :category, type: String

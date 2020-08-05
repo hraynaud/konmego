@@ -3,7 +3,7 @@ module KonmegoNeo4jNode
 
   included do
 
-    include Neo4j::ActiveNode
+    include ActiveGraph::Node
 
     def type
       self.class.name
