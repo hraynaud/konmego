@@ -9,7 +9,7 @@ require "active_storage/engine"
 require "action_controller/railtie"
 require "action_cable/engine"
 require 'active_graph/railtie'
-# require "action_mailer/railtie"
+require "action_mailer/railtie"
 # require "rails/test_unit/railtie"
 
 # Require the gems listed in Gemfile, including any gems
@@ -31,13 +31,6 @@ module Konmego
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
     config.generators { |g| g.orm :active_graph }
-
-    config.neo4j.session.options = {
-      faraday_configurator: proc do |faraday|
-        faraday.adapter :typhoeus
-        faraday.options[:open_timeout] = 5
-        faraday.options[:timeout] = 65
-      end
-    }
+    
   end
 end

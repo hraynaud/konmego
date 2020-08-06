@@ -1,4 +1,4 @@
-class ForceCreateProjectStatusIndex < Neo4j::Migrations::Base
+class ForceCreateProjectStatusIndex < ActiveGraph::Migrations::Base
   def up
     add_index :Project, :status, force: true
   end

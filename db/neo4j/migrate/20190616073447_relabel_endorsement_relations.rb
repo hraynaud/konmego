@@ -1,4 +1,4 @@
-class RelabelEndorsementRelations < Neo4j::Migrations::Base
+class RelabelEndorsementRelations < ActiveGraph::Migrations::Base
   def up
     relabel_relation :ENDORSE_SOURCE, :ENDORSEMENT_SOURCE
     relabel_relation :ENDORSE_TARGET, :ENDORSEMENT_TARGET

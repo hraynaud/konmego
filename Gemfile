@@ -12,7 +12,6 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'rack-cors'
 gem 'oauth'
 gem 'jwt'
-#gem 'neo4j', '~> 9.2.0'
 gem 'activegraph', '~> 10.0.0' # For example, see https://rubygems.org/gems/activegraph/versions for the latest versions
 gem 'neo4j-ruby-driver', '~> 1.7.0'
 gem 'fast_jsonapi'

@@ -1,4 +1,4 @@
-class ForceCreateProjectUuidConstraint < Neo4j::Migrations::Base
+class ForceCreateProjectUuidConstraint < ActiveGraph::Migrations::Base
   def up
     add_constraint :Project, :uuid, force: true
   end

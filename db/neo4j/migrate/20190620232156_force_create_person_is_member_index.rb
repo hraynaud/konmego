@@ -1,4 +1,4 @@
-class ForceCreatePersonIsMemberIndex < Neo4j::Migrations::Base
+class ForceCreatePersonIsMemberIndex < ActiveGraph::Migrations::Base
   def up
     add_index :Person, :is_member, force: true
   end

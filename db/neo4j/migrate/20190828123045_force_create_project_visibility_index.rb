@@ -1,4 +1,4 @@
-class ForceCreateProjectVisibilityIndex < Neo4j::Migrations::Base
+class ForceCreateProjectVisibilityIndex < ActiveGraph::Migrations::Base
   def up
     add_index :Project, :visibility, force: true
   end

@@ -33,7 +33,7 @@ module D3PresenterService
 
     def add_to_nodes_or_links obj
 
-      if obj.is_a? Neo4j::ActiveNode
+      if obj.is_a? ActiveGraph::Node
         nodes << to_d3_node(obj)
       else
         links <<  to_d3_link(obj)

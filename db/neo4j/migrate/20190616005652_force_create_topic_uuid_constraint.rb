@@ -1,4 +1,4 @@
-class ForceCreateTopicUuidConstraint < Neo4j::Migrations::Base
+class ForceCreateTopicUuidConstraint < ActiveGraph::Migrations::Base
   def up
     add_constraint :Topic, :uuid, force: true
   end

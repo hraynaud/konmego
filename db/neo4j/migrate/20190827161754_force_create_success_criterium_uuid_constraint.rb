@@ -1,4 +1,4 @@
-class ForceCreateSuccessCriteriumUuidConstraint < Neo4j::Migrations::Base
+class ForceCreateSuccessCriteriumUuidConstraint < ActiveGraph::Migrations::Base
   def up
     add_constraint :SuccessCriterium, :uuid, force: true
   end

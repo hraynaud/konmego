@@ -1,5 +1,5 @@
 # This file is auto-generated from the current state of the database. Instead
-# of editing this file, please use the migrations feature of ActiveNode to
+# of editing this file, please use the migrations feature of Node to
 # incrementally modify your database, and then regenerate this schema definition.
 #
 # Note that this schema.yml definition is the authoritative source for your
@@ -12,6 +12,8 @@
 
 ---
 :constraints:
+- CONSTRAINT ON ( `activegraph::migrations::schemamigration`:`ActiveGraph::Migrations::SchemaMigration`
+  ) ASSERT `activegraph::migrations::schemamigration`.migration_id IS UNIQUE
 - CONSTRAINT ON ( `neo4j::migrations::schemamigration`:`Neo4j::Migrations::SchemaMigration`
   ) ASSERT `neo4j::migrations::schemamigration`.migration_id IS UNIQUE
 - CONSTRAINT ON ( endorsement:Endorsement ) ASSERT endorsement.uuid IS UNIQUE
@@ -47,3 +49,5 @@
 - '20200301143307'
 - '20200301144256'
 - '20200316044509'
+- '20200805125400'
+- '20200805125414'

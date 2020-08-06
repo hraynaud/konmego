@@ -92,8 +92,7 @@ module TestDataHelper
 
   module Utils
     def clear_db
-      ActiveGraph::Base.session.query('MATCH (n) WHERE NOT n:`Neo4j::Migrations::SchemaMigration`
-DETACH DELETE n')
+      ActiveGraph::Base.query('MATCH (n) WHERE NOT n:`ActiveGraph::Migrations::SchemaMigration` DETACH DELETE n')
     end
   end
 

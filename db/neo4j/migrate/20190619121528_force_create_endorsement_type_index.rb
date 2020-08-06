@@ -1,4 +1,4 @@
-class ForceCreateEndorsementTypeIndex < Neo4j::Migrations::Base
+class ForceCreateEndorsementTypeIndex < ActiveGraph::Migrations::Base
   def up
     add_index :Endorsement, :type, force: true
   end

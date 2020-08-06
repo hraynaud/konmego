@@ -1,4 +1,4 @@
-class DropSuccessCriteriConstraint < Neo4j::Migrations::Base
+class DropSuccessCriteriConstraint < ActiveGraph::Migrations::Base
   def up
     drop_constraint :SuccessCriterium, :uuid
   end

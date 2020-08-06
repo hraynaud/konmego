@@ -1,4 +1,4 @@
-class ForceCreateEndorsementUuidConstraint < Neo4j::Migrations::Base
+class ForceCreateEndorsementUuidConstraint < ActiveGraph::Migrations::Base
   def up
     add_constraint :Endorsement, :uuid, force: true
   end

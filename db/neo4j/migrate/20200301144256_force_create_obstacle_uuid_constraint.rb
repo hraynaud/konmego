@@ -1,4 +1,4 @@
-class ForceCreateObstacleUuidConstraint < Neo4j::Migrations::Base
+class ForceCreateObstacleUuidConstraint < ActiveGraph::Migrations::Base
   def up
     add_constraint :Obstacle, :uuid, force: true
   end

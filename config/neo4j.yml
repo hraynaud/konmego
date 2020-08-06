@@ -1,8 +1,8 @@
 development:
-    url: neo4j://localhost:7474
+    url: bolt://localhost:7573
 
 test:
-  url: neo4j://localhost:7575
+  url: bolt://localhost:7876
 
 production:
   url:
