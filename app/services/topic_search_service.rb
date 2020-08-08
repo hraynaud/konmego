@@ -4,7 +4,7 @@ class TopicSearchService
 
   class << self
     def paths_to_resource current_user, topic, hops = DEFAULT_NETWORK_HOPS
-      transform(current_user, get_endorsement_graph(current_user, topic, hops).response)
+      transform(current_user, get_endorsement_graph(current_user, topic, hops))
     end
 
 
@@ -39,8 +39,8 @@ class TopicSearchService
     end
 
     def extract_paths person, data
-      data.map do |path|
-        @extractor = ::PathExtractor.new(person,path)
+      data.map do |record|
+        @extractor = ::PathExtractor.new(person,record)
         openstruct_to_hash(OpenStruct.new(path: @extractor.path, endorsement: @extractor.obfuscated_endorsement))
       end
     end
@@ -55,6 +55,7 @@ class TopicSearchService
     def match_query hops
       <<-CYPHER
  p = (u)-[:`KNOWS`*0..#{hops}]-(endorser:`Person`) 
+ WITH *
  MATCH (endorser)<-[r_src:`ENDORSEMENT_SOURCE`]-(e:`Endorsement`) WHERE (e.status = 1)
  MATCH (e)-[r_target:`ENDORSEMENT_TARGET`]->(endorsee:`Person`) 
  MATCH (e)-[r_topic:`ENDORSE_TOPIC`]->(t:`Topic`) WHERE (t.name = {topic_name})

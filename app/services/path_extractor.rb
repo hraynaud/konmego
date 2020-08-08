@@ -1,12 +1,13 @@
 class PathExtractor
   attr_reader :path, :obfuscated_endorsement
 
-  def initialize user, people
+  def initialize user, record
     @user = user
-    @endorser = people.endorser
-    @endorsee = people.endorsee
-    @endorsement = people.e
-    obfuscate people.full_path
+    @endorser = record[:endorser]
+    @endorsee = record[:endorsee]
+    @endorsement = record[:e]
+    obfuscate record[:full_path]
+
   end
 
   def obfuscate full_path
