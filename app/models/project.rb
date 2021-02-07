@@ -3,7 +3,7 @@ class Project
   property :name, type: String
   property :description, type: String
   property :start_date, type: Date
-  property :end_date, type: Date
+  property :deadline, type: Date
 
   enum status: [:inactive, :active, :canceled, :failed], _default: :inactive
   enum visibility: [:private, :friends, :in_network, :vendor, :public], _default: :private

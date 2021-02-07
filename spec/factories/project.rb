@@ -3,6 +3,8 @@ FactoryBot.define do
     f.association :owner, :factory => :person
     f.description {"This is a great project that will do great this"}
     f.name {"My Great Project"}
+    f.start_date {Date.today}
+    f.deadline {1.month.from_now}
 
     trait :valid do
       with_criteria
