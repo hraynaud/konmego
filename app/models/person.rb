@@ -45,6 +45,10 @@ class Person
     outgoing_endorsements.endorsee.include? person
   end
 
+  def contacts_by_depth depth 
+    contacts(:contacts, :r, rel_length: 0..depth).distinct
+  end
+
   def endorsed_by? person
     incoming_endorsements.endorser.include? person
   end
