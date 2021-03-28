@@ -14,7 +14,8 @@ gem 'oauth'
 gem 'jwt'
 gem 'activegraph', '~> 10.0.0' # For example, see https://rubygems.org/gems/activegraph/versions for the latest versions
 gem 'neo4j-ruby-driver', '~> 1.7.0'
-gem 'fast_jsonapi'
+
+gem 'jsonapi-serializer'
 
 group :production do
   gem 'rails_12factor'
