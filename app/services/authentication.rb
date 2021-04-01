@@ -31,16 +31,4 @@ class Authentication
     JWT.encode({uid: identity.id, email: identity.email, name: p.name, exp: 1.day.from_now.to_i}, Rails.application.credentials.secret_key_base)
   end
 
-
-  def self.login_by_oauth_token oauth, request_params
-    request_token = OAuth::RequestToken.new(TWITTER, oauth.token, oauth.secret)
-    access_token = request_token.get_access_token(oauth_verifier: request_params[:oauth_verifier])
-    identity = Identity.find_or_create_by(uid: access_token.params[:identity_id]) do |u|
-      u.handle = access_token.params[:screen_name] 
-      #sets random password to avoid validation errors since email and password
-      #auth is also supported
-      u.password = u.password_confirmation = SecureRandom.urlsafe_base64(n=6) 
-    end
-    jwt_for identity
-  end
 end
