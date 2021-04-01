@@ -23,7 +23,8 @@ class ApplicationController < ActionController::API
   end
 
   def respond_with_token jwt
-    json_response({jwt: jwt}, :ok)
+    response.set_header "jwt",jwt 
+    json_response({}, :ok)
   end
 
   def respond_with_error msg, status = :bad_request, errors={}
