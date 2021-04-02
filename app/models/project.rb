@@ -17,6 +17,8 @@ class Project
   validates :topic, presence: {message: "Projects must have a topic"}
   validates :obstacles, presence: {message: "At least one obstacle required"}, on: :update
 
+  scope :public,  ->{where("projects.visibility > ? ", Project.visibilities[:private])}
+
   def topic_name
     topic.name
   end

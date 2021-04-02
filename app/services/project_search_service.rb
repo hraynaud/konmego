@@ -21,9 +21,8 @@ class ProjectSearchService
       user.friends_with?(friend) ? friend : nil
     end
 
-
     def projects_for scope
-      scope.projects(:projects).where("projects.visibility > ? ", Project.visibilities[:private]).distinct 
+      scope.projects(:projects).public.distinct 
     end
 
     def by_topic scope, topic_id
