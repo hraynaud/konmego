@@ -29,10 +29,11 @@ describe ProjectSearchService do
       it "includes self projects" do
         expect(project_names(search_by(@elsa))).to eq project_names([ @acting_project, @chef_project])
       end
-
-      it "includes self private projects" do
-        expect(project_names(search_by(@franky))).to eq project_names([@dining_project, @dj_project, @culinary_project, @acting_project,  @software_project])
+      
+      it "excludes self private projects" do
+      expect(project_names(search_by(@franky))).to eq project_names([@dining_project, @dj_project, @culinary_project, @acting_project])
       end
+
 
       it "finds projects belonging to friends at default depth" do
         expect(search_by(@vince).to_set).to eq  empty_set
