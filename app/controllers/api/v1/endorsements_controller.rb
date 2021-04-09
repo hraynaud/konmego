@@ -6,29 +6,30 @@ class Api::V1::EndorsementsController < ApplicationController
   end
 
   def create
-    render json: EndorsementService.create(params_with_user)
+    render json: EndorsementService.create(
+      current_user,
+      {
+        endorsee_id: params[:endorseeId], 
+        topic_id: params[:topicId], 
+        new_person_first_name: params.dig(:newPerson,:first),
+        new_person_last_name: params.dig(:newPerson,:last),
+        new_person_email: params.dig(:newPerson,:email),
+        topic_name: params.dig(:newTopic, :name),
+        topic_category: params.dig(:newTopic, :category)
+      }
+    )
   end
 
   def accept
-   render json: EndorsementService.accept(@endorsement)
+    render json: EndorsementService.accept(@endorsement)
   end
 
   def decline
-   render json: EndorsementService.decline(@endorsement)
+    render json: EndorsementService.decline(@endorsement)
   end
 
   private
 
-  def find_endorsement
-    @endorsement = Endorsement.find(params[:id])
-  end
-
-  def params_with_user
-    HashWithIndifferentAccess.new({
-      endorser_id: current_user.id
-    }).merge( rubify_keys(endorsement_params.to_h))
-
-  end
 
   def endorsement_params
     params.permit(

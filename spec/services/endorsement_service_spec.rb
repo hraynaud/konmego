@@ -1,14 +1,13 @@
 require 'rails_helper'
 
 describe EndorsementService do
-  let(:all_preexisting){ {endorser_id: @p1.id, endorsee_id: @p2, topic_id: @topic1} }
-  let(:new_endorsee){ {new_person: {first: "Got", last: "Skillz", identity: {email: "goat@skillz.com"}}} }
-  let(:new_topic){ {new_topic: {name: "My New Topic"} } }
+  let(:new_endorsee){{first_name: "Got", last_name: "Skillz"}} 
+  let(:new_topic){{name: "My New Topic"}}
   let(:new_person_new_topic){ (new_endorsee.merge(new_topic)) }
 
   before do
-    @p1 = FactoryBot.create(:person)
-    @p2 = FactoryBot.create(:person)
+    @p1 = FactoryBot.create(:member)
+    @p2 = FactoryBot.create(:member)
     @topic1 = FactoryBot.create(:topic)
   end
 
@@ -22,40 +21,46 @@ describe EndorsementService do
   describe ".create" do
 
     context "all preexisting nodes" do
-
       it "create succeeds" do
         expect{
-          EndorsementService.create(all_preexisting)
+          EndorsementService.create(@p1, {endorsee_id: @p2.id, topic_id: @topic1.id})
         }.to change{Endorsement.count}.by(1)
       end
 
-
       specify " endorsee doesn't follow endorser" do
-        EndorsementService.create(all_preexisting)
+        EndorsementService.create(@p1, {endorsee_id: @p2.id, topic_id: @topic1.id})
         expect(@p2.follows?(@p1)).to be false
+      end
+
+      context "with new topic and endorsee params provided" do
+        it "creates endorsement without creating new person or new topic" do
+          expect{
+            EndorsementService.create(@p1, {endorsee_id: @p2.id, topic_id: @topic1.id, new_person_first_name: "new", new_person_last_name: "lasty", new_person_email: "a@b.com", new_topic_name: "newsy", new_topic_category: "topical"})
+          }.to change{Endorsement.count}.by(1)
+            .and change{Person.count}.by(0)
+            .and change{Topic.count}.by(0)
+        end
       end
     end
 
-    context  "new person" do
-      let(:with_new_endorsee_others_existing){ new_endorsee.merge({endorser_id: @p1, topic_id: @topic1}) }
 
+    context  "new person" do
       it "creates endorsement and new person node" do
         expect{
-          EndorsementService.create(with_new_endorsee_others_existing)
+          EndorsementService.create(@p1, {topic_id: @topic1.id, new_person_first_name: "new", new_person_last_name: "lasty", new_person_email: "a@b.com"})
         }.to change{Endorsement.count}.by(1)
           .and change{Person.count}.by(1)
       end
 
       specify "newly created person is not a member" do
-        endorsement = EndorsementService.create(with_new_endorsee_others_existing)
+        endorsement = EndorsementService.create(@p1, {topic_id: @topic1.id, new_person_first_name: "new", new_person_last_name: "lasty", new_person_email: "a@b.com"})
+
         expect(endorsement.endorsee.is_member?).to be false
       end
 
       it "fails with error if new person is invalid" do
-        with_new_endorsee_others_existing[:new_person][:identity][:email] = nil
-
         expect{
-          EndorsementService.create(with_new_endorsee_others_existing)
+          EndorsementService.create(@p1, {topic_id: @topic1.id, new_person_first_name: "new", new_person_last_name: "lasty"})
 
         }.to raise_error(ActiveGraph::Node::Persistence::RecordInvalidError)
           .and change{Endorsement.count}.by(0)
@@ -63,9 +68,9 @@ describe EndorsementService do
       end
 
       it "fails with error if endorsment duplicated" do
-        EndorsementService.create(with_new_endorsee_others_existing)
+        EndorsementService.create(@p1, {endorsee_id: @p2.id, topic_id: @topic1.id})
         expect{
-          EndorsementService.create(with_new_endorsee_others_existing)
+          EndorsementService.create(@p1, {endorsee_id: @p2.id, topic_id: @topic1.id})
         }.to raise_error(ActiveGraph::Node::Persistence::RecordInvalidError)
           .and change{Endorsement.count}.by(0)
           .and change{Person.count}.by(0)
@@ -76,26 +81,31 @@ describe EndorsementService do
     context "new topic" do
       it "creates endorsement and new topic if topic valid" do
         expect{
-          EndorsementService.create({endorser_id: @p1.id, endorsee_id: @p2}.merge new_topic)
+          EndorsementService.create(@p1, {endorsee_id: @p2.id, new_topic_name: "newsy", new_topic_category: "topical"})
         }.to change{Endorsement.count}.by(1)
           .and change{Topic.count}.by(1)
       end
 
       it "doesn't create endorsment if invalid" do
         expect{
-          new_topic[:new_topic][:name] = nil 
-          EndorsementService.create({endorser_id: @p1.id, endorsee_id: @p2.id}.merge new_topic)
+          EndorsementService.create(@p1, {endorsee_id: @p2.id, new_topic_category: "topical"})
+        }.to raise_error(ActiveGraph::Node::Persistence::RecordInvalidError)
+          .and change{Endorsement.count}.by(0)
+      end
+
+      it "doesn't create endorsment if invalid" do
+        expect{
+          EndorsementService.create(@p1, {endorsee_id: @p2.id, new_topic_name: nil, new_topic_category: "topical"})
         }.to raise_error(ActiveGraph::Node::Persistence::RecordInvalidError)
           .and change{Endorsement.count}.by(0)
       end
     end
 
     context "new person and new topic" do
-      let(:params){  (new_person_new_topic.merge({endorser_id: @p1.id}))  }
 
       it "creates endorsement and new person node" do
         expect{
-          EndorsementService.create(params)
+          EndorsementService.create(@p1, {new_topic_name: "newsy", new_topic_category: "topical", new_person_first_name: "new", new_person_last_name: "lasty", new_person_email: "a@b.com"})
         }.to change{Endorsement.count}.by(1)
           .and change{Topic.count}.by(1)
           .and change{Person.count}.by(1)
@@ -106,11 +116,11 @@ describe EndorsementService do
 
   describe "accept" do
     before do
-
       @e = FactoryBot.create(:endorsement)
       @p1 = @e.endorser
       @p2 = @e.endorsee
     end
+
     it "creates Friendship" do
       expect{
         EndorsementService.accept(@e)
