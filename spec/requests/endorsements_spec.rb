@@ -38,7 +38,7 @@ describe Api::V1::EndorsementsController, :type => :request do
 
     context "when either topic or endorsee or both are new" do
       let(:new_topic){ {newTopic: {name: "My New Topic"}} }
-      let(:new_person){ {newPerson: {first: "Firstly", last: "Lastly", identity: {email: "first@last.com", password: "password"}} }}
+      let(:new_person){ {newPerson: {first: "Firstly", last: "Lastly", identity: {email: "first@last.com"}} }}
 
       context "new topic" do
         let(:params){new_topic.merge({endorseeId: @tisha.id})}

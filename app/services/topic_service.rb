@@ -2,12 +2,11 @@ module TopicService
 
   class << self
 
-    def get topic_id, name, category 
-      begin 
-        Topic.find(topic_id) 
-      rescue 
-        Topic.create(name: name, category: category)
-      end
+    def get params
+      Topic.where(id: params[:topic_id]).first or 
+        Topic.where(name: params[:name]).first or
+        Topic.create(name: params[:name], category: params[:category])
+
     end
 
     def find_related_or_synonym name
@@ -15,6 +14,7 @@ module TopicService
       [] 
     end
 
-
   end
+
 end
+

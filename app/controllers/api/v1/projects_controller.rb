@@ -1,18 +1,31 @@
 class Api::V1::ProjectsController < ApplicationController
-
-  def create
-    current_user.projects.create project_params
+  def index
+    render json: {
+      projects: ProjectSerializer.new(current_user.projects)
+    }
   end
 
-  #TODO move consolidate search functionality in this controller or 
-  #projexct_search_controller
+  def create
 
-  def search
-    render json: ProjectSearchService.all_by_topic(params[:topic])
+    project = ProjectService.create(current_user,project_params)
+    binding.pry
+    json_response(project.to_json)
+  end
+
+  def show
+    current_user.projects.find(params[:id])
+  end
+
+  def update
+    current_user.projects.update project_params
   end
 
   def project_params
-    params.require(:project).permit(:name, :description, :start_date, :end_date, obstacles: [  :description ] )
+    params.require(:project).permit(
+      :name, :description, :start_date, 
+      :deadline, obstacles: [  :description ], 
+      topic: [:uuid ] 
+    )
   end
 end
 

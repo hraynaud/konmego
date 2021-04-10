@@ -10,7 +10,7 @@ class EndorsementService
     end
 
     def create endorser, params
-      topic = TopicService.get(params[:topic_id], params[:new_topic_name], params[:new_topic_category])
+      topic = TopicService.get(topic_id: params[:topic_id], name: params[:new_topic_name], category: params[:new_topic_category])
       endorsee = PersonService.get(params[:endorsee_id], params[:new_person_first_name], params[:new_person_last_name], params[:new_person_email])
       create_from_nodes(endorser, endorsee, topic)
     end

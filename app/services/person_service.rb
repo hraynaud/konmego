@@ -5,11 +5,8 @@ class PersonService
   class << self
 
     def get person_id, first_name, last_name, email
-      person = begin 
-                 Person.find(person_id) 
-               rescue 
-                 create(first_name, last_name, email)
-               end
+      Person.where(id: person_id).first or 
+        create(first_name, last_name, email)
     end
 
     private 

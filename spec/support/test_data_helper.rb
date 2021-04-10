@@ -48,23 +48,23 @@ module TestDataHelper
       @pending = []
       @declined = []
 
-      @accepted << EndorsementService.create(to_params( @fauzi, @franky, @cooking))#fauzi [KNOWS] franky
-      @accepted << EndorsementService.create(to_params( @tisha, @vince, @composer)) #tisha  [KNOWS] kendra
-      @accepted << EndorsementService.create(to_params( @tisha, @kendra, @singing)) #tisha  [KNOWS] kendra
-      @accepted << EndorsementService.create(to_params( @jean, @sar, @djing)) 
-      @accepted << EndorsementService.create(to_params( @sar, @jerry, @djing)) 
-      @accepted << EndorsementService.create(to_params( @nuno, @sar, @djing))
+      @accepted << EndorsementService.create(@fauzi, to_params(@franky, @cooking))#fauzi [KNOWS] franky
+      @accepted << EndorsementService.create(@tisha, to_params( @vince, @composer)) #tisha  [KNOWS] kendra
+      @accepted << EndorsementService.create(@tisha, to_params(@kendra, @singing)) #tisha  [KNOWS] kendra
+      @accepted << EndorsementService.create(@jean, to_params(@sar, @djing)) 
+      @accepted << EndorsementService.create(@sar, to_params(@jerry, @djing)) 
+      @accepted << EndorsementService.create(@nuno, to_params(@sar, @djing))
 
      # DECLINED OR PENDING
      # -----------------------
 
-      @declined << EndorsementService.create(to_params(@jean, @vince, @composer))
-      @pending << EndorsementService.create(to_params(@elsa, @sar, @acting))
+      @declined << EndorsementService.create(@jean, to_params(@vince, @composer))
+      @pending << EndorsementService.create(@elsa, to_params(@sar, @acting))
 
     end
 
-    def to_params(endorser, endorsee, topic)
-      {endorser_id: endorser.id, endorsee_id: endorsee.id, topic_id: topic.id} 
+    def to_params(endorsee, topic)
+      {endorsee_id: endorsee.id, topic_id: topic.id} 
     end
 
     def set_endorsement_statuses
