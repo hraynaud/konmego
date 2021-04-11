@@ -3,9 +3,13 @@ require 'spec_helper'
 include TestDataHelper::Utils
 
 RSpec.describe PersonMailer, type: :mailer do
+  before do 
+    clear_db
+  end
+
   describe 'welcome_email' do
-    let(:person) { FactoryBot.build(:member) } 
-    let(:mail) { PersonMailer.with(person: person).welcome_email.deliver_now }
+    let(:person) { FactoryBot.create(:member) } 
+    let(:mail) { PersonMailer.with(person_id: person.id).welcome_email.deliver_now }
     let(:url) {'http://example.com/login' }
 
     it 'renders the subject' do

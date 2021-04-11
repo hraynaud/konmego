@@ -6,7 +6,7 @@ class RegistrationController < ApplicationController
 
     if person.errors.empty?
       resp = Authentication.login_success person.identity
-      PersonMailer.with(person: person).welcome_email.deliver_later
+      PersonMailer.with(person_id: person.id).welcome_email.deliver_later
       respond_with_token resp.jwt
     else
       respond_with_model_error person

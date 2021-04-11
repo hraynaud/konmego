@@ -13,6 +13,13 @@ describe "Signup and registration" do
       .and change{Person.count}.by(1)
   end
 
+  it "sends email" do
+    post "/register",  params: person_params
+     expect {
+      NotificationsMailer.signup.deliver_later(wait_until: Date.tomorrow.noon)
+    }
+    expect(ActionMailer::Parameterized::DeliveryJob).to have_been_enqueued.with('PersonMailer', 'welcome_email', 'deliver_now',{person_id: Person.last.id})
+  end
 
   it "fails on missing email" do
     post "/register", params: build_invalid_params({email:nil})
