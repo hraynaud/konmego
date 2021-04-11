@@ -41,6 +41,14 @@ class Person
     "#{first_name} #{last_name}"
   end
 
+  def login
+    email
+  end
+
+  def email
+    identity.email
+  end
+
   def endorses? person
     outgoing_endorsements.endorsee.include? person
   end
