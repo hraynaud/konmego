@@ -1,16 +1,23 @@
 class RegistrationController < ApplicationController
   skip_before_action :authenticate_request
+  before_action :validate_password
 
   def create
-    person = Registration.register registration_params
+    RegistrationService.create rubify_keys(registration_params.except(:confirmPassword))
+  end
 
-    if person.errors.empty?
-      resp = Authentication.login_success person.identity
-      PersonMailer.with(person_id: person.id).welcome_email.deliver_later
-      respond_with_token resp.jwt
+  def confirm_registration
+    registration = Registration.find(params[:id])
+    if registration 
+      auth = RegistrationService.confirm(registration)
+      respond_with_token auth.jwt
     else
-      respond_with_model_error person
+      respond_with_model_error registration
     end
+  end
+
+  def validate_credentials
+   params[:password] == params[:confirmPassword]
   end
 
   def registration_params
