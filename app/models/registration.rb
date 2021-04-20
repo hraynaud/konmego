@@ -1,0 +1,5 @@
+class Registration < ApplicationRecord
+
+
+
+end
