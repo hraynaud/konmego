@@ -19,10 +19,10 @@ module TestDataHelper
       @herby, @tisha, @franky, @fauzi, @kendra, @sar, @elsa, @vince, @jean, @nuno, @gilbert, @jerry= %w(
       herby tisha franky fauzi kendra sar elsa vince jean nuno gilbert jerry
       ).map do |fname|
-        FactoryBot.create(:person, first_name: fname.titleize, last_name: "Skillz")
+        FactoryBot.create(:person, identity: FactoryBot.create(:identity, first_name: fname.titleize, last_name: "Skillz"))
       end
 
-      @hidden = FactoryBot.build(:person,first_name: "Hidden", last_name: "Hidden")
+      @hidden = FactoryBot.build(:person,identity: FactoryBot.create(:identity, first_name: "Hidden", last_name: "Hidden"))
     end
 
     def create_topics

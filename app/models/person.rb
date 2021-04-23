@@ -7,7 +7,6 @@ class Person
   include ActiveModel::SecurePassword
 
   validates :identity, presence: true
-  validates  :first_name, :last_name, presence: true
 
   has_one :out, :identity, type: :IDENTITY
   has_many :both, :contacts, model_class: :Person, type: :KNOWS, unique: true
@@ -20,8 +19,6 @@ class Person
 
   has_many :out, :activities, rel_class: :Activity
 
-  property :first_name, type: String
-  property :last_name, type: String
   property :bio, type: String
   property :profile_image_url, type: String
   property :avatar_url, type: String
@@ -37,6 +34,14 @@ class Person
                 avatar_url: avatar_url, profile_image_url: profile_image_url, name: "#{first_name} #{last_name}")
   end
 
+  def first_name
+    identity.first_name
+  end
+
+  def last_name
+    identity.last_name
+  end
+  
   def name
     "#{first_name} #{last_name}"
   end
