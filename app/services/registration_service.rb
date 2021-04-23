@@ -3,10 +3,10 @@ class RegistrationService
   class << self
 
     def create params
-      reg = Registration.new params
-      reg.code = generate_validation_code
-      reg.save
-      RegistrationMailer.confirm_email(reg).deliver_later
+      reg = Identity.new params
+      reg.reg_code = generate_validation_code
+      reg.save!
+      RegistrationMailer.with(reg_id: reg.id).confirm_email.deliver_later
     end
 
     def confirm registration
