@@ -45,26 +45,30 @@ describe EndorsementService do
 
 
     context  "new person" do
-      it "creates endorsement and new person node" do
+      it "creates registration if user is new" do
         expect{
-          EndorsementService.create(@p1, {topic_id: @topic1.id, new_person_first_name: "new", new_person_last_name: "lasty", new_person_email: "a@b.com"})
-        }.to change{Endorsement.count}.by(1)
-          .and change{Person.count}.by(1)
+          EndorsementService.create(@p1, {topic_id: @topic1.id, first_name: "new", last_name: "lasty", email: "a@b.com"})
+        }.to change{Endorsement.count}.by(0)
+          .and change{Person.count}.by(0)
+          .and change{Registration.count}.by(1)
+          .and change{Identity.count}.by(1)
       end
 
-      specify "newly created person is not a member" do
-        endorsement = EndorsementService.create(@p1, {topic_id: @topic1.id, new_person_first_name: "new", new_person_last_name: "lasty", new_person_email: "a@b.com"})
+      #specify "newly created person is not a member" do
+        #endorsement = EndorsementService.create(@p1, {topic_id: @topic1.id, new_person_first_name: "new", new_person_last_name: "lasty", new_person_email: "a@b.com"})
 
-        expect(endorsement.endorsee.is_member?).to be false
-      end
+        #expect(endorsement.endorsee.is_member?).to be false
+      #end
 
-      it "fails with error if new person is invalid" do
+      it "fails with error if registration is invalid" do
         expect{
-          EndorsementService.create(@p1, {topic_id: @topic1.id, new_person_first_name: "new", new_person_last_name: "lasty"})
+          EndorsementService.create(@p1, {topic_id: @topic1.id, first_name: "new", last_name: "lasty"})
 
         }.to raise_error(ActiveGraph::Node::Persistence::RecordInvalidError)
           .and change{Endorsement.count}.by(0)
           .and change{Person.count}.by(0)
+          .and change{Registration.count}.by(0)
+          .and change{Identity.count}.by(0)
       end
 
       it "fails with error if endorsment duplicated" do
@@ -74,6 +78,8 @@ describe EndorsementService do
         }.to raise_error(ActiveGraph::Node::Persistence::RecordInvalidError)
           .and change{Endorsement.count}.by(0)
           .and change{Person.count}.by(0)
+          .and change{Registration.count}.by(0)
+          .and change{Identity.count}.by(0)
 
       end
     end
@@ -105,10 +111,11 @@ describe EndorsementService do
 
       it "creates endorsement and new person node" do
         expect{
-          EndorsementService.create(@p1, {new_topic_name: "newsy", new_topic_category: "topical", new_person_first_name: "new", new_person_last_name: "lasty", new_person_email: "a@b.com"})
-        }.to change{Endorsement.count}.by(1)
-          .and change{Topic.count}.by(1)
-          .and change{Person.count}.by(1)
+          EndorsementService.create(@p1, {new_topic_name: "newsy", new_topic_category: "topical", first_name: "new", last_name: "lasty", email: "a@b.com"})
+        }.to change{Endorsement.count}.by(0)
+          .and change{Person.count}.by(0)
+          .and change{Registration.count}.by(1)
+          .and change{Identity.count}.by(1)
       end
     end
 

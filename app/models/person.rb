@@ -4,9 +4,8 @@ require 'ostruct'
 class Person
 
   include KonmegoNeo4jNode
-  include ActiveModel::SecurePassword
 
-  validates :identity, presence: true
+  validates :identity, presence: true, if: :is_member
 
   has_one :out, :identity, type: :IDENTITY
   has_many :both, :contacts, model_class: :Person, type: :KNOWS, unique: true
@@ -26,12 +25,12 @@ class Person
 
   #TODO Add profile model
 
- 
+
   DEFAULT_RELATIONSHIP_DEPTH = 3
 
   def extract
     OpenStruct.new(first_name: first_name, last_name: last_name,
-                avatar_url: avatar_url, profile_image_url: profile_image_url, name: "#{first_name} #{last_name}")
+                   avatar_url: avatar_url, profile_image_url: profile_image_url, name: "#{first_name} #{last_name}")
   end
 
   def first_name
@@ -41,7 +40,7 @@ class Person
   def last_name
     identity.last_name
   end
-  
+
   def name
     "#{first_name} #{last_name}"
   end

@@ -3,28 +3,47 @@ class RegistrationService
   class << self
 
     def create params
-      reg = Identity.new params
-      reg.reg_code = generate_validation_code
+      reg = build_registration params
       reg.save!
-      RegistrationMailer.with(reg_id: reg.id).confirm_email.deliver_later
+      RegistrationMailer.with(reg_id: reg.identity.id).confirm_email.deliver_later
+      reg
     end
 
-    def confirm registration
-      person = create_person
-      RegistrationMailer.welcome_email(person).deliver_later
+    def confirm registration 
+      registration.status = "confirmed"
+      registration.save
+      person = create_person(registration)
+      RegistrationMailer.welcome_email(registration.id).deliver_later
       login(person)
+    end
+
+    def invite endorser, params
+      reg = build_registration params 
+      reg.endorser_id = endorser.id
+      reg.identity.password = SecureRandom.alphanumeric(10)
+      reg.save!
+      RegistrationMailer.with(reg_id: reg.id).confirm_email.deliver_later
+      reg
     end
 
     private
 
-    def create_person
-      PersonService.create(
-        registration.first_name,
-        registration.last_name,
-        registration.email,
-        registration.password
-      )
+    def build_registration params
 
+      reg = Registration.new
+      reg.status= "pending"
+      reg. reg_code = generate_validation_code
+      reg.reg_code_expiration = 1.day.from_now
+      reg.identity = Identity.new params.except(:endorser_id, :topic_id)
+      reg
+    end
+
+    def person_params
+      params.except(:new_topic_name,:new_topic_category)
+    end
+
+    def create_person registration
+      PersonService.create registration
     end
 
     def login person

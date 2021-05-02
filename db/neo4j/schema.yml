@@ -21,6 +21,7 @@
 - CONSTRAINT ON ( obstacle:Obstacle ) ASSERT obstacle.uuid IS UNIQUE
 - CONSTRAINT ON ( person:Person ) ASSERT person.uuid IS UNIQUE
 - CONSTRAINT ON ( project:Project ) ASSERT project.uuid IS UNIQUE
+- CONSTRAINT ON ( registration:Registration ) ASSERT registration.uuid IS UNIQUE
 - CONSTRAINT ON ( topic:Topic ) ASSERT topic.uuid IS UNIQUE
 :indexes:
 - INDEX ON :Endorsement(status)
@@ -51,3 +52,4 @@
 - '20200316044509'
 - '20200805125400'
 - '20200805125414'
+- '20210428010641'

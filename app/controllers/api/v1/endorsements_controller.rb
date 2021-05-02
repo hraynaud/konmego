@@ -12,9 +12,9 @@ class Api::V1::EndorsementsController < ApplicationController
       {
         endorsee_id: params[:endorseeId], 
         topic_id: params[:topicId], 
-        new_person_first_name: params.dig(:newPerson,:first),
-        new_person_last_name: params.dig(:newPerson,:last),
-        new_person_email: params.dig(:newPerson,:identity, :email),
+        first_name: params.dig(:newPerson,:first),
+        last_name: params.dig(:newPerson,:last),
+        email: params.dig(:newPerson,:identity, :email),
         new_topic_name: params.dig(:newTopic, :name),
         new_topic_category: params.dig(:newTopic, :category)
       }

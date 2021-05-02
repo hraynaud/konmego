@@ -10,11 +10,20 @@ class EndorsementService
     end
 
     def create endorser, params
-      topic = TopicService.get(topic_id: params[:topic_id], name: params[:new_topic_name], category: params[:new_topic_category])
+      topic = find_or_create_topic params
+      endorsee = Person.where(id: params[:endorsee_id]).first
 
-      endorsee = PersonService.get(params[:endorsee_id], params[:new_person_first_name], params[:new_person_last_name], params[:new_person_email], SecureRandom.alphanumeric(10))
+      if endorsee 
+        create_from_nodes(endorser, endorsee, topic)
+      else
+        reg = RegistrationService.invite endorser, params.except(:new_topic_name,:new_topic_category, :endorsee_id)
+        reg
+      end
+      #
+      #change to use registration service
+      #endorsee = PersonService.get(params[:endorsee_id], params[:new_person_first_name], params[:new_person_last_name], params[:new_person_email], SecureRandom.alphanumeric(10))
 
-      create_from_nodes(endorser, endorsee, topic)
+      #create_from_nodes(endorser, endorsee, topic)
     end
 
     def accept endorsement
@@ -33,6 +42,11 @@ class EndorsementService
     end
 
     private
+
+
+    def find_or_create_topic params
+      TopicService.get(topic_id: params[:topic_id], name: params[:new_topic_name], category: params[:new_topic_category])
+    end
 
     def create_from_nodes endorser, endorsee, topic
       return build_endorsement(endorser, endorsee, topic).tap do |endorsement|

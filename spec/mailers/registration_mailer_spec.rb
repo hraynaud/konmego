@@ -8,7 +8,7 @@ RSpec.describe RegistrationMailer, type: :mailer do
   end
 
   describe 'welcome_email' do
-    let(:reg) { FactoryBot.create(:identity) } 
+    let(:reg) { FactoryBot.create(:registration) } 
     let(:mail) { RegistrationMailer.with(id: reg.id).welcome_email.deliver_now }
 
     it 'renders the subject' do

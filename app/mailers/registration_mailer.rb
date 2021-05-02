@@ -5,12 +5,12 @@ class RegistrationMailer < ApplicationMailer
   REG_CONFIRM_MSG = 'Confirm your email'
 
   def confirm_email id
-    @identity = Identity.find(id) 
+    @identity = Registration.find(id) 
     mail(to: @identity.email, subject: REG_CONFIRM_MSG)
   end
 
   def welcome_email
-    @identity = Identity.find(params[:id]) 
+    @identity = Registration.find(params[:id]) 
     mail(to: @identity.email, subject: REG_WELCOME_MSG)
   end
 

@@ -30,6 +30,7 @@ class Endorsement
 
   private
 
+
   def add_description
     self.description = "#{endorser.name} endorses someone for #{topic_name}"
   end

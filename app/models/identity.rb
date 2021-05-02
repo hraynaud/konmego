@@ -16,15 +16,15 @@ class Identity
   property :first_name, type: String
   property :last_name, type: String
   property :email, type: String
-  property :registrion_code, type: String
-  property :password_digest, type: String
   property :reg_code, type: String
+  property :password_digest, type: String
  
   def name
     "#{first_name} #{last_name}"
   end
 
   private
+
 
   def is_oauth?
     #handle.present? && uid.present?

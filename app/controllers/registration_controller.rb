@@ -3,7 +3,7 @@ class RegistrationController < ApplicationController
   before_action :validate_password
 
   def create
-    reg = RegistrationService.create rubify_keys(registration_params.except(:confirmPassword))
+    RegistrationService.create rubify_keys(registration_params.except(:confirmPassword))
   end
 
   def confirm_registration
