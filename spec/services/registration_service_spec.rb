@@ -27,7 +27,7 @@ describe RegistrationService do
         )
         expect(reg.reg_code).to(be_present)
         expect(reg.status).to eq("pending")
-        expect(reg.reg_code_expiration).to be(1.day.from_now.to_i)
+        expect(reg.reg_code_expiration.to_i).to be(1.day.from_now.to_i)
       end
     end
   end
