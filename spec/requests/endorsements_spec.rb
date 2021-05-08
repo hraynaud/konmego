@@ -64,36 +64,31 @@ describe Api::V1::EndorsementsController, :type => :request do
         it "succeeds for new person" do
           do_post @herby, "/api/v1/endorsements", params 
           expect_http response, :ok
-          expect_response_and_model_json_to_match response, Registration.last
+          expect_response_and_model_json_to_match response, Invite.last
         end
 
-        it "creates new registration and new identity" do
+        it "creates new registration and new invite" do
           expect{
             do_post @herby, "/api/v1/endorsements", params
           }.to change{Endorsement.count}.by(0)
-            .and change{Identity.count}.by(1)
-            .and change{Registration.count}.by(1)
-            .and change{Person.count}.by(0)
-            .and change{Topic.count}.by(0)
+            .and change{Invite.count}.by(1)
         end
       end
 
-      context "new registration, identity and topic" do
+      context "new invite and opic" do
         let(:new_person_and_topic){ new_topic.merge(new_person) }
 
         it "creates new endorsement and new person" do
           do_post @herby, "/api/v1/endorsements", new_person_and_topic
           expect_http response, :ok
-          expect_response_and_model_json_to_match response, Registration.last
+          expect_response_and_model_json_to_match response, Invite.last
         end
 
-        it "creates new registration, topic and new identity" do
+        it "creates new invite and topic" do
           expect{
             do_post @herby, "/api/v1/endorsements", new_person_and_topic
           }.to change{Endorsement.count}.by(0)
-            .and change{Identity.count}.by(1)
-            .and change{Registration.count}.by(1)
-            .and change{Person.count}.by(0)
+            .and change{Invite.count}.by(1)
             .and change{Topic.count}.by(1)
         end
       end

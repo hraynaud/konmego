@@ -7,9 +7,7 @@ class Registration
   property :status, type: String
   property :reg_code, type: String
   property :reg_code_expiration, type: Integer
-  property :is_referral, type: Boolean
   property :topic_id, type: String
-  property :endorser_id, type: String
 
   validate :has_valid_identity
 

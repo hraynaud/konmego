@@ -12,6 +12,7 @@ class InviteService
       else
         InviteMailer.with(id: invite.id).invite_email.deliver_later
       end
+      invite
     end
   end
 end

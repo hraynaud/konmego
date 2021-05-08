@@ -15,7 +15,7 @@ describe EndorsementService do
     Person.delete_all
     Endorsement.delete_all
     Topic.delete_all
-    Identity.delete_all
+    Invite.delete_all
   end
 
   describe ".create" do
@@ -32,43 +32,25 @@ describe EndorsementService do
         expect(@p2.follows?(@p1)).to be false
       end
 
-      context "with new topic and endorsee params provided" do
-        it "creates endorsement without creating new person or new topic" do
-          expect{
-            EndorsementService.create(@p1, {endorsee_id: @p2.id, topic_id: @topic1.id, new_person_first_name: "new", new_person_last_name: "lasty", new_person_email: "a@b.com", new_topic_name: "newsy", new_topic_category: "topical"})
-          }.to change{Endorsement.count}.by(1)
-            .and change{Person.count}.by(0)
-            .and change{Topic.count}.by(0)
-        end
-      end
     end
 
 
     context  "new person" do
-      it "creates registration if user is new" do
+      it "creates invite if user is new" do
         expect{
           EndorsementService.create(@p1, {topic_id: @topic1.id, first_name: "new", last_name: "lasty", email: "a@b.com"})
         }.to change{Endorsement.count}.by(0)
-          .and change{Person.count}.by(0)
-          .and change{Registration.count}.by(1)
-          .and change{Identity.count}.by(1)
+          .and change{Invite.count}.by(1)
       end
 
-      #specify "newly created person is not a member" do
-        #endorsement = EndorsementService.create(@p1, {topic_id: @topic1.id, new_person_first_name: "new", new_person_last_name: "lasty", new_person_email: "a@b.com"})
 
-        #expect(endorsement.endorsee.is_member?).to be false
-      #end
-
-      it "fails with error if registration is invalid" do
+      it "fails with error if invite is invalid" do
         expect{
           EndorsementService.create(@p1, {topic_id: @topic1.id, first_name: "new", last_name: "lasty"})
 
         }.to raise_error(ActiveGraph::Node::Persistence::RecordInvalidError)
           .and change{Endorsement.count}.by(0)
-          .and change{Person.count}.by(0)
-          .and change{Registration.count}.by(0)
-          .and change{Identity.count}.by(0)
+          .and change{Invite.count}.by(0)
       end
 
       it "fails with error if endorsment duplicated" do
@@ -77,9 +59,7 @@ describe EndorsementService do
           EndorsementService.create(@p1, {endorsee_id: @p2.id, topic_id: @topic1.id})
         }.to raise_error(ActiveGraph::Node::Persistence::RecordInvalidError)
           .and change{Endorsement.count}.by(0)
-          .and change{Person.count}.by(0)
-          .and change{Registration.count}.by(0)
-          .and change{Identity.count}.by(0)
+          .and change{Invite.count}.by(0)
 
       end
     end
@@ -92,7 +72,7 @@ describe EndorsementService do
           .and change{Topic.count}.by(1)
       end
 
-      it "doesn't create endorsment if invalid" do
+      it "doesn't create endorsment if missing topic" do
         expect{
           EndorsementService.create(@p1, {endorsee_id: @p2.id, new_topic_category: "topical"})
         }.to raise_error(ActiveGraph::Node::Persistence::RecordInvalidError)
@@ -109,13 +89,12 @@ describe EndorsementService do
 
     context "new person and new topic" do
 
-      it "creates endorsement and new person node" do
+      it "creates endorsement and new invitation" do
         expect{
           EndorsementService.create(@p1, {new_topic_name: "newsy", new_topic_category: "topical", first_name: "new", last_name: "lasty", email: "a@b.com"})
         }.to change{Endorsement.count}.by(0)
-          .and change{Person.count}.by(0)
-          .and change{Registration.count}.by(1)
-          .and change{Identity.count}.by(1)
+          .and change{Invite.count}.by(1)
+          .and change{Topic.count}.by(1)
       end
     end
 

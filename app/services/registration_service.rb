@@ -17,14 +17,6 @@ class RegistrationService
       login(person)
     end
 
-    def invite endorser, params
-      reg = build_registration params 
-      reg.endorser_id = endorser.id
-      reg.identity.password = SecureRandom.alphanumeric(10)
-      reg.save!
-      RegistrationMailer.with(reg_id: reg.id).confirm_email.deliver_later
-      reg
-    end
 
     private
 

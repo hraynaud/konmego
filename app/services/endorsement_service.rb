@@ -16,8 +16,8 @@ class EndorsementService
       if endorsee 
         create_from_nodes(endorser, endorsee, topic)
       else
-        reg = RegistrationService.invite endorser, params.except(:new_topic_name,:new_topic_category, :endorsee_id)
-        reg
+        invite = InviteService.create endorser, invite_params(params)
+        invite
       end
     end
 
@@ -38,6 +38,9 @@ class EndorsementService
 
     private
 
+    def invite_params params
+      params.except(:new_topic_name, :new_topic_category, :endorsee_id)
+    end  
 
     def find_or_create_topic params
       TopicService.get(topic_id: params[:topic_id], name: params[:new_topic_name], category: params[:new_topic_category])
