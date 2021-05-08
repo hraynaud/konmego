@@ -18,6 +18,7 @@
   ) ASSERT `neo4j::migrations::schemamigration`.migration_id IS UNIQUE
 - CONSTRAINT ON ( endorsement:Endorsement ) ASSERT endorsement.uuid IS UNIQUE
 - CONSTRAINT ON ( identity:Identity ) ASSERT identity.uuid IS UNIQUE
+- CONSTRAINT ON ( invite:Invite ) ASSERT invite.uuid IS UNIQUE
 - CONSTRAINT ON ( obstacle:Obstacle ) ASSERT obstacle.uuid IS UNIQUE
 - CONSTRAINT ON ( person:Person ) ASSERT person.uuid IS UNIQUE
 - CONSTRAINT ON ( project:Project ) ASSERT project.uuid IS UNIQUE
@@ -53,3 +54,4 @@
 - '20200805125400'
 - '20200805125414'
 - '20210428010641'
+- '20210507040932'

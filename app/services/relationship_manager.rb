@@ -8,18 +8,6 @@ class RelationshipManager
     follow(endorser, endorsee)
   end
 
-  def self.create_placeholder_member_if_not_on_konnosaurus(endorsement)
-    if endorsement.endorsee.nil? && endorsement.non_member_email.present?\
-        && endorsement.non_member_fname.present?  && endorsement.non_member_lname.present?
-
-      endorsement.endorsee = User.create_non_member_if_new_email(
-        :email => endorsement.non_member_email, 
-        :first_name=>endorsement.non_member_fname,
-        :last_name=>endorsement.non_member_lname,
-        :password=>"K2kM7y$2#0",
-        :is_member => false)
-    end
-  end
 
   def self.follow follower, followed
     follower.followings << followed

@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
 
+      post 'invite', to: 'invites#create'
+
       get 'people/:relationship_group', to: "people#index", constraints: {relationship_group: /contacts|endorsees|endorsers/}
 
       get 'topic_contacts/:topic', to: 'topic_contacts#index' 

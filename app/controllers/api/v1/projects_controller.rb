@@ -8,7 +8,6 @@ class Api::V1::ProjectsController < ApplicationController
   def create
 
     project = ProjectService.create(current_user,project_params)
-    binding.pry
     json_response(project.to_json)
   end
 

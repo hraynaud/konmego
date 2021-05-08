@@ -19,11 +19,6 @@ class EndorsementService
         reg = RegistrationService.invite endorser, params.except(:new_topic_name,:new_topic_category, :endorsee_id)
         reg
       end
-      #
-      #change to use registration service
-      #endorsee = PersonService.get(params[:endorsee_id], params[:new_person_first_name], params[:new_person_last_name], params[:new_person_email], SecureRandom.alphanumeric(10))
-
-      #create_from_nodes(endorser, endorsee, topic)
     end
 
     def accept endorsement

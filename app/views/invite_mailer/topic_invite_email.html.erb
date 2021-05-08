@@ -4,13 +4,11 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <h1>Welcome to konmego.com, <%= @registration.name %></h1>
+    <h1>Welcome to konmego.com, <%= @invite.first_name %></h1>
     <p>
       Please confirm your idenity by entering the validation code below in the Konmengo app to complete your registraiton.,
     </p>
     <p>
-    Your validation code is: <br\>
-    <%=@registration.reg_code%>
     </p>
   </body>
 </html>
