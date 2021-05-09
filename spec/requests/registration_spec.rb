@@ -82,6 +82,33 @@ describe "Signup and registration" do
 
   end 
 
+
+  describe "confirm" do
+    let(:reg){FactoryBot.create(:registration)}
+
+    it "confirms registration" do
+      expect{
+        post "/confirm", params:{id: reg.id, password: reg.password, code: reg.reg_code}
+      }.to change{Identity.count}.by(1)
+        .and change{Person.count}.by(1)
+        .and change{reg.status}.to("confirmed")
+    end
+
+    it "fails on invalid code" do
+      post "/confirm", params:{id: reg.id, password: reg.password, code: '123456'}
+      expect_http response, :unprocessable_entity
+      expect(Person.count).to eq(0)
+      expect(reg.status).to eq("pending")
+    end
+
+    it "fails on invalid password" do
+      post "/confirm", params:{id: reg.id, password: "   ", code: reg.reg_code}
+      expect_http response, :unprocessable_entity
+      expect(Person.count).to eq(0)
+      expect(reg.status).to eq("pending")
+    end
+  end
+
   def build_invalid_params err
     person_params.merge(err)
   end

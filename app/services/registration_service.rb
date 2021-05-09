@@ -9,17 +9,28 @@ class RegistrationService
       reg
     end
 
-    def confirm registration 
-      registration.status = "confirmed"
-      registration.save
-      person = create_person(registration)
-      RegistrationMailer.welcome_email(registration.id).deliver_later
-      login(person)
+    def confirm id, code, password
+      registration = Registration.where(id: id).first
+      if registration && confirmationValid?(registration, code, password)
+        registration.status = "confirmed"
+        registration.save
+        person = create_person(registration)
+        RegistrationMailer.welcome_email(registration.id).deliver_later
+        login(person)
+
+      else
+        raise "Invalid confirmation credentials"
+      end
     end
 
 
     private
 
+    def confirmationValid? registration, code, password
+      registration.reg_code == code && registration.authenticate(password)
+    end
+
+   
     def build_registration params
 
       reg = Registration.new

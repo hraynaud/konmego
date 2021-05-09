@@ -8,6 +8,12 @@ class ApplicationController < ActionController::API
     head :ok
   end
 
+  protected
+  
+  def json_response(object, status)
+    render json: object, status: status
+  end
+
   private
 
   def rubify_keys hash
@@ -18,9 +24,6 @@ class ApplicationController < ActionController::API
     @current_user
   end
 
-  def json_response(object, status)
-    render json: object, status: status
-  end
 
   def respond_with_token jwt
     response.set_header "jwt",jwt 

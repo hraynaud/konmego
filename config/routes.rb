@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 
   post 'login', to: 'authentication#login'
   post 'register', to: 'registration#create'
+  post 'confirm', to: 'registration#confirm'
 
   namespace :api do
     namespace :v1 do

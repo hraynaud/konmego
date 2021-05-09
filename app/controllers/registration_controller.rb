@@ -1,26 +1,23 @@
 class RegistrationController < ApplicationController
   skip_before_action :authenticate_request
-  before_action :validate_password
+  before_action :validate_confirmation_password, only:[:create]
 
   def create
-    RegistrationService.create rubify_keys(registration_params.except(:confirmPassword))
+    reg = RegistrationService.create rubify_keys(registration_params.except(:confirmPassword))
+    json_response({id: reg.id}, :ok)
   end
 
-  def confirm_registration
-    registration = Registration.find(params[:id])
-    if registration 
-      auth = RegistrationService.confirm(registration)
-      respond_with_token auth.jwt
-    else
-      respond_with_model_error registration
-    end
+  def confirm
+    auth = RegistrationService.confirm(params[:id], params[:code], params[:password])
+    respond_with_token auth.jwt
   end
 
-  def validate_password
+  def validate_confirmation_password
    params[:password] == params[:confirmPassword]
   end
 
   def registration_params
-    params.permit(:email, :password, :confirmPassword, :firstName, :lastName ) 
+    params.permit(:email, :password, :confirmPassword, :firstName, :lastName, :code, :id) 
   end
+
 end

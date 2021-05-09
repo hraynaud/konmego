@@ -4,6 +4,7 @@ module KonmegoNeo4jNode
   included do
 
     include ActiveGraph::Node
+    include ActiveGraph::Timestamps
 
     def type
       self.class.name
