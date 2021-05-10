@@ -35,11 +35,13 @@ describe RegistrationService do
   describe "confirm" do
     context "successful" do
       before do
+        @identity = FactoryBot.build(:identity)
         @reg = FactoryBot.create(:registration)
       end
+
       it "updates identity to confirmed status" do
-        RegistrationService.confirm(@reg)
-        expect(@reg.status).to eq("confirmed")
+        RegistrationService.confirm(@reg.id,@reg.reg_code, @identity.password)
+        expect(@reg.reload.status).to eq("confirmed")
       end
 
     end

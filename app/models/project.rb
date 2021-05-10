@@ -14,7 +14,7 @@ class Project
   has_many :in, :participants, type: :PARTICIPATES_IN, model_class: :Person
 
   validates :owner, :name, :description, presence: true
-  validates :topic, presence: {message: "Projects must have a topic"}
+  validates :topic, presence: {message: "Projects must have a topic"}, on: :update #NOTE made this active only on update to
   validates :obstacles, presence: {message: "At least one obstacle required"}, on: :update
 
   scope :public,  ->{where("projects.visibility > ? ", Project.visibilities[:private])}

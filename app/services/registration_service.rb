@@ -17,7 +17,6 @@ class RegistrationService
         person = create_person(registration)
         RegistrationMailer.welcome_email(registration.id).deliver_later
         login(person)
-
       else
         raise "Invalid confirmation credentials"
       end
@@ -30,9 +29,7 @@ class RegistrationService
       registration.reg_code == code && registration.authenticate(password)
     end
 
-   
     def build_registration params
-
       reg = Registration.new
       reg.status= "pending"
       reg. reg_code = generate_validation_code

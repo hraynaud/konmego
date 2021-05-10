@@ -114,7 +114,7 @@ describe Api::V1::EndorsementsController, :type => :request do
 
       it "returns updated endorsement" do
         do_put @herby, accept_api_v1_endorsement_path(e)
-        expect_response_and_model_json_to_match response, e.reload 
+        expect_response_and_model_json_to_match response, e.reload
       end
 
       it "fails if endorsement doesn't exist" do

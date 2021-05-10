@@ -4,7 +4,8 @@ module KonmegoNeo4jNode
   included do
 
     include ActiveGraph::Node
-    include ActiveGraph::Timestamps
+    include ActiveGraph::Timestamps::Created
+    #include ActiveGraph::Timestamps::Updated NOTE this causes weird test failures
 
     def type
       self.class.name

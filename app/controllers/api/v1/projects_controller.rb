@@ -6,7 +6,6 @@ class Api::V1::ProjectsController < ApplicationController
   end
 
   def create
-
     project = ProjectService.create(current_user,project_params)
     json_response(project.to_json)
   end
@@ -22,8 +21,7 @@ class Api::V1::ProjectsController < ApplicationController
   def project_params
     params.require(:project).permit(
       :name, :description, :start_date, 
-      :deadline, obstacles: [  :description ], 
-      topic: [:uuid ] 
+      :deadline
     )
   end
 end

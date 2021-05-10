@@ -85,17 +85,17 @@ describe "Signup and registration" do
 
   describe "confirm" do
     let(:reg){FactoryBot.create(:registration)}
+    let(:identity){FactoryBot.build(:identity)} #NOTE avoid hard coding the test pwd grabit from a new identity instance since it converted to a digest after sace by has_secure_password.
 
     it "confirms registration" do
-      expect{
-        post "/confirm", params:{id: reg.id, password: reg.password, code: reg.reg_code}
-      }.to change{Identity.count}.by(1)
-        .and change{Person.count}.by(1)
-        .and change{reg.status}.to("confirmed")
+      post "/confirm", params:{id: reg.id, password: identity.password, code: reg.reg_code}
+      expect(reg.reload.status).to eq("confirmed")
+      expect(Identity.count).to eq(1)
+      expect(Person.count).to eq(1)
     end
 
     it "fails on invalid code" do
-      post "/confirm", params:{id: reg.id, password: reg.password, code: '123456'}
+      post "/confirm", params:{id: reg.id, password: identity.password, code: '123456'}
       expect_http response, :unprocessable_entity
       expect(Person.count).to eq(0)
       expect(reg.status).to eq("pending")

@@ -22,7 +22,7 @@ class EndorsementService
     end
 
     def accept endorsement
-      return endorsement.tap do |e|
+      endorsement.tap do |e|
         RelationshipManager.create_friendship_if_none_exists_for(e)
         e.accepted!
         e.save

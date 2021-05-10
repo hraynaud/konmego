@@ -11,7 +11,7 @@ class Registration
 
   validate :has_valid_identity
 
-  delegate :email, :first_name, :last_name, :name, :password, :authenticate, to: :identity
+  delegate :email, :first_name, :last_name, :name, :authenticate, to: :identity
 
   private
   def has_valid_identity

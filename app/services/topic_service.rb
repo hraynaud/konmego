@@ -9,10 +9,6 @@ module TopicService
 
     end
 
-    def find_or_create_topic params
-      get(topic_id: params[:topic_id], name: params[:new_topic_name], category: params[:new_topic_category])
-    end
-
     def find_related_or_synonym name
       #TODO implement
       [] 
