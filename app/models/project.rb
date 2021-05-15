@@ -14,8 +14,10 @@ class Project
   has_many :in, :participants, type: :PARTICIPATES_IN, model_class: :Person
 
   validates :owner, :name, :description, presence: true
-  validates :topic, presence: {message: "Projects must have a topic"}, on: :update #NOTE made this active only on update to
-  validates :obstacles, presence: {message: "At least one obstacle required"}, on: :update
+  #validates :topic, presence: {message: "Projects must have a topic"}, on: :update #NOTE made this active only on update to
+  #validates :obstacles, presence: {message: "At least one obstacle required"}, on: :update
+  validate :cannot_set_status_active_without_required_attributes_set, on: :update
+
 
   scope :public,  ->{where("projects.visibility > ? ", Project.visibilities[:private])}
 
@@ -26,6 +28,8 @@ class Project
   def as_json options = nil
     super(root: false, except: [:neo_id, :visibility ])
   end
+
+
 
   class << self
     def default_scope person
@@ -68,5 +72,16 @@ class Project
 
   end
 
+  private
+
+  def cannot_set_status_active_without_required_attributes_set
+     if status == "active" and invalid_activation_config?
+       errors.add(:status, "Cannot activate  project with obstacles, topics, description, start date and deadline")
+     end
+  end
+
+  def invalid_activation_config?
+    topic.nil? || obstacles.empty? || description.blank? || start_date.nil? || deadline.nil?
+  end
 end
 

@@ -39,20 +39,53 @@ describe Project do
           expect(project.description).to be_nil
         end
 
-        it "has no topic" do
-          project.name = "My name"
-          project.description = "My description"
-          project.obstacles = [Obstacle.new]
-          expect(project.topic).to be_nil
-        end
+        #it "has no topic" do
+          #project.name = "My name"
+          #project.description = "My description"
+          #project.obstacles = [Obstacle.new]
+          #expect(project.topic).to be_nil
+        #end
 
-        it "has no obstacles" do
-          project.name = "My name"
-          project.description = "My description"
-          expect(project.obstacles).to be_empty
-        end
+        #it "has no obstacles" do
+          #project.name = "My name"
+          #project.description = "My description"
+          #expect(project.obstacles).to be_empty
+        #end
 
       end
+    end
+
+    context "activation blocked" do
+      before do 
+        @project = FactoryBot.create(:project, :valid)
+        @project.status = "active"
+        
+      end
+
+      it "it is missing obstacles" do
+        @project.obstacles = []
+        expect(@project.valid?(:update)).to be false
+      end
+
+      it "it missing description" do
+        @project.description = nil
+        expect(@project.valid?(:update)).to be false
+      end
+
+      it "it missing topc" do
+        @project.topic = nil
+        expect(@project.valid?(:update)).to be false
+      end 
+
+      it "it missing start_date" do
+        @project.start_date = nil
+        expect(@project.valid?(:update)).to be false
+      end 
+
+      it "it missing deadline" do
+        @project.deadline = nil
+        expect(@project.valid?(:update)).to be false
+      end 
     end
 
     context "is Valid for update when" do

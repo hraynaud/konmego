@@ -11,6 +11,21 @@ class ProjectService
       end
     end
 
+    def update id, params 
+      project = Project.find(id)
+      project.update(params)
+      project.save!
+    end
+
+    def add_obstacle obstacle
+
+    end
+
+    def add_participant
+    end
+
+    def add_topics
+    end
   end
 
 end
