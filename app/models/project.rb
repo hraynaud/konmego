@@ -14,7 +14,7 @@ class Project
   has_many :in, :participants, type: :PARTICIPATES_IN, model_class: :Person
 
   validates :owner, :name, :description, presence: true
-  #validates :topic, presence: {message: "Projects must have a topic"}, on: :update #NOTE made this active only on update to
+  #validates :topic, presence: {message: "Projects must have a topic"}
   #validates :obstacles, presence: {message: "At least one obstacle required"}, on: :update
   validate :cannot_set_status_active_without_required_attributes_set, on: :update
 
@@ -76,7 +76,7 @@ class Project
 
   def cannot_set_status_active_without_required_attributes_set
      if status == "active" and invalid_activation_config?
-       errors.add(:status, "Cannot activate  project with obstacles, topics, description, start date and deadline")
+       errors.add(:status, "Cannot activate project without obstacles, topics, description, start date and deadline and visibility")
      end
   end
 

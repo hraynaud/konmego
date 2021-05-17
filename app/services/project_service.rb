@@ -11,8 +11,7 @@ class ProjectService
       end
     end
 
-    def update id, params 
-      project = Project.find(id)
+    def update project, params 
       project.update(params)
       project.save!
     end

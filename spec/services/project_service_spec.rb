@@ -18,13 +18,13 @@ describe ProjectService do
   describe ".create" do
 
     it "creates a new project" do
-      expect{ ProjectService.create(@owner, project_params ) }.to change{Project.count}.by(1)
+      expect{ ProjectService.create(@owner, create_params ) }.to change{Project.count}.by(1)
     end
 
 
     context "failures" do
       it "fails when missing required params" do
-        expect{ ProjectService.create(@owner, project_params.except(:name))}
+        expect{ ProjectService.create(@owner, create_params.except(:name))}
           .to raise_error(ActiveGraph::Node::Persistence::RecordInvalidError)
           .and change{Project.count}.by(0)
       end
@@ -32,7 +32,51 @@ describe ProjectService do
 
   end
 
-  def project_params
+  describe ".update" do
+
+    context "success" do
+
+      context "normal update" do
+        before do
+          @project = FactoryBot.create(:project )
+          @project.description  << "Chamge of placens"
+        end
+
+        it "updates field" do
+          ProjectService.update(@project, update_params ) 
+        end
+
+        it "changes topic" do
+          topic =  FactoryBot.create(:topic)
+          @project.topic = topic
+          ProjectService.update(@project, update_params ) 
+          expect(@project.topic_name).to eq(topic.name)
+        end
+      end
+
+      context "activatable" do
+        before do
+          @project = FactoryBot.create(:project, :creatable)
+          @obstacle = FactoryBot.create(:obstacle)
+        end
+
+        it "activates project" do
+          @project.obstacles  << @obstacle
+          @project.status = 'active'
+          ProjectService.update(@project, update_params ) 
+        end
+      end
+    end
+
+    context "failures" do
+      it "fails when missing required params" do
+      end
+    end
+
+  end
+
+
+  def create_params
     {
       name: "My project",
       description: "describes me to a t",
@@ -41,6 +85,11 @@ describe ProjectService do
     }
   end
 
+  def update_params
+    {
+
+    }
+  end
 end
 
 
