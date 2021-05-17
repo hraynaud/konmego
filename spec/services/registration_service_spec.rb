@@ -6,6 +6,8 @@ include TestDataHelper::Utils
 
 describe RegistrationService do
 
+#TODO add some failure tests
+
   before do
     Person.delete_all
     Identity.delete_all

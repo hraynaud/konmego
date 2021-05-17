@@ -39,11 +39,11 @@ describe Project do
           expect(project.description).to be_nil
         end
 
-        #it "has no topic" do
+        #it "has no topics" do
           #project.name = "My name"
           #project.description = "My description"
           #project.obstacles = [Obstacle.new]
-          #expect(project.topic).to be_nil
+          #expect(project.topics).to be_nil
         #end
 
         #it "has no obstacles" do
@@ -59,7 +59,6 @@ describe Project do
       before do 
         @project = FactoryBot.create(:project, :valid)
         @project.status = "active"
-        
       end
 
       it "it is missing obstacles" do
@@ -72,8 +71,8 @@ describe Project do
         expect(@project.valid?(:update)).to be false
       end
 
-      it "it missing topc" do
-        @project.topic = nil
+      it "it missing topcs" do
+        @project.topics = []
         expect(@project.valid?(:update)).to be false
       end 
 

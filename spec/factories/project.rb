@@ -23,7 +23,8 @@ FactoryBot.define do
 
 
     trait :with_topic do
-      association :topic,  factory: :topic
+     topics  { build_list :topic, 3 }
+      #association :topic,  factory: :topic
     end
   end
 end

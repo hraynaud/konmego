@@ -27,7 +27,7 @@ class ProjectSearchService
 
     def by_topic scope, topic_id
       if topic_id
-        scope = scope.topic.where(id: topic_id)
+        scope = scope.topics.where(id: topic_id)
       end
       scope
     end

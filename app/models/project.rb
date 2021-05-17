@@ -9,7 +9,7 @@ class Project
   enum visibility: [:private, :friends, :in_network, :vendor, :public], _default: :private
 
   has_one :in, :owner, type: :OWNS, model_class: :Person
-  has_one :out, :topic, type: :CONCERNS
+  has_many :out, :topics, type: :CONCERNS
   has_many :out,:obstacles, type: :BLOCKS, model_class: :Obstacle
   has_many :in, :participants, type: :PARTICIPATES_IN, model_class: :Person
 
@@ -22,7 +22,7 @@ class Project
   scope :public,  ->{where("projects.visibility > ? ", Project.visibilities[:private])}
 
   def topic_name
-    topic.name
+    topics.map(&:name)
   end
 
   def as_json options = nil
@@ -81,7 +81,7 @@ class Project
   end
 
   def invalid_activation_config?
-    topic.nil? || obstacles.empty? || description.blank? || start_date.nil? || deadline.nil?
+    topics.empty? || obstacles.empty? || description.blank? || start_date.nil? || deadline.nil?
   end
 end
 

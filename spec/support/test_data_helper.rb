@@ -101,29 +101,29 @@ module TestDataHelper
 
     def setup_projects
       # elsa
-      @chef_project = FactoryBot.create(:project, :valid, name: "Chef", topic: @cooking, owner: @elsa, visibility: :friends)
+      @chef_project = FactoryBot.create(:project, :valid, name: "Chef", topics: [@cooking], owner: @elsa, visibility: :friends)
       
       # fauzi
-      @dining_project = FactoryBot.create(:project, :valid, name: "Dining", topic: @cooking, owner: @fauzi, visibility: :friends)
+      @dining_project = FactoryBot.create(:project, :valid, name: "Dining", topics: [@cooking], owner: @fauzi, visibility: :friends)
 
       #franky
-      @dj_project = FactoryBot.create(:project, :valid, name: "DJ", topic: @djing, owner: @franky, visibility: :friends)
-      @culinary_project = FactoryBot.create(:project, :valid, name: "Culinary", topic: @cooking, owner: @franky, visibility: :friends)
-      @software_project = FactoryBot.create(:project, :valid, name: "Software", topic: @software, owner: @franky, visibility: :private)
+      @dj_project = FactoryBot.create(:project, :valid, name: "DJ", topics: [@djing], owner: @franky, visibility: :friends)
+      @culinary_project = FactoryBot.create(:project, :valid, name: "Culinary", topics: [@cooking], owner: @franky, visibility: :friends)
+      @software_project = FactoryBot.create(:project, :valid, name: "Software", topics: [@software], owner: @franky, visibility: :private)
 
       # jean
-      @app_project = FactoryBot.create(:project, :valid, name: "App", topic: @software, owner: @jean, visibility: :friends)
-      @vocalist_project = FactoryBot.create(:project, :valid, name: "Vocalist", topic: @singing, owner: @jean) #private
+      @app_project = FactoryBot.create(:project, :valid, name: "App", topics: [@software], owner: @jean, visibility: :friends)
+      @vocalist_project = FactoryBot.create(:project, :valid, name: "Vocalist", topics: [@singing], owner: @jean) #private
 
       # sar
-      @acting_project = FactoryBot.create(:project, :valid, name: "Acting", topic: @acting, owner: @sar, visibility: :friends)
+      @acting_project = FactoryBot.create(:project, :valid, name: "Acting", topics: [@acting], owner: @sar, visibility: :friends)
 
       # NO OWNERS
-      @fencing_project = FactoryBot.create(:project, :valid, name: "Fencing", topic: @fencing)
-      @vocalist2_project = FactoryBot.create(:project, :valid, name: "Vocalist 2", topic: @singing, visibility: :public)
+      @fencing_project = FactoryBot.create(:project, :valid, name: "Fencing", topics: [@fencing])
+      @vocalist2_project = FactoryBot.create(:project, :valid, name: "Vocalist 2", topics: @singing, visibility: :public)
 
       #TODO Add new in_network project
-      #@producer_project = FactoryBot.create(:project, :valid, name: "Make beats", topic: @beatmaking, owner: @fauzi, visibility: :in_network)
+      #@producer_project = FactoryBot.create(:project, :valid, name: "Make beats", topics: @beatmaking, owner: @fauzi, visibility: :in_network)
     end
   end
 

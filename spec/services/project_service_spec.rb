@@ -39,39 +39,43 @@ describe ProjectService do
       context "normal update" do
         before do
           @project = FactoryBot.create(:project )
-          @project.description  << "Chamge of placens"
         end
 
         it "updates field" do
+          @project.description  = "Chamge of plans"
           ProjectService.update(@project, update_params ) 
+          expect(@project.description).to eq("Chamge of plans")
         end
 
         it "changes topic" do
           topic =  FactoryBot.create(:topic)
-          @project.topic = topic
+          @project.topics << topic
           ProjectService.update(@project, update_params ) 
-          expect(@project.topic_name).to eq(topic.name)
+          expect(@project.topic_name).to eq([topic.name])
         end
       end
 
-      context "activatable" do
+      context "activation" do
         before do
           @project = FactoryBot.create(:project, :creatable)
           @obstacle = FactoryBot.create(:obstacle)
         end
 
-        it "activates project" do
+        it "succeeds" do
           @project.obstacles  << @obstacle
           @project.status = 'active'
           ProjectService.update(@project, update_params ) 
+          expect(@project.status).to eq('active')
+        end
+
+        it "fails when missing required params" do
+          @project.status = 'active'
+          expect{ProjectService.update(@project, update_params) }
+            .to  raise_error(ActiveGraph::Node::Persistence::RecordInvalidError)
         end
       end
     end
 
-    context "failures" do
-      it "fails when missing required params" do
-      end
-    end
 
   end
 
