@@ -1,7 +1,7 @@
 class Api::V1::ContactsController < ApplicationController
 
   def index 
-    render json: PersonSerializer.new(contacts).serializable_hash.to_json
+    render json: PersonSerializer.new(contacts)
   end
 
   def show
