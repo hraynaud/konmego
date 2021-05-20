@@ -104,7 +104,7 @@ GEM
     marcel (1.0.1)
     method_source (0.9.2)
     mini_mime (1.0.3)
-    mini_portile2 (2.5.0)
+    mini_portile2 (2.5.1)
     minitest (5.14.4)
     msgpack (1.4.2)
     neo4j-rake_tasks (0.7.19)
@@ -118,7 +118,7 @@ GEM
       recursive-open-struct
       zeitwerk (>= 2.1.10)
     nio4r (2.5.7)
-    nokogiri (1.11.3)
+    nokogiri (1.11.4)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
     oauth (0.5.5)
