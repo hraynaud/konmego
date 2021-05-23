@@ -15,8 +15,9 @@ class Person
   has_many :in, :outgoing_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_SOURCE
   has_many :out, :projects, origin: :owner
   has_many :out, :participations, model_class: :Project, type: :PARTICIPATES_IN
-
   has_many :out, :activities, rel_class: :Activity
+  has_many :in, :posts, origin: :author
+  has_many :in, :comments, origin: :author
 
   property :bio, type: String
   property :profile_image_url, type: String

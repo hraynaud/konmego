@@ -12,6 +12,7 @@ class Project
   has_one :out, :topic, type: :CONCERNS
   has_many :out,:obstacles, type: :BLOCKS, model_class: :Obstacle
   has_many :in, :participants, type: :PARTICIPATES_IN, model_class: :Person
+  has_many :in, :comments, type: nil
 
   validates :owner, :name, :description, presence: true
   #validates :topic, presence: {message: "Projects must have a topic"}

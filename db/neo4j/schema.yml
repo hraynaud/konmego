@@ -16,6 +16,7 @@
   ) ASSERT `activegraph::migrations::schemamigration`.migration_id IS UNIQUE
 - CONSTRAINT ON ( `neo4j::migrations::schemamigration`:`Neo4j::Migrations::SchemaMigration`
   ) ASSERT `neo4j::migrations::schemamigration`.migration_id IS UNIQUE
+- CONSTRAINT ON ( comment:Comment ) ASSERT comment.uuid IS UNIQUE
 - CONSTRAINT ON ( endorsement:Endorsement ) ASSERT endorsement.uuid IS UNIQUE
 - CONSTRAINT ON ( identity:Identity ) ASSERT identity.uuid IS UNIQUE
 - CONSTRAINT ON ( invite:Invite ) ASSERT invite.uuid IS UNIQUE
@@ -23,6 +24,7 @@
 - CONSTRAINT ON ( obstaclecategory:ObstacleCategory ) ASSERT obstaclecategory.uuid
   IS UNIQUE
 - CONSTRAINT ON ( person:Person ) ASSERT person.uuid IS UNIQUE
+- CONSTRAINT ON ( post:Post ) ASSERT post.uuid IS UNIQUE
 - CONSTRAINT ON ( project:Project ) ASSERT project.uuid IS UNIQUE
 - CONSTRAINT ON ( registration:Registration ) ASSERT registration.uuid IS UNIQUE
 - CONSTRAINT ON ( topic:Topic ) ASSERT topic.uuid IS UNIQUE
@@ -58,3 +60,5 @@
 - '20210428010641'
 - '20210507040932'
 - '20210513031608'
+- '20210523022347'
+- '20210523022414'
