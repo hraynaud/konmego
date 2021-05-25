@@ -30,6 +30,7 @@ group :development, :test do
   gem 'factory_bot' 
   gem "factory_bot_rails"
   gem "neo4j-rake_tasks"
+  gem "faker"
 end
 
 group :development do
