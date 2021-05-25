@@ -1,4 +1,4 @@
-class Activity
+class Participation
   include ActiveGraph::Relationship
 
   from_class :Person

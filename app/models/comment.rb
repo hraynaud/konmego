@@ -1,5 +1,4 @@
-class Comment
-  include KonmegoNeo4jNode
+class Comment < Activity
 
   validates :text, presence: true
 
