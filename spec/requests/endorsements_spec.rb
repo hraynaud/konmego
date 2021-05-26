@@ -58,16 +58,16 @@ describe Api::V1::EndorsementsController, :type => :request do
         end
       end
 
-      context "new person" do
+      context "new person creates invite" do
         let(:params){new_person.merge({topicId: @singing.id})}
 
-        it "succeeds for new person" do
+        it "creates an invite if new person" do
           do_post @herby, "/api/v1/endorsements", params 
           expect_http response, :ok
           expect_response_and_model_json_to_match response, Invite.last
         end
 
-        it "creates new registration and new invite" do
+        it "creates invite but not endorsement" do
           expect{
             do_post @herby, "/api/v1/endorsements", params
           }.to change{Endorsement.count}.by(0)
@@ -75,7 +75,7 @@ describe Api::V1::EndorsementsController, :type => :request do
         end
       end
 
-      context "new invite and opic" do
+      context "new persn an topic creates new invite and topic" do
         let(:new_person_and_topic){ new_topic.merge(new_person) }
 
         it "creates new endorsement and new person" do
