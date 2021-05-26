@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :identity do |f|
     sequence(:first_name) { |n| "foo#{n}" }
     sequence(:last_name) { |n| "bar#{n}" }
-    sequence(:email) { |n| "foo#{n}@example.com" }
+    sequence(:email) { |n| "foo#{n}@mail.com" }
     password {"passwordyword"}
 
 
