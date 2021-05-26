@@ -26,11 +26,14 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :projects
+      resources :projects do
+        resources :posts do
+          resources :comments
+        end
+      end
       post 'projects/search',  to: "project_search#index"
-
     end
-  end
 
-  root to: 'home#index'
+    root to: 'home#index'
+  end
 end
