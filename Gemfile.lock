@@ -132,7 +132,8 @@ GEM
       pry (>= 0.9.10, < 0.13.0)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
-    puma (3.12.6)
+    puma (4.3.11)
+      nio4r (~> 2.0)
     racc (1.5.2)
     rack (2.2.3)
     rack-cors (1.1.1)
@@ -234,7 +235,7 @@ DEPENDENCIES
   pry
   pry-nav
   pry-rails
-  puma (~> 3.11)
+  puma (~> 4.3)
   rack-cors
   rails
   rails_12factor
