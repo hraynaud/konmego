@@ -57,6 +57,7 @@ export default function InfoPanelFactory(){
   }
 
   return {
+    
 
     appendInfoPanel: appendInfoPanel,
     appendInfoElement: appendInfoElement,
