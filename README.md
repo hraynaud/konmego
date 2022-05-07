@@ -13,7 +13,9 @@ Things you may want to cover:
 
 neo4j settings located in db neo4j[development,test]/conf/neo4j.conf folder
 neo4j.yml config which controls rails connection must match the settings in the
-neo4j.conf file
+neo4j.conf file.
+DO NOT SET NEO4J_HOME OR URL unless you are using a stand_alone_instance of
+NEO4J and not the emebedded one that caomes with neo4jrb.
 * Database creation
 
 * Database initialization
@@ -26,10 +28,10 @@ neo4j.conf file
 
 * env-local:
 * 
-export TWITTER_CONSUMER_KEY="AA8PG89dQlzJmqWpGhrcyHacC"
-export TWITTER_CONSUMER_SECRET="lq4GwSjKY7L0aAUdtncExL6OqudIZhWCBxTqlIbVrqWnEpX4Rf"
-export SECRET_KEY_BASE="55ddbe69b5e1cf8ae25011f404fc1a5a74c12433ad24eb1c09721b9ad8697c3362c20161825c90115a08202704bbe4062ea9cc7387cf755094d702c04b941cbb"
-export NEO4J_PWD="cala5nj"
+export TWITTER_CONSUMER_KEY="<KEY>"
+export TWITTER_CONSUMER_SECRET="<SECRET>"
+export SECRET_KEY_BASE="<SECRET_KEY_BASE>"
+export NEO4J_PWD="OPTIONAL"
 export DATA_SANS_MIGRATION="MATCH (n) WHERE
 NOT(n:Neo4j::Migrations::SchemaMigration) RETURN n LIMIT 25"
 alias start_dev_db="bundle exec rake 'neo4j:start[development]'"

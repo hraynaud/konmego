@@ -2,9 +2,10 @@ development:
   url: bolt://localhost:7472
 
 test:
-  url: bolt://localhost:7687
-
-#  url: bolt://localhost:7876 old value
+  url: bolt://localhost:7685
+  username: neo4j
+  password: password
+  #url: bolt://localhost:7876 #old value
 production:
   url:
     - neo4j://core1:7687
