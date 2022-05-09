@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.7.3'
+ruby '3.0.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~>6.1' 
@@ -12,7 +12,7 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'rack-cors'
 gem 'oauth'
 gem 'jwt'
-gem 'activegraph', '~> 10.0.0' # For example, see https://rubygems.org/gems/activegraph/versions for the latest versions
+gem 'activegraph', '~> 10.1.0' # For example, see https://rubygems.org/gems/activegraph/versions for the latest versions
 gem 'neo4j-ruby-driver'#, '~> 1.7.0'
 gem 'delayed_job_active_record'
 gem 'jsonapi-serializer'

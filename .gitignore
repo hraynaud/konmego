@@ -54,3 +54,4 @@ yarn-error.log*
 *.log
 *.err
 logfile
+/spec/logs/**
