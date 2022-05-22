@@ -8,9 +8,9 @@
  Rails.application.config.middleware.insert_before 0, Rack::Cors do
    allow do
       #origins 'localhost:8080' #Add production domain here
-     origins { |source, env| Rails.env.development? && source == "http://#{ENV['LOCAL_IP']}:8080"}
+     origins { |source, env| Rails.env.development? && source == "http://localhost:8081"}
      resource '*',
        headers: :any,
-       methods: [:get, :post, :put, :patch, :delete, :options, :head]
+       methods: [:get, :post, :put, :patch, :delete, :options, :head], expose: ['Authorization,jwt']
    end
  end

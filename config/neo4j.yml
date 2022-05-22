@@ -1,6 +1,7 @@
 development:
   url: bolt://localhost:7472
-
+  username: neo4j
+  password: password
 test:
   url: bolt://localhost:7685
   username: neo4j

@@ -20,15 +20,15 @@ function logout() {
     localStorage.removeItem(SESSION_USER_KEY);
     sessionStorage.removeItem(SESSION_AUTH_KEY, '');
     store.dispatch("logout");
-}
+}   
 
 function currentUser() {
     return JSON.parse(localStorage.getItem(SESSION_USER_KEY));
 }
 
 function handleLogin(response) {
-    if (response.data.jwt) {
-        signIn(response.data.jwt);
+    if (response.headers.jwt) {
+        signIn(response.headers.jwt);
     } else {
         return Promise.reject(response.error);
     }
