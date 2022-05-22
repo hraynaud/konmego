@@ -15,7 +15,8 @@ neo4j settings located in db neo4j[development,test]/conf/neo4j.conf folder
 neo4j.yml config which controls rails connection must match the settings in the
 neo4j.conf file.
 DO NOT SET NEO4J_HOME OR URL unless you are using a stand_alone_instance of
-NEO4J and not the emebedded one that caomes with neo4jrb.
+NEO4J and not the emebedded one that caomes with neo4jrb. Otherwise all
+environments test and development will look for NEO4J db in NEO4J_HOME directory
 * Database creation
 
 * Database initialization
