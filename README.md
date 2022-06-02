@@ -29,17 +29,17 @@ environments test and development will look for NEO4J db in NEO4J_HOME directory
 
 * env-local:
 * 
-export TWITTER_CONSUMER_KEY="<KEY>"
-export TWITTER_CONSUMER_SECRET="<SECRET>"
-export SECRET_KEY_BASE="<SECRET_KEY_BASE>"
-export NEO4J_PWD="OPTIONAL"
+export TWITTER_CONSUMER_KEY="<KEY>". 
+export TWITTER_CONSUMER_SECRET="<SECRET>". 
+export SECRET_KEY_BASE="<SECRET_KEY_BASE>". 
+export NEO4J_PWD="OPTIONAL". 
 export DATA_SANS_MIGRATION="MATCH (n) WHERE
-NOT(n:Neo4j::Migrations::SchemaMigration) RETURN n LIMIT 25"
-alias start_dev_db="bundle exec rake 'neo4j:start[development]'"
-alias start_test_db="bundle exec rake 'neo4j:start[test]'"
-alias stop_dev_db="bundle exec rake 'neo4j:stop[development]'"
-alias stop_test_db="bundle exec rake 'neo4j:stop[test]'"
-alias run_rails="bundle exec rails s -b $LOCAL_IP -p 3000"
-alias refresh_test_db="RAILS_ENV=test be rake db:create_dev_data"
-alias refresh_dev_db="RAILS_ENV=dev be rake db:create_dev_data"
-alias test_console="rails c -e test" ...
+NOT(n:Neo4j::Migrations::SchemaMigration) RETURN n LIMIT 25". 
+alias start_dev_db="bundle exec rake 'neo4j:start[development]'". 
+alias start_test_db="bundle exec rake 'neo4j:start[test]'". 
+alias stop_dev_db="bundle exec rake 'neo4j:stop[development]'". 
+alias stop_test_db="bundle exec rake 'neo4j:stop[test]'". 
+alias run_rails="bundle exec rails s -b $LOCAL_IP -p 3000". 
+alias refresh_test_db="RAILS_ENV=test be rake db:create_dev_data". 
+alias refresh_dev_db="RAILS_ENV=dev be rake db:create_dev_data". 
+alias test_console="rails c -e test". 
