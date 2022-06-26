@@ -195,7 +195,7 @@ GEM
       rspec-support (~> 3.10)
     rspec-support (3.11.0)
     ruby-progressbar (1.11.0)
-    rubyzip (2.3.2)
+    rubyzip (2.3.0)
     set (1.0.2)
     sorted_set (1.0.3)
       rbtree
@@ -217,6 +217,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-20
+  arm64-darwin-21
 
 DEPENDENCIES
   activegraph (~> 10.1.0)
@@ -241,9 +242,10 @@ DEPENDENCIES
   rails_12factor
   rspec
   rspec-rails
+  rubyzip (= 2.3.0)
 
 RUBY VERSION
    ruby 3.0.0p0
 
 BUNDLED WITH
-   2.3.11
+   2.3.16

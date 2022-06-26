@@ -16,6 +16,7 @@ gem 'activegraph', '~> 10.1.0' # For example, see https://rubygems.org/gems/acti
 gem 'neo4j-ruby-driver'#, '~> 1.7.0'
 gem 'delayed_job_active_record'
 gem 'jsonapi-serializer'
+gem 'rubyzip', '2.3.0'
 
 group :production do
   gem 'rails_12factor'
