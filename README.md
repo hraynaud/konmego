@@ -11,15 +11,23 @@ Things you may want to cover:
 
 * Configuration
 
+FYI: NEO4J only runs on Java 8 or below
+
 neo4j settings located in db neo4j[development,test]/conf/neo4j.conf folder
 neo4j.yml config which controls rails connection must match the settings in the
 neo4j.conf file.
 DO NOT SET NEO4J_HOME OR URL unless you are using a stand_alone_instance of
-NEO4J and not the emebedded one that caomes with neo4jrb. Otherwise all
+NEO4J and not the emebedded one that is installed via the neo4j rake task gem. Otherwise all
 environments test and development will look for NEO4J db in NEO4J_HOME directory
 * Database creation
 
 * Database initialization
+For new neo4j setup run `rake neo4j:generate_schema_migration[constraint,Identity,uuid]`
+the run `rake neo4j:migrate`
+
+* Data loading
+
+
 
 * How to run the test suite
 
