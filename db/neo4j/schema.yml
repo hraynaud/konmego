@@ -14,8 +14,6 @@
 :constraints:
 - CONSTRAINT ON ( `activegraph::migrations::schemamigration`:`ActiveGraph::Migrations::SchemaMigration`
   ) ASSERT `activegraph::migrations::schemamigration`.migration_id IS UNIQUE
-- CONSTRAINT ON ( `neo4j::migrations::schemamigration`:`Neo4j::Migrations::SchemaMigration`
-  ) ASSERT `neo4j::migrations::schemamigration`.migration_id IS UNIQUE
 - CONSTRAINT ON ( activity:Activity ) ASSERT activity.uuid IS UNIQUE
 - CONSTRAINT ON ( comment:Comment ) ASSERT comment.uuid IS UNIQUE
 - CONSTRAINT ON ( endorsement:Endorsement ) ASSERT endorsement.uuid IS UNIQUE
@@ -64,3 +62,4 @@
 - '20210523022347'
 - '20210523022414'
 - '20210526024854'
+- '20220815003456'
