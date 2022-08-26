@@ -6,47 +6,50 @@ class Api::V1::ProjectSearchController < ApplicationController
 
   private
 
-  def friends
-    current_user.contacts
-  end
-
   def projects_and_topics
-    if params[:friend].blank? && params[:topic].blank?
-      found_projects.merge(friends_and_topics)
+    if no_search_params_provided?
+      projects.merge(friends_and_topics)
     else
-      found_projects
+      projects
     end
   end
 
-  def found_projects
+  def projects
     {
-      projects: ProjectSerializer.new(projects)
+      projects: ProjectSerializer.new(search_results)
     }
+  end
+
+  def search_results
+    ProjectSearchService.search(current_user, topic: search_topic, friend: search_friend)
   end
 
   def friends_and_topics
     {
       friends: PersonSerializer.new(friends),
-      topics: TopicSerializer.new(projects.map(&:topic).uniq)
+      topics: TopicSerializer.new(unique_project_topic_list)
     }
   end
 
-  def projects
-    ProjectSearchService.search(current_user, resolved_params)
+  def friends
+    current_user.contacts
   end
 
-  def resolved_params
-    {topic: get_topic, friend: get_friend} 
+  def unique_project_topic_list
+    search_results.map(&:topic).uniq
   end
 
-  def get_topic
-    filter_params[:topic] ? Topic.find(filter_params[:topic]) : nil
+  def no_search_params_provided?
+    search_friend.blank? && search_topic.blank?
   end
 
-  def get_friend
-    filter_params[:friend] ? Person.find(filter_params[:friend]) : nil
+  def search_topic
+    filter_params[:topic]
   end
 
+  def search_friend
+    filter_params[:friend]
+  end
 
   def filter_params
     params.permit(:topic, :friend ) 
