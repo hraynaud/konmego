@@ -13,8 +13,7 @@ class Api::V1::ProjectsController < ApplicationController
   def show
     options[:include] = [:obstacles, :'obstacles.description']
     project = current_user.projects.find(params[:id])
-    proj =    ProjectSerializer.new(project, options)
-    binding.pry
+    proj = ProjectSerializer.new(project, options)
   end
 
   def update
