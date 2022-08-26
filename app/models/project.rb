@@ -5,7 +5,7 @@ class Project
   property :start_date, type: Date
   property :deadline, type: Date
 
-  enum status: [:inactive, :active, :canceled, :failed], _default: :inactive
+  enum status: [:pending, :paused, :inactive, :active, :canceled, :failed], _default: :inactive
   enum visibility: [:private, :friends, :in_network, :vendor, :public], _default: :private
 
   has_one :in, :owner, type: :OWNS, model_class: :Person
