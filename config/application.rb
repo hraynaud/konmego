@@ -32,6 +32,12 @@ module Konmego
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
     config.generators { |g| g.orm :active_record }
+    config.logger = Logger.new(STDOUT)
+
+    config.session_store :cookie_store, key: '_session_id'
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore
+    config.middleware.use config.session_store
     
   end
 end

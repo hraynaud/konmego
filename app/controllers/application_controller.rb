@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
 
+  include ActionController::Cookies
   include ActionController::MimeResponds
   include ExceptionHandler
   before_action :authenticate_request, except:[:preflight]
@@ -45,6 +46,7 @@ class ApplicationController < ActionController::API
 
   def authenticate_request  
     begin
+      logger.debug "attempting to authenticate request with auth header: #{request.headers['Authorization']}"
       uid = Authentication.uid_from_from_request_auth_hdr request.headers['Authorization']
       @current_user = Identity.find(uid).person
     rescue => e 
