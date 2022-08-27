@@ -15,21 +15,18 @@ class ProjectSearchService
       user.contacts
     end
 
-    def resolved_params
-      {topic: resolve_topic, friend: resolve_friend} 
+    def resolve_topic(topic_id)
+      topic_id ? Topic.find(topic_id) : nil
     end
 
-    def resolve_topic
-      search_topic ? Topic.find(search_topic) : nil
-    end
-
-    def resolve_friend
-      search_friend ? Person.find(search_friend) : nil
+    def resolve_friend(friend_id)
+      friend_id ? Person.find(friend_id) : nil
     end
 
     def initial_scope user, params
+      
       depth = params[:depth] || DEFAULT_PROJECT_SEARCH_DEPTH
-      friend = are_first_friends? user, params[:friend]
+      friend = are_first_friends? user, resolve_friend(params[:friend])
       friend ? projects_for(friend) : projects_for(user.contacts_by_depth(depth))
     end
 

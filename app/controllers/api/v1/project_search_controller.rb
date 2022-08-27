@@ -21,18 +21,14 @@ class Api::V1::ProjectSearchController < ApplicationController
   end
 
   def search_results
-    ProjectSearchService.search(current_user, topic: search_topic, friend: search_friend)
+    ProjectSearchService.search(current_user, topic: filter_params[:topic], friend: filter_params[:friend])
   end
 
   def friends_and_topics
     {
-      friends: PersonSerializer.new(friends),
+      friends: PersonSerializer.new(current_user.contacts),
       topics: TopicSerializer.new(unique_project_topic_list)
     }
-  end
-
-  def friends
-    current_user.contacts
   end
 
   def unique_project_topic_list
@@ -40,15 +36,7 @@ class Api::V1::ProjectSearchController < ApplicationController
   end
 
   def no_search_params_provided?
-    search_friend.blank? && search_topic.blank?
-  end
-
-  def search_topic
-    filter_params[:topic]
-  end
-
-  def search_friend
-    filter_params[:friend]
+    filter_params[:friend].blank? && filter_params[:topic].blank?
   end
 
   def filter_params
