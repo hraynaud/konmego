@@ -7,7 +7,7 @@ class Api::V1::ProjectsController < ApplicationController
 
   def create
     project = ProjectService.create(current_user,project_params)
-    json_response(project.to_json)
+    json_response(project.to_json, :ok)
   end
 
   def show
@@ -23,7 +23,7 @@ class Api::V1::ProjectsController < ApplicationController
   def project_params
     params.require(:project).permit(
       :name, :description, :start_date, 
-      :deadline
+      :deadline, :topic
     )
   end
 end
