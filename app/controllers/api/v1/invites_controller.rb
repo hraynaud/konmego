@@ -3,7 +3,7 @@ class Api::V1::InvitesController < ApplicationController
 
 
   def create
-    InviteService.create current_user, rubify_keys(invite_params)
+    InviteService.create current_user, invite_params
   end
 
   def accept

@@ -4,6 +4,7 @@ class ApplicationController < ActionController::API
   include ActionController::MimeResponds
   include ExceptionHandler
   before_action :authenticate_request, except:[:preflight]
+  before_action :json_to_snake_case_keys
 
   def preflight
     head :ok
@@ -17,8 +18,12 @@ class ApplicationController < ActionController::API
 
   private
 
+  def json_to_snake_case_keys
+     rubify_keys params
+  end 
+
   def rubify_keys hash
-    hash.deep_transform_keys(&:underscore)
+    hash.deep_transform_keys!(&:underscore)
   end
 
   def current_user
