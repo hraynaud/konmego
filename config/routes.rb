@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       get 'people/:relationship_group', to: "people#index", constraints: {relationship_group: /contacts|endorsees|endorsers/}
 
       get 'topic_contacts/:topic', to: 'topic_contacts#index' 
+      resources :topics, only: [:index]
 
       resources :contacts, only: [:index, :show]
       resources :endorsements do
