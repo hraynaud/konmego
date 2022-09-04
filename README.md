@@ -11,22 +11,39 @@ Things you may want to cover:
 
 * Configuration
 
+
+
+# Database initialization 
+
+
 FYI: NEO4J only runs on Java 8 or below
 
 neo4j settings located in db neo4j[development,test]/conf/neo4j.conf folder
 neo4j.yml config which controls rails connection must match the settings in the
-neo4j.conf file.
+neo4j.conf file.  
+
 DO NOT SET NEO4J_HOME OR URL unless you are using a stand_alone_instance of
 NEO4J and not the emebedded one that is installed via the neo4j rake task gem. Otherwise all
 environments test and development will look for NEO4J db in NEO4J_HOME directory
-* Database creation
 
-* Database initialization
-For new neo4j setup run `rake neo4j:generate_schema_migration[constraint,Identity,uuid]`
-the run `rake neo4j:migrate`
+## Database creation
+
+
+Install the latest neo4j version to the   desired environment as follows:  
+```rake neo4j:install[community-latest,development] ```
+
+Note if community-latest doesn't work you might need to specify the exact version. Even then it might now work so may have to download the tar file and unzip in the appropriate directory  under db/neo4j/[ENVIRONMENT]
+
+
+* see https://github.com/neo4jrb/neo4j-rake_tasks for instructions on how to initialize the db after starting.
+
+* For new neo4j setup run `rake neo4j:generate_schema_migration[constraint,Identity,uuid]`
+the run `rake neo4j:migrate`  -- prefix this with RAILS_ENV="test" for the test environment
+
+* update the neo4j.yaml file to match the port numbers you specified when running the config rake task eg:   
+````rake neo4j:config[development,7000]````
 
 * Data loading
-
 
 
 * How to run the test suite
@@ -46,7 +63,7 @@ Which creates these aliases below
 * alias start_dev_db="bundle exec rake 'neo4j:start[development]'"
 * alias start_test_db="bundle exec rake 'neo4j:start[test]'"
 * alias stop_dev_db="bundle exec rake 'neo4j:stop[development]'"
-* * alias stop_test_db="bundle exec rake 'neo4j:stop[test]'" 
+* alias stop_test_db="bundle exec rake 'neo4j:stop[test]'" 
 * alias run_rails="bundle exec rails s -b $LOCAL_IP -p 3000" 
 * alias refresh_test_db="RAILS_ENV=test be rake db:create_dev_data" 
 * alias refresh_dev_db="RAILS_ENV=dev be rake db:create_dev_data"
