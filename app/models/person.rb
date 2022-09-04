@@ -13,6 +13,7 @@ class Person
   has_many :in, :followers, model_class: :Person, type: :FOLLOWINGS
   has_many :in, :incoming_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_TARGET
   has_many :in, :outgoing_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_SOURCE
+  has_many :both, :endorsements, model_class: :Endorsement, type: false
   has_many :out, :projects, origin: :owner
   has_many :out, :participations, model_class: :Project, type: :PARTICIPATES_IN
   has_many :in, :posts, origin: :author
