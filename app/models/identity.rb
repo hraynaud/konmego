@@ -17,11 +17,12 @@ class Identity
   property :last_name, type: String
   property :email, type: String
   property :password_digest, type: String
- 
+  scope :by_email, ->(login){where(email: login)}
+
   def name
     "#{first_name} #{last_name}"
   end
-
+ 
   private
 
 

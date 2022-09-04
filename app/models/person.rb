@@ -28,6 +28,14 @@ class Person
 
   DEFAULT_RELATIONSHIP_DEPTH = 3
 
+  class << self
+    delegate :by_email, to: :Identity
+    
+    def by_login email
+      by_email(email).person.first
+    end
+  end 
+
   def extract
     OpenStruct.new(first_name: first_name, last_name: last_name,
                    avatar_url: avatar_url, profile_image_url: profile_image_url, name: "#{first_name} #{last_name}")
