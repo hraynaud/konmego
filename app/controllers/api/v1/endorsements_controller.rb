@@ -3,7 +3,7 @@ class Api::V1::EndorsementsController < ApplicationController
   before_action :validate_params, only:[:create]
 
   def index
-    render json: EndorsementSerializer.new(EndorsementService.by_status(current_user,params[:status])).serializable_hash.to_json
+    render json: EndorsementSerializer.new(EndorsementService.search_by_status(current_user,params[:status])).serializable_hash.to_json
   end
 
   def create

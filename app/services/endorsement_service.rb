@@ -29,7 +29,7 @@ class EndorsementService
       end
     end
 
-    def by_status user, status
+    def search_by_status user, status
       case status
       when "pending"
         EndorsementService.pending_endorsments(user)
