@@ -7,16 +7,17 @@ class Api::V1::EndorsementsController < ApplicationController
   end
 
   def create
+
     endorsement = EndorsementService.create(
       current_user,
       {
-        endorsee_id: params[:endorseeId], 
-        topic_id: params[:topicId], 
-        first_name: params.dig(:newPerson,:first),
-        last_name: params.dig(:newPerson,:last),
-        email: params.dig(:newPerson,:identity, :email),
-        new_topic_name: params.dig(:newTopic, :name),
-        new_topic_category: params.dig(:newTopic, :category)
+        endorsee_id: params[:endorsee_id], 
+        topic_id: params[:topic_id], 
+        first_name: params.dig(:new_person,:first),
+        last_name: params.dig(:new_person,:last),
+        email: params.dig(:new_person,:identity, :email),
+        new_topic_name: params.dig(:new_topic, :name),
+        new_topic_category: params.dig(:new_topic, :category)
       }
     )
     render json: endorsement
@@ -65,19 +66,19 @@ class Api::V1::EndorsementsController < ApplicationController
   end
 
   def new_topic_provided?
-    params[:newTopic]
+    params[:new_topic]
   end
 
   def topic_id_provided?
-    params[:topicId]
+    params[:topic_id]
   end
 
   def endorsee_id_provided?
-    params[:endorseeId]
+    params[:endorsee_id]
   end
 
   def new_endorsee_provided?
-    params[:newPerson]
+    params[:new_person]
   end
 
   def find_endorsement
@@ -87,7 +88,7 @@ class Api::V1::EndorsementsController < ApplicationController
   def endorsement_params
     params.permit(
       :endorsee_id, :topic_id,
-      newPerson: [ :first, :last, identity: [:email]],
+      new_person: [ :first, :last, identity: [:email]],
       new_topic: [:name, :description]
     )
   end

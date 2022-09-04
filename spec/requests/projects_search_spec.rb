@@ -13,10 +13,10 @@ describe Api::V1::ProjectsController do
     clear_db
   end
 
- describe "post api/v1/projects/:topic" do 
+ describe "post api/v1/projects_search/:topic" do 
    it "finds friends that have direct connection to this topic" do
 
-     post "/api/v1/projects/search", params:{topic: @cooking.id}, headers:{'Authorization': Authentication.jwt_for(@herby.identity)}
+     post "/api/v1/projects_search", params:{topic: @cooking.id}, headers:{'Authorization': Authentication.jwt_for(@herby.identity)}
 
      expect(response.status).to eq 200
 

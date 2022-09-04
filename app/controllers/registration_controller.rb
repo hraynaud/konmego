@@ -3,7 +3,7 @@ class RegistrationController < ApplicationController
   before_action :validate_confirmation_password, only:[:create]
 
   def create
-    reg = RegistrationService.create registration_params.except(:confirmPassword)
+    reg = RegistrationService.create registration_params.except(:confirm_password)
     json_response({id: reg.id}, :ok)
   end
 
@@ -13,11 +13,11 @@ class RegistrationController < ApplicationController
   end
 
   def validate_confirmation_password
-   params[:password] == params[:confirmPassword]
+   params[:password] == params[:confirm_password]
   end
 
   def registration_params
-    params.permit(:email, :password, :confirmPassword, :firstName, :lastName, :code, :id) 
+    params.permit(:email, :password, :confirm_password, :first_name, :last_name, :code, :id) 
   end
 
 end
