@@ -3,7 +3,7 @@ class Api::V1::EndorsementsController < ApplicationController
   before_action :validate_params, only:[:create]
 
   def index
-    render json: current_user.endorsees
+    render json: EndorsementSerializer.new(EndorsementService.by_status(current_user,params[:status])).serializable_hash.to_json
   end
 
   def create
@@ -86,9 +86,9 @@ class Api::V1::EndorsementsController < ApplicationController
 
   def endorsement_params
     params.permit(
-      :endorseeId, :topicId,
+      :endorsee_id, :topic_id,
       newPerson: [ :first, :last, identity: [:email]],
-      newTopic: [:name, :description]
+      new_topic: [:name, :description]
     )
   end
 
