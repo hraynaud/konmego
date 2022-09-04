@@ -3,7 +3,7 @@ development:
   username: neo4j
   password: password
 test:
-  url: bolt://localhost:7685
+  url: bolt://localhost:7570
   username: neo4j
   password: password
   #url: bolt://localhost:7876 #old value
