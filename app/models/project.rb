@@ -24,7 +24,7 @@ class Project
   scope :public,  ->{where("projects.visibility > ? ", Project.visibilities[:private])}
 
   def topic_name
-    topic.name
+    topic.try(:name)
   end
 
   def as_json options = nil
