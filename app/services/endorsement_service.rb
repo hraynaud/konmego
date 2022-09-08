@@ -54,7 +54,7 @@ class EndorsementService
    end 
 
     def endorsements_for user, status
-      user.outgoing_endorsements.send(status.to_sym)
+      user.endorsements.send(status.to_sym)
     end 
 
     def decline endorsement

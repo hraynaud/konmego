@@ -32,7 +32,7 @@ Rails.application.routes.draw do
           resources :comments
         end
       end
-      post 'projects/search',  to: "project_search#index"
+      post 'projects_search',  to: "project_search#index"
     end
 
     root to: 'home#index'

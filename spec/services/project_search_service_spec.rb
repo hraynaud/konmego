@@ -19,10 +19,10 @@ describe ProjectSearchService do
     context "friend projects" do
       it "finds projects belonging to contacts at specified depth" do
 
-        expected_projects = project_names([@dj_project, @culinary_project])
+        expected_projects = project_names([@dj_project, @culinary_project, @acting_project])
         expect( project_names(search_by(@tisha, depth: 2))).to eq  expected_projects
-        expect(project_names(search_by(@vince, depth: 2))).to eq empty_set
-        expect(project_names(search_by(@vince, depth: 3))).to eq  expected_projects 
+        expect(project_names(search_by(@jerry, depth: 2))).to eq project_names([@dj_project, @culinary_project, @app_project, @acting_project, @chef_project])
+        expect(project_names(search_by(@vince, depth: 2))).to eq  project_names([@acting]) 
 
       end
 

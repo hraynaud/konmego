@@ -16,8 +16,8 @@ module TestDataHelper
     end
 
     def create_users
-      @herby, @tisha, @franky, @fauzi, @kendra, @sar, @elsa, @vince, @jean, @nuno, @gilbert, @jerry= %w(
-      herby tisha franky fauzi kendra sar elsa vince jean nuno gilbert jerry
+      @herby, @tisha, @franky, @fauzi, @kendra, @sar, @elsa, @vince, @jean, @nuno, @gilbert, @jerry, @rico, @wid, @stan = %w(
+      herby tisha franky fauzi kendra sar elsa vince jean nuno gilbert jerry rico wid stan
       ).map do |fname|
         FactoryBot.create(:person, identity: FactoryBot.create(:identity, first_name: fname.titleize, last_name: "Skillz"))
       end
@@ -26,8 +26,8 @@ module TestDataHelper
     end
 
     def create_topics
-      @cooking, @fencing, @acting, @djing, @singing, @design, @composer, @software, @beatmaking = %w(
-      cooking fencing acting djing singing design composer software beatmaking
+      @cooking, @fencing, @acting, @djing, @singing, @design, @composer, @software, @beatmaking, @basketball = %w(
+      cooking fencing acting djing singing design composer software beatmaking basketball
       ).map do |skill|
         FactoryBot.create(:topic, name: skill.titleize )
       end
@@ -38,9 +38,13 @@ module TestDataHelper
       RelationshipManager.befriend @herby,  @franky 
       RelationshipManager.befriend @franky,  @sar
       RelationshipManager.befriend @kendra, @vince
+      RelationshipManager.befriend @kendra, @sar
       RelationshipManager.befriend @sar, @elsa
       RelationshipManager.befriend @gilbert, @nuno
       RelationshipManager.befriend @gilbert, @jean
+      RelationshipManager.befriend @herby, @rico
+      RelationshipManager.befriend @rico, @wid
+      RelationshipManager.befriend @wid, @stan
     end
 
     def create_endorsements
@@ -52,8 +56,13 @@ module TestDataHelper
       @accepted << EndorsementService.create(@tisha, to_params( @vince, @composer)) #tisha  [KNOWS] kendra
       @accepted << EndorsementService.create(@tisha, to_params(@kendra, @singing)) #tisha  [KNOWS] kendra
       @accepted << EndorsementService.create(@jean, to_params(@sar, @djing)) 
-      @accepted << EndorsementService.create(@sar, to_params(@jerry, @djing)) 
+      @accepted << EndorsementService.create(@sar, to_params(@kendra, @fencing)) 
       @accepted << EndorsementService.create(@nuno, to_params(@sar, @djing))
+      @accepted << EndorsementService.create(@franky, to_params(@sar, @acting))
+      @accepted << EndorsementService.create(@wid, to_params(@stan, @basketball))
+      @accepted << EndorsementService.create(@sar, to_params(@jerry, @djing)) 
+
+    
 
      # DECLINED OR PENDING
      # -----------------------
@@ -90,11 +99,6 @@ module TestDataHelper
 
   end
 
-  module Utils
-    def clear_db
-      ActiveGraph::Base.query('MATCH (n) WHERE NOT n:`ActiveGraph::Migrations::SchemaMigration` DETACH DELETE n')
-    end
-  end
 
   module Projects
 
@@ -152,6 +156,13 @@ module TestDataHelper
     end
   end 
 
+  module Utils
+    def clear_db
+      ActiveGraph::Base.query('MATCH (n) WHERE NOT n:`ActiveGraph::Migrations::SchemaMigration` DETACH DELETE n')
+    end
+  end
+
+
 
 #
   # vince    --> tisha --> kendra
@@ -174,13 +185,15 @@ module TestDataHelper
   # herby -->  : --> franky 
   #            : --> fauzi
   #            : --> elsa  ---\
-  #                            --> sar
+  #                            -->    sar
   #            : --> jean  ---/     /
   #                           \ --> vince
   #            : --> tisha ---/
+  #                           \--> Kendra
   #
-  #            : --> tisha  --> Kendra
-  #            :
+  #
+  # sar -->    : --> elsa 
+  #            : --> franky 
   #
   #
   #
