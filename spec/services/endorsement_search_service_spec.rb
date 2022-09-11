@@ -3,7 +3,7 @@ require 'rails_helper'
 include TestDataHelper::Relationships
 include TestDataHelper::Utils
 
-describe TopicSearchService do
+describe EndorsementSearchService do
   before(:all) do
     clear_db
     setup_relationship_data
@@ -21,7 +21,7 @@ describe TopicSearchService do
         #------------------------------------------------------------------------------
         #fauzi -- ENDORSES('Cooking') --> franky ( A--> KNOWS & ENDORSES -->B )
         #------------------------------------------------------------------------------
-        results = TopicSearchService.paths_to_resource @fauzi, "Cooking", 0
+        results = EndorsementSearchService.paths_to_resource @fauzi, "Cooking", 0
         expect_result_data_to_match_expected( results, [[@fauzi]])
         #expect(results.map(:endorsment)).to not_be nil
       end
@@ -31,7 +31,7 @@ describe TopicSearchService do
         # herby -- KNOWS --> tisha --> ENDORSES('Composer') --> Person
         #  ( A--> KNOWS -->B KNOWS & ENDORSES --> C)
         #------------------------------------------------------------------------------
-        results = TopicSearchService.paths_to_resource @herby, "Composer",1
+        results = EndorsementSearchService.paths_to_resource @herby, "Composer",1
         expect_result_data_to_match_expected( results, [[@herby, @tisha]])
       end
 
@@ -39,7 +39,7 @@ describe TopicSearchService do
         #------------------------------------------------------------------------------
         # fauzi --> KNOWS --> franky --> (herby:hidden) --> KNOWS --> (tisha:hidden)  ENDORSES --> (kendra:NOT_RETURNED)
         #------------------------------------------------------------------------------
-        results = TopicSearchService.paths_to_resource @fauzi, "Singing", 2
+        results = EndorsementSearchService.paths_to_resource @fauzi, "Singing", 2
         expect_result_data_to_match_expected( results, empty_set)
       end
 
@@ -47,14 +47,14 @@ describe TopicSearchService do
         #------------------------------------------------------------------------------
         # fauzi --> KNOWS --> franky --> KNOWS --> (herby:hidden) --> KNOWS --> (tisha:hidden)  ENDORSES --> (kendra:NOT_RETURNED)
         #------------------------------------------------------------------------------
-        results = TopicSearchService.paths_to_resource @fauzi, "Singing"
+        results = EndorsementSearchService.paths_to_resource @fauzi, "Singing"
         expect_result_data_to_match_expected( results, [[@fauzi, @franky, @hidden, @hidden]])
       end
 
 
       it "finds path to contacts that have endorsed the topic by depth" do
         #------------------------------------------------------------------------------
-         results = TopicSearchService.paths_to_resource @elsa, "Basketball", 5
+         results = EndorsementSearchService.paths_to_resource @elsa, "Basketball", 5
          expect_result_data_to_match_expected( results, [[@elsa, @sar, @hidden, @hidden, @hidden, @hidden ]])
        end
 
@@ -69,7 +69,7 @@ describe TopicSearchService do
        #  PATH 2
        # ["Elsa Skillz", "Sar Skillz", "Franky Skillz", "Herby Skillz", "Tisha Skillz"]
        #------------------------------------------------------------------------------
-        results = TopicSearchService.paths_to_resource @elsa, "Singing", 4
+        results = EndorsementSearchService.paths_to_resource @elsa, "Singing", 4
         expect_result_data_to_match_expected( results, [[@elsa, @sar, @hidden, @hidden, @hidden ],[@elsa, @sar, @hidden , @hidden]])
       end
 
@@ -88,7 +88,7 @@ describe TopicSearchService do
         #elsa -- KNOWS --> sar -> ENDORSES(djing) --> (jerry:hidden) 
 
         #------------------------------------------------------------------------------
-        results = TopicSearchService.paths_to_resource @elsa, "Djing", 2
+        results = EndorsementSearchService.paths_to_resource @elsa, "Djing", 2
         #NOTE TODO
         # because of obfuscation this path is show 1 but should be show twice [@elsa, @sar, @hidden]
         expect_result_data_to_match_expected( results, [[@elsa, @sar],[@elsa, @sar, @hidden]])
@@ -101,7 +101,7 @@ describe TopicSearchService do
         #------------------------------------------------------------------------------
         # tish --> KNOWS --> herby --> KNOWS --> franky <-- ENORSED_BY -- (fauzi:hidden) (herby !KOWS fauzi)
         #------------------------------------------------------------------------------
-        results = TopicSearchService.paths_to_resource @tisha, "Cooking", 3
+        results = EndorsementSearchService.paths_to_resource @tisha, "Cooking", 3
         expect_result_data_to_match_expected( results, [[@tisha, @herby,  @hidden, @hidden]])
       end
 
@@ -115,7 +115,7 @@ describe TopicSearchService do
         # Kendra --> KNOWS --> sar --> KNOWS --> Franky <-- ENORSED_BY -- (fauzi:hidden) 
         #------------------------------------------------------------------------------
      
-          results = TopicSearchService.paths_to_resource @kendra, "Cooking",4
+          results = EndorsementSearchService.paths_to_resource @kendra, "Cooking",4
           expect_result_data_to_match_expected( results, [
             [@kendra, @tisha, @hidden, @hidden, @hidden],
             [@kendra, @sar, @hidden, @hidden]
@@ -128,7 +128,7 @@ describe TopicSearchService do
           #["Kendra Skillz", "Sar Skillz", "Franky Skillz", "Fauzi Skillz"]
           #["Kendra Skillz", "Tisha Skillz", "Herby Skillz", "Franky Skillz", "Fauzi Skillz"]
 
-          results = TopicSearchService.paths_to_resource @kendra, "Cooking",5
+          results = EndorsementSearchService.paths_to_resource @kendra, "Cooking",5
           expect_result_data_to_match_expected( results, [
             [@kendra, @tisha, @hidden, @hidden, @hidden],
             [@kendra, @sar, @hidden, @hidden],
@@ -147,7 +147,7 @@ describe TopicSearchService do
         # nuno --> KONWS --> gilbert --> KNOWS --> jean(:hidden) -->ENDORSES sar(:djing) 
         # numo --> KNOWS --> sar <-- KNOWS & IS_ENDORSED_BY(:djing) -- jean(:hidden)
         #
-        results = TopicSearchService.paths_to_resource @nuno, "Djing"
+        results = EndorsementSearchService.paths_to_resource @nuno, "Djing"
         expect_result_data_to_match_expected( results, [[@nuno], [@nuno, @gilbert, @hidden ], [@nuno, @gilbert, @hidden, @sar ],[@nuno, @sar ], [@nuno, @sar, @hidden ]])
       end
 
@@ -157,7 +157,7 @@ describe TopicSearchService do
         # [["Tisha Skillz"]]
         #------------------------------------------------------------------------------
 
-        results = TopicSearchService.paths_to_resource @tisha, "Composer"
+        results = EndorsementSearchService.paths_to_resource @tisha, "Composer"
         expect_result_data_to_match_expected( results, [[@tisha ]])
       end
     end

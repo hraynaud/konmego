@@ -1,5 +1,5 @@
 require 'ostruct'
-class TopicSearchService
+class EndorsementSearchService
   DEFAULT_NETWORK_HOPS = 3
 
   class << self
