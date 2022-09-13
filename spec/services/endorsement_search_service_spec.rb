@@ -23,7 +23,6 @@ describe EndorsementSearchService do
         #------------------------------------------------------------------------------
         results = EndorsementSearchService.paths_to_resource @fauzi, "Cooking", 0
         expect_result_data_to_match_expected( results, [[@fauzi]])
-        #expect(results.map(:endorsment)).to not_be nil
       end
 
       it "returns path for topic endorsed indirectly through direct contact" do
