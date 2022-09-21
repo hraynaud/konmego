@@ -4,6 +4,7 @@ class Topic
 
   property :category, type: String
   property :name, type: String
+  property :default_image_file, type: String
   validates :name, presence: true
 
   has_many :in, :endorsements, origin: :topic

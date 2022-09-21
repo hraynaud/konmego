@@ -29,7 +29,7 @@ module TestDataHelper
       @cooking, @fencing, @acting, @djing, @singing, @design, @composer, @software, @beatmaking, @basketball = %w(
       cooking fencing acting djing singing design composer software beatmaking basketball
       ).map do |skill|
-        FactoryBot.create(:topic, name: skill.titleize )
+        FactoryBot.create(:topic, name: skill.titleize, default_image_file: "#{skill}.jpeg")
       end
     end
 

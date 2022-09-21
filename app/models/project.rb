@@ -4,6 +4,7 @@ class Project
   property :description, type: String
   property :start_date, type: Date
   property :deadline, type: Date
+  property :hero_image_url, type: String
 
   enum status: [:pending, :paused, :inactive, :active, :canceled, :failed], _default: :inactive
   enum visibility: [:private, :friends, :in_network, :vendor, :public], _default: :private
@@ -25,6 +26,10 @@ class Project
 
   def topic_name
     topic.try(:name)
+  end
+
+  def topic_image
+    topic.try(:default_image_file)
   end
 
   def as_json options = nil

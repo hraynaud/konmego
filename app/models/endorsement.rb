@@ -24,6 +24,10 @@ class Endorsement
     topic.name
   end
 
+  def topic_image
+    topic.default_image_file
+  end 
+
   def extract
     OpenStruct.new(endorser: endorsement.endorser, endorsee: endorsement.endorsee, description:endorsement.description)
   end
