@@ -62,12 +62,17 @@ class Person
     identity.email
   end
 
-  def endorses? person
-    outgoing_endorsements.endorsee.include? person
+  def friends 
+    contacts_by_depth 1
   end
+
 
   def contacts_by_depth depth 
     contacts(:contacts, :r, rel_length: 0..depth).distinct
+  end
+
+  def endorses? person
+    outgoing_endorsements.endorsee.include? person
   end
 
   def endorsed_by? person
