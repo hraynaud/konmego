@@ -14,6 +14,10 @@ module TopicService
       [] 
     end
 
+    def create name, description
+      Topic.create(name: name, description: description);
+    end
+
   end
 
 end
