@@ -19,6 +19,7 @@ class Endorsement
   validate :is_unique_across_endorser_endorsee_and_topic, on: :create, if: :all_valid?
 
   scope :accepted,  ->{where(status: :accepted)}
+  scope :accepted_or_pending,  ->{where(status: [:pending,:accepted])}
 
   def topic_name
     topic.name

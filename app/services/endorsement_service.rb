@@ -35,26 +35,32 @@ class EndorsementService
         EndorsementService.pending_endorsments(user)
       when "declined"
         EndorsementService.declined_endorsments(user)
-      else 
+      when Endorsement.accepted
         EndorsementService.accepted_endorsments(user)
+      else 
+        accepted_or_pending(user)
       end
-      
     end 
 
-   def accepted_endorsments user
-    endorsements_for user, "accepted"
-   end 
+    def accepted_or_pending user
+      user.endorsements.where(:status)
+    end
 
-   def pending_endorsments user
-    endorsements_for user, "pending"
-   end 
+    def accepted_endorsments user
+      endorsements_for user, :accepted
+    end 
 
-   def declined_endorsments user
-    endorsements_for user, "declined"
-   end 
+    def pending_endorsments user
+      endorsements_for user, :pending
+    end 
+
+    def declined_endorsments user
+      endorsements_for user, :declined
+    end 
 
     def endorsements_for user, status
-      user.endorsements.send(status.to_sym)
+      binding.pry
+      user.endorsements.send(status)
     end 
 
     def decline endorsement
