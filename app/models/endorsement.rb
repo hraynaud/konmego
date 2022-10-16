@@ -37,7 +37,7 @@ class Endorsement
 
 
   def add_description
-    self.description = "#{endorser.name} endorses someone for #{topic_name}"
+    self.description = "#{endorser.name} endorses #{endorsee.name} for #{topic_name}"
   end
 
   def is_unique_across_endorser_endorsee_and_topic

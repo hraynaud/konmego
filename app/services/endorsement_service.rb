@@ -20,6 +20,17 @@ class EndorsementService
         invite
       end
     end
+   
+
+    def destroy e
+      e.destroy
+    end
+
+
+    def find id
+     Endorsement.find_by(id: id)
+    end
+
 
     def accept endorsement
       endorsement.tap do |e|
@@ -59,7 +70,6 @@ class EndorsementService
     end 
 
     def endorsements_for user, status
-      binding.pry
       user.endorsements.send(status)
     end 
 

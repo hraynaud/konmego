@@ -33,6 +33,11 @@ class Api::V1::EndorsementsController < ApplicationController
     render json: EndorsementService.decline(@endorsement)
   end
 
+  
+  def destroy
+    EndorsementService.destroy(@endorsement) ? json_response({}, :ok) : respond_with_error("unable to delete endorsement with id #{@endorsement.id}")
+  end
+
   private
 
   def validate_params
@@ -84,11 +89,11 @@ class Api::V1::EndorsementsController < ApplicationController
   end
 
   def find_endorsement
-    @endorsement = Endorsement.find(params[:id])
+    @endorsement = EndorsementService.find(params[:id])
   end
 
   def endorsement_params
-    params.permit(
+    params.permit(:id,
       :endorsee_id, :topic_id,
       new_person: [ :first, :last, identity: [:email]],
       new_topic: [:name, :description]
