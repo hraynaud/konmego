@@ -17,8 +17,9 @@ Rails.application.routes.draw do
       get 'people/:relationship_group', to: "people#index", constraints: {relationship_group: /contacts|endorsees|endorsers/}
 
       get 'topic_contacts/:topic', to: 'topic_contacts#index' 
-      resources :topics, only: [:index]
+      post 'projects_search',  to: "project_search#index"
 
+      resources :topics, only: [:index]
       resources :contacts, only: [:index, :show]
       resources :endorsements do
         member do 
@@ -32,7 +33,7 @@ Rails.application.routes.draw do
           resources :comments
         end
       end
-      post 'projects_search',  to: "project_search#index"
+     
     end
 
     root to: 'home#index'

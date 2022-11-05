@@ -4,7 +4,6 @@ class AuthenticationController < ApplicationController
 
   def login
     resp = Authentication.login_by_password  params[:email], params[:password]
-
     if resp.jwt
       respond_with_token resp.jwt
     else

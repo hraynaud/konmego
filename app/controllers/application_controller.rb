@@ -24,7 +24,7 @@ class ApplicationController < ActionController::API
 
   def rubify_keys hash
     hash.deep_transform_keys!(&:underscore)
-  end
+  end 
 
   def current_user
     @current_user
