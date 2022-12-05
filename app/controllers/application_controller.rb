@@ -49,7 +49,7 @@ class ApplicationController < ActionController::API
     respond_with_error err_msg , 401
   end
 
-  def authenticate_request  
+  def authenticate_request
     begin
       logger.debug "attempting to authenticate request with auth header: #{request.headers['Authorization']}"
       uid = Authentication.uid_from_from_request_auth_hdr request.headers['Authorization']

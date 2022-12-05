@@ -14,7 +14,7 @@ Rails.application.routes.draw do
 
       post 'invite', to: 'invites#create'
 
-      get 'people/:relationship_group', to: "people#index", constraints: {relationship_group: /contacts|endorsees|endorsers/}
+      get 'people/:relationship_group', to: "people#index", constraints: {relationship_group: /contacts|endorsees|endorsers|any/}
 
       get 'topic_contacts/:topic', to: 'topic_contacts#index' 
       post 'projects_search',  to: "project_search#index"

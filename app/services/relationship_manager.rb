@@ -22,4 +22,12 @@ class RelationshipManager
     #TODO 
   end
 
+  def self.connections person
+    OpenStruct.new(
+      friends: person.friends.map(&:extract),
+      followers: person.followers.map(&:extract), 
+      followings: person.followings.map(&:extract)
+    )
+  end
+
 end

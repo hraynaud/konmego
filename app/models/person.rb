@@ -39,7 +39,7 @@ class Person
 
   def extract
     OpenStruct.new(first_name: first_name, last_name: last_name,
-                   avatar_url: avatar_url, profile_image_url: profile_image_url, name: "#{first_name} #{last_name}")
+                   avatar_url: avatar_url, profile_image_url: profile_image_url, name: "#{first_name} #{last_name}", id: id)
   end
 
   def first_name
@@ -66,6 +66,16 @@ class Person
     contacts_by_depth 1
   end
 
+  def endorsees
+    outgoing_endorsements.map(&:endorsee)
+  end
+
+ 
+
+
+  def endorsers
+    incoming_endorsements.map(&:endorser)
+  end
 
   def contacts_by_depth depth 
     contacts(:contacts, :r, rel_length: 0..depth).distinct
@@ -99,13 +109,6 @@ class Person
     followers.include? person
   end
 
-  def endorsees
-    outgoing_endorsements.map(&:endorsee)
-  end
-
-  def endorsers
-    incoming_endorsements.map(&:endorser)
-  end
 
   private
 
