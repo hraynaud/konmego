@@ -4,7 +4,7 @@ class Api::V1::EndorsementsController < ApplicationController
 
   def index
     render json: EndorsementSerializer.
-      new(EndorsementService.search_by_status(current_user,params[:status]))
+      new(EndorsementService.search_by_status(for_user,params[:status]))
       .serializable_hash.to_json
   end
 
@@ -33,7 +33,10 @@ class Api::V1::EndorsementsController < ApplicationController
     render json: EndorsementService.decline(@endorsement)
   end
 
-  
+  def for_user
+    params[:user_id] ? Person.from_identity(params[:user_id]) : current_user
+  end
+
   def destroy
     EndorsementService.destroy(@endorsement) ? json_response({}, :ok) : respond_with_error("unable to delete endorsement with id #{@endorsement.id}")
   end
@@ -55,7 +58,7 @@ class Api::V1::EndorsementsController < ApplicationController
   def has_invalid_endorsee_params?
     both_new_person_and_person_id_provided? || neither_new_person_nor_person_id_provided?
   end
- 
+
   def both_topic_id_and_new_topic_provided?
     topic_id_provided? && new_topic_provided?
   end
@@ -94,10 +97,10 @@ class Api::V1::EndorsementsController < ApplicationController
 
   def endorsement_params
     params.permit(:id,
-      :endorsee_id, :topic_id,
-      new_person: [ :first, :last, identity: [:email]],
-      new_topic: [:name, :description]
-    )
+                  :endorsee_id, :topic_id,
+                  new_person: [ :first, :last, identity: [:email]],
+                  new_topic: [:name, :description]
+                 )
   end
 
 end

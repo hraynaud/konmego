@@ -1,7 +1,7 @@
 class Api::V1::PeopleController < ApplicationController
 
   def index
-    render json: PersonSerializer.new(relationship_group).serializable_hash.to_json
+    #NO OP
   end
 
   def create
@@ -9,16 +9,22 @@ class Api::V1::PeopleController < ApplicationController
   end
 
   def show
-    person = params[:id] ? Person.find_by_id(params[:id]) : current_user
-    profile = PersonSerializer.new(person)
+    p = Person.from_identity(params[:id]).try(:first)
+    options = {}
+    options[:include] = [:incoming_endorsements, :outgoing_endorsements]
+    options[:params] ={ref_user: p}
+    render json: PersonSerializer.new(p, options).serializable_hash.to_json
 
   end
 
   def edit
+
   end
-  
+
   def update
+
   end
+
   private
 
   def relationship_group

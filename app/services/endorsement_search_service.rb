@@ -63,5 +63,31 @@ class EndorsementSearchService
   WHERE ALL(x IN NODES(p) WHERE SINGLE(y IN NODES(p) WHERE y = x))
       CYPHER
     end
+
+
+    # line1: find all paths people current user(u) "KNOWS"  within number of hops
+    # line2: gather all paths
+    # line3: find all accepted endorsements (among people u knows)
+    # line4  find all endorsees within the list of people u knows)
+    # line5: find all endorsements in the list where endorsemeent topic matches topic
+    # line6: gather all all results
+    # line7: find 
+
+
+
+    #Attempt fo refactor original
+    def match_query2 hops
+      <<-CYPHER
+ p = (u)-[:`KNOWS`*0..#{hops}]-(endorser:`Person`) 
+ WITH *
+ MATCH (e:`Endorsement`)-[r_src:`ENDORSEMENT_SOURCE`]->(endorser) WHERE (e.status = 1)
+ MATCH (e)-[r_target:`ENDORSEMENT_TARGET`]->(endorsee:`Person`) 
+ MATCH (e)-[r_topic:`ENDORSE_TOPIC`]->(t:`Topic`) WHERE (t.name = {topic_name})
+ WITH *
+  WHERE ALL(x IN NODES(p) WHERE SINGLE(y IN NODES(p) WHERE y = x))
+      CYPHER
+    end
+
+
   end
 end

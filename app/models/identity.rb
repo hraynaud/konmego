@@ -45,6 +45,4 @@ class Identity
     !!(email =~ URI::MailTo::EMAIL_REGEXP)
   end
 
-
-
 end

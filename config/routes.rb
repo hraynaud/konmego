@@ -12,13 +12,14 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
 
+      get 'topic_contacts/:topic', to: 'topic_contacts#index' 
+      get 'profile', to: 'users#show'
+
+      get 'user_relationships/:group', to: "user_relationships#index", constraints: {group: /contacts|endorsees|endorsers|any/}
+      post 'projects_search',  to: "project_search#index"
       post 'invite', to: 'invites#create'
 
-      get 'people/:relationship_group', to: "people#index", constraints: {relationship_group: /contacts|endorsees|endorsers|any/}
-
-      get 'topic_contacts/:topic', to: 'topic_contacts#index' 
-      post 'projects_search',  to: "project_search#index"
-
+      resources :people
       resources :topics, only: [:index]
       resources :contacts, only: [:index, :show]
       resources :endorsements do
@@ -33,7 +34,7 @@ Rails.application.routes.draw do
           resources :comments
         end
       end
-     
+
     end
 
     root to: 'home#index'
