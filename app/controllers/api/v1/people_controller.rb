@@ -1,8 +1,5 @@
 class Api::V1::PeopleController < ApplicationController
 
-  def index
-    #NO OP
-  end
 
   def create
 
@@ -27,9 +24,6 @@ class Api::V1::PeopleController < ApplicationController
 
   private
 
-  def relationship_group
-    current_user.send(params[:relationship_group].to_sym)
-  end
 
   def person_params
     params.permit(

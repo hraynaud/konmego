@@ -13,7 +13,7 @@ describe Api::V1::PeopleController do
   describe "/contacts" do 
     it "finds friends" do
 
-      do_get @tisha, "/api/v1/people/contacts"
+      do_get @tisha, "/api/v1/user_relationships/contacts"
 
       results = parse_body(response)["data"]
 
@@ -28,7 +28,7 @@ describe Api::V1::PeopleController do
   describe "/endorsees" do 
     it "finds endorsees" do
 
-      do_get @tisha, "/api/v1/people/endorsees"
+      do_get @tisha, "/api/v1/user_relationships/endorsees"
 
       results = parse_body(response)["data"]
 
@@ -43,7 +43,7 @@ describe Api::V1::PeopleController do
   describe "/endorsers" do 
     it "finds endorsers" do
 
-      do_get @franky, "/api/v1/people/endorsers"
+      do_get @franky, "/api/v1/user_relationships/endorsers"
 
       results = parse_body(response)["data"]
 
@@ -58,7 +58,7 @@ describe Api::V1::PeopleController do
   describe "/endorss" do 
     it "it raises routing error " do
 
-      expect{do_get @franky, "/api/v1/people/endorss"}.to raise_error(ActionController::RoutingError)
+      expect{do_get @franky, "/api/v1/user_relationships/endorss"}.to raise_error(ActionController::RoutingError)
     end
   end
  

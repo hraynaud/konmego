@@ -22,6 +22,12 @@ class Api::V1::RelationshipsController < ApplicationController
   end
   private
 
+  def relationship_group
+    current_user.send(params[:relationship_group].to_sym)
+  end
+
+
+
   def person_params
     params.permit(
       :id,

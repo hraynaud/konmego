@@ -93,6 +93,7 @@ class Api::V1::EndorsementsController < ApplicationController
 
   def find_endorsement
     @endorsement = EndorsementService.find(params[:id])
+    raise ActiveGraph::Node::Labels::RecordNotFound if @endorsement.nil?
   end
 
   def endorsement_params
