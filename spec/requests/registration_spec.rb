@@ -16,7 +16,8 @@ describe "Signup and registration" do
 
     it "sends email" do
       post "/register",  params: person_params
-      expect(ActionMailer::Parameterized::DeliveryJob).to have_been_enqueued.with('RegistrationMailer', 'confirm_email', 'deliver_now',{reg_id: Identity.last.id})
+      expect {RegistrationMailer.with(id: Registration.last.id).confirm_email.deliver_later}.to have_enqueued_mail(RegistrationMailer, :confirm_email)
+        .with(params: {id: Registration.last.id}, args:[])
     end
 
     it "fails on missing email" do

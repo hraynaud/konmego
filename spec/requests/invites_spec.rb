@@ -20,14 +20,15 @@ describe "Send Invite" do
 
     it "sends email" do
         do_post @herby, "/api/v1/invite", invite_params
-      expect(ActionMailer::Parameterized::DeliveryJob).to have_been_enqueued.with('InviteMailer', 'invite_email', 'deliver_now',{id: Invite.last.id})
+        expect{InviteMailer.with(id: Invite.last.id).invite_email.deliver_later}.to have_enqueued_mail(InviteMailer, :invite_email).with(params: {id: Invite.last.id}, args:[])
     end
 
    it "sends topic email" do
      params = invite_params
      params[:invite][:topicId]=Topic.first.id
      do_post @herby, "/api/v1/invite", params
-      expect(ActionMailer::Parameterized::DeliveryJob).to have_been_enqueued.with('InviteMailer', 'topic_invite_email', 'deliver_now',{id: Invite.last.id})
+
+        expect{InviteMailer.with(id: Invite.last.id).topic_invite_email.deliver_later}.to have_enqueued_mail(InviteMailer, :topic_invite_email).with(params: {id: Invite.last.id}, args:[])
     end
 
     it "fails on missing email" do

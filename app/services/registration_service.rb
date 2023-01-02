@@ -5,7 +5,7 @@ class RegistrationService
     def create params
       reg = build_registration params
       reg.save!
-      RegistrationMailer.with(reg_id: reg.identity.id).confirm_email.deliver_later
+      RegistrationMailer.with(id: reg.id).confirm_email.deliver_later
       reg
     end
 
