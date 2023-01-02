@@ -138,6 +138,8 @@ GEM
     nio4r (2.5.8)
     nokogiri (1.13.10-arm64-darwin)
       racc (~> 1.4)
+    nokogiri (1.13.10-x86_64-linux)
+      racc (~> 1.4)
     oauth (1.1.0)
       oauth-tty (~> 1.0, >= 1.0.1)
       snaky_hash (~> 2.0)
@@ -154,7 +156,8 @@ GEM
       pry (>= 0.9.10, < 0.15)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
-    puma (3.12.6)
+    puma (4.3.12)
+      nio4r (~> 2.0)
     racc (1.6.2)
     rack (2.2.5)
     rack-cors (1.1.1)
@@ -240,6 +243,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-21
+  x86_64-linux
 
 DEPENDENCIES
   activegraph (~> 10.1.0)
@@ -258,7 +262,7 @@ DEPENDENCIES
   pry
   pry-nav
   pry-rails
-  puma (~> 3.11)
+  puma (~> 4.3)
   rack-cors
   rails (~> 7.0)
   rails_12factor
