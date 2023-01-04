@@ -147,10 +147,10 @@ module TestDataHelper
         "links"=> [
           {"source"=>297, "target"=>287, "type"=>"KNOWS"},
           {"source"=>340, "target"=>287, "type"=>"ENDORSEMENT_SOURCE"},
-          {"source"=>340, "target"=>324, "type"=>"ENDORSE_TOPIC"},
+          {"source"=>340, "target"=>324, "type"=>"TOPIC"},
           {"source"=>288, "target"=>297, "type"=>"KNOWS"},
           {"source"=>333, "target"=>288, "type"=>"ENDORSEMENT_SOURCE"},
-          {"source"=>333, "target"=>324, "type"=>"ENDORSE_TOPIC"}
+          {"source"=>333, "target"=>324, "type"=>"TOPIC"}
         ]
       }
     end

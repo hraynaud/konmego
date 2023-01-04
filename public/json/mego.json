@@ -12,9 +12,9 @@
 
   "links": [
     { "source": "340", "target":"287", "type":"ENDORSEMENT_SOURCE"},
-    { "source": "340", "target":"324", "type":"ENDORSE_TOPIC"},
+    { "source": "340", "target":"324", "type":"TOPIC"},
     { "source": "333", "target":"288", "type":"ENDORSEMENT_SOURCE"},
-    { "source": "333", "target":"324", "type":"ENDORSE_TOPIC"}
+    { "source": "333", "target":"324", "type":"TOPIC"}
   ]
 }
 
