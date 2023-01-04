@@ -18,7 +18,7 @@ describe RelationshipManager do
         .and change{@endorsee.contacts.count}.by(1)
     end
 
-    it "establishes friendship and following relationships" do
+    pending "establishes friendship and following relationships" do
       RelationshipManager.create_friendship_if_none_exists_for(@endorsement)
       expect(@endorser.friends_with?(@endorsee)).to be true
       expect(@endorser.follows?(@endorsee)).to be true

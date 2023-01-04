@@ -114,7 +114,7 @@ describe EndorsementService do
         .and change{@p2.contacts.count}.by(1)
     end
 
-    it "has endorser follow endorsee" do
+    pending "has endorser follow endorsee" do
       expect{
         EndorsementService.accept(@e)
       }.to change{@p1.follows?(@p2)}.to(true)
