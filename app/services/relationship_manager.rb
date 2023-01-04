@@ -5,7 +5,8 @@ class RelationshipManager
     endorsee = endorsement.endorsee
 
     befriend(endorser, endorsee)
-    follow(endorser, endorsee)
+    #Dsiable following for now : 01/03/23
+    # follow(endorser, endorsee)
   end
 
 
