@@ -5,7 +5,7 @@ class Endorsement
 
   has_one :out, :endorser, type: :ENDORSEMENT_SOURCE, model_class: :Person
   has_one :out, :endorsee, type: :ENDORSEMENT_TARGET, model_class: :Person
-  has_one :out, :topic, type: :ENDORSE_TOPIC
+  has_one :out, :topic, type: :TOPIC
 
   property :description
   enum status: [:pending, :accepted, :declined], _default: :pending
