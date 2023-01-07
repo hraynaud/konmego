@@ -3,8 +3,9 @@ class EndorsementSearchService
   DEFAULT_NETWORK_HOPS = 3
 
   class << self
-    def paths_to_resource current_user, topic, hops = DEFAULT_NETWORK_HOPS
-      transform(current_user, get_endorsement_graph(current_user, topic, hops))
+    def paths_to_resource(current_user, topic, hops = DEFAULT_NETWORK_HOPS)
+      graph = get_endorsement_graph(current_user, topic, hops)
+      transform(current_user, graph)
     end
 
 
