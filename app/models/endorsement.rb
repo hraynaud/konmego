@@ -50,7 +50,7 @@ class Endorsement
   end
 
   def extract
-    OpenStruct.new(endorser: endorsement.endorser, endorsee: endorsement.endorsee, description:endorsement.description)
+    OpenStruct.new(endorser: endorser, endorsee: endorsee, description: description)
   end
 
   private
