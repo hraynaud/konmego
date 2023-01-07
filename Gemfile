@@ -32,6 +32,7 @@ group :development, :test do
   gem "factory_bot_rails"
   gem "neo4j-rake_tasks"
   gem "faker"
+  gem "rubocop"
 end
 
 group :development do
