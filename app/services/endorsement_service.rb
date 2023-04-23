@@ -76,6 +76,12 @@ class EndorsementService
     end
 
     def build_endorsement endorser, endorsee, topic
+     # create relationship object in addition to model since we might get
+     # get rid of the model.x
+      c = Endorse.new(from_node: endorser, to_node:endorsee)
+      c.topic = topic.name
+      c.save
+
       return Endorsement.new.tap do |endorsement|
         endorsement.endorser = endorser
         endorsement.endorsee = endorsee
