@@ -8,7 +8,7 @@ class Endorsement
   has_one :out, :topic, type: :ENDORSE_TOPIC
 
   property :description
-  enum status: [:pending, :accepted, :declined], _default: :pending
+  enum status: {pending: "pending", accepted: "accepted", declined: "declined"}, _default: :pending
 
   before_create :add_description
 

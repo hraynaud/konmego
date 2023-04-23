@@ -42,35 +42,15 @@ class EndorsementService
 
     def search_by_status user, status
       case status
-      when "pending"
-        EndorsementService.pending_endorsments(user)
-      when "declined"
-        EndorsementService.declined_endorsments(user)
-      when Endorsement.accepted
-        EndorsementService.accepted_endorsments(user)
+      when Endorsement.statuses[:pending]
+        user.endorsements.pending
+      when Endorsement.statuses[:declined]
+        user.endorsements.declined
+      when Endorsement.statuses[:accepted]
+        user.endorsements.accepted
       else 
-        accepted_or_pending(user)
+        user.endorsements.accepted_or_pending
       end
-    end 
-
-    def accepted_or_pending user
-      user.endorsements.where(:status)
-    end
-
-    def accepted_endorsments user
-      endorsements_for user, :accepted
-    end 
-
-    def pending_endorsments user
-      endorsements_for user, :pending
-    end 
-
-    def declined_endorsments user
-      endorsements_for user, :declined
-    end 
-
-    def endorsements_for user, status
-      user.endorsements.send(status)
     end 
 
     def decline endorsement
