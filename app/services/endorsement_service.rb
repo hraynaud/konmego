@@ -54,10 +54,9 @@ class EndorsementService
     end 
 
     def decline endorsement
-      return endorsement.tap do |e|
-        endorsement.declined!
-        endorsement.save
-      end
+      endorsement.declined!
+      endorsement.save
+      endorsement
     end
 
     private
