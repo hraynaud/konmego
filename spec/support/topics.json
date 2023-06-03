@@ -1,0 +1,11 @@
+{ 
+  "objects":  ["Typewriters","Lighters","Shovels","muppets"],
+  "animals": ["Cats","Whales","Bears","Turtles"],
+  "food": ["Sugar","Potatoes"],
+  "places": ["Central America", "californial"],
+  "activities": ["Dance","Spinning","Soccer","Hunting"],
+  "vocation": ["Dentistry","Journalism","Spiritism"],
+  "other": ["Muppets","Puppets"]
+}
+
+

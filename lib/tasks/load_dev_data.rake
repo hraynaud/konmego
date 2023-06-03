@@ -5,8 +5,9 @@ include TestDataHelper::Projects
 include TestDataHelper::Utils
 
 namespace :db do
-  desc "Creates sample data for development"
-  task :create_dev_data   => [:environment] do |task, args|
+  namespace :test do 
+  desc "Creates sample data for test"
+  task :create_test_data   => [:environment] do |task, args|
     #probably not necessary since we set the env above
     raise "You cannot run this task in production" unless (Rails.env.development? || Rails.env.test?)
 
@@ -20,6 +21,7 @@ namespace :db do
     raise "You cannot run this task in production" unless  (Rails.env.development? || Rails.env.test?)
     clear_db
   end
+end
 
 end
 

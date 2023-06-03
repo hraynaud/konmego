@@ -92,6 +92,11 @@ end
 class RandomProjectBuilder
   MAX_PROJECTS = 4
 
+  DESCRIPTION_INTRS=[
+    "Trying to learn all abou ...", "Witing a book about ...", "Need to find experts the field of ...", 
+    "Starting a company that focus on ...", "Looking to sell my vintage collection ... memoriabilia"
+  ]
+
   PseudoProject = Struct.new(:name, :description)
 
   def initialize users, topics
