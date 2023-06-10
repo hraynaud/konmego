@@ -10,6 +10,7 @@ class EndorsementService
     end
 
     def create endorser, params
+ 
       topic = find_or_create_topic params
       endorsee = Person.where(id: params[:endorsee_id]).first
 
@@ -80,13 +81,13 @@ class EndorsementService
      # get rid of the model.x
       c = Endorse.new(from_node: endorser, to_node:endorsee)
       c.topic = topic.name
-      c.save
+      return c
 
-      return Endorsement.new.tap do |endorsement|
-        endorsement.endorser = endorser
-        endorsement.endorsee = endorsee
-        endorsement.topic = topic
-      end
+      # return Endorsement.new.tap do |endorsement|
+      #   endorsement.endorser = endorser
+      #   endorsement.endorsee = endorsee
+      #   endorsement.topic = topic
+      # end
     end
 
   end

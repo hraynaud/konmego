@@ -11,9 +11,13 @@ class Person
   has_many :both, :contacts, model_class: :Person, type: :KNOWS, unique: true
   has_many :out, :followings, model_class: :Person, type: :FOLLOWINGS, unique: true
   has_many :in, :followers, model_class: :Person, type: :FOLLOWINGS
-  has_many :in, :incoming_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_TARGET
-  has_many :in, :outgoing_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_SOURCE
-  has_many :both, :endorsements, model_class: :Endorsement, type: false
+  # has_many :in, :incoming_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_TARGET
+  # has_many :in, :outgoing_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_SOURCE
+  # has_many :both, :endorsements, model_class: :Endorsement, type: false
+
+  has_many :in, :endorsers, rel_class: :Endorse
+  has_many :out, :endorsees, rel_class: :Endorse
+
   has_many :out, :projects, origin: :owner
   has_many :out, :participations, model_class: :Project, type: :PARTICIPATES_IN
   has_many :in, :posts, origin: :author
@@ -23,7 +27,9 @@ class Person
   property :profile_image_url, type: String
   property :avatar_url, type: String
   property :is_member, type: Boolean, default: false
+  property :name, type: String
 
+  before_create :set_name
 
   #TODO Add profile model
 
@@ -56,9 +62,13 @@ class Person
     identity.last_name
   end
 
-  def name
+  # def name
+  #   "#{first_name} #{last_name}"
+  # end
+
+  def full_name
     "#{first_name} #{last_name}"
-  end
+  end 
 
   def login
     email
@@ -77,16 +87,16 @@ class Person
     contacts_by_depth 1
   end
 
-  def endorsees
-    outgoing_endorsements.map(&:endorsee)
-  end
+  # def endorsees
+  #   outgoing_endorsements.map(&:endorsee)
+  # end
 
  
 
 
-  def endorsers
-    incoming_endorsements.map(&:endorser)
-  end
+  # def endorsers
+  #   incoming_endorsements.map(&:endorser)
+  # end
 
   def contacts_by_depth depth 
     contacts(:contacts, :r, rel_length: 0..depth).distinct
@@ -120,7 +130,11 @@ class Person
     followers.include? person
   end
 
-
   private
 
+  def set_name
+    return if identity.nil?
+    
+    self.name = "#{identity.first_name} #{identity.last_name.slice(0)}"
+  end
 end

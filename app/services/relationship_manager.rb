@@ -1,8 +1,8 @@
 class RelationshipManager
 
   def self.create_friendship_if_none_exists_for(endorsement)
-    endorser = endorsement.endorser
-    endorsee = endorsement.endorsee
+    endorser = endorsement.from_node
+    endorsee = endorsement.to_node
 
     befriend(endorser, endorsee)
     #Dsiable following for now : 01/03/23

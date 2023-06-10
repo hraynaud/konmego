@@ -26,25 +26,25 @@ module TestDataHelper
     end
 
     def create_topics
-      @cooking, @fencing, @acting, @djing, @singing, @design, @composer, @software, @beatmaking, @basketball = %w(
-      cooking fencing acting djing singing design composer software beatmaking basketball
+      @cooking, @fencing, @acting, @djing, @singing, @design, @composer, @software, @beatmaking, @basketball, @electrical, @portugal= %w(
+      cooking fencing acting djing singing design composer software beatmaking basketball electrical portugal
       ).map do |skill|
         FactoryBot.create(:topic, name: skill.titleize, default_image_file: "#{skill}.jpeg")
       end
     end
 
     def create_friendships
-      RelationshipManager.befriend @herby, @tisha
-      RelationshipManager.befriend @herby,  @franky 
-      RelationshipManager.befriend @franky,  @sar
-      RelationshipManager.befriend @kendra, @vince
-      RelationshipManager.befriend @kendra, @sar
-      RelationshipManager.befriend @sar, @elsa
-      RelationshipManager.befriend @gilbert, @nuno
-      RelationshipManager.befriend @gilbert, @jean
-      RelationshipManager.befriend @herby, @rico
-      RelationshipManager.befriend @rico, @wid
-      RelationshipManager.befriend @wid, @stan
+      # RelationshipManager.befriend @herby, @tisha
+      # RelationshipManager.befriend @herby,  @franky 
+      # RelationshipManager.befriend @franky,  @sar
+      # RelationshipManager.befriend @kendra, @vince
+      # RelationshipManager.befriend @kendra, @sar
+      # RelationshipManager.befriend @sar, @elsa
+      # RelationshipManager.befriend @gilbert, @nuno
+      # RelationshipManager.befriend @gilbert, @jean
+      # RelationshipManager.befriend @herby, @rico
+      # RelationshipManager.befriend @rico, @wid
+      # RelationshipManager.befriend @wid, @stan
     end
 
     def create_endorsements
@@ -52,15 +52,21 @@ module TestDataHelper
       @pending = []
       @declined = []
 
-      @accepted << EndorsementService.create(@fauzi, to_params(@franky, @cooking))#fauzi [KNOWS] franky
-      @accepted << EndorsementService.create(@tisha, to_params( @vince, @composer)) #tisha  [KNOWS] kendra
-      @accepted << EndorsementService.create(@tisha, to_params(@kendra, @singing)) #tisha  [KNOWS] kendra
-      @accepted << EndorsementService.create(@jean, to_params(@sar, @djing)) 
-      @accepted << EndorsementService.create(@sar, to_params(@kendra, @fencing)) 
-      @accepted << EndorsementService.create(@nuno, to_params(@sar, @djing))
-      @accepted << EndorsementService.create(@franky, to_params(@sar, @acting))
-      @accepted << EndorsementService.create(@wid, to_params(@stan, @basketball))
-      @accepted << EndorsementService.create(@sar, to_params(@jerry, @djing)) 
+      @accepted << EndorsementService.create(@fauzi, to_params(@franky, @cooking))
+      @accepted << EndorsementService.create(@franky, to_params(@fauzi, @djing))
+      @accepted << EndorsementService.create(@sar, to_params(@herby, @djing)) 
+      @accepted << EndorsementService.create(@tisha, to_params( @vince, @composer))
+    
+      @accepted << EndorsementService.create(@nuno, to_params(@wid, @software))
+      @accepted << EndorsementService.create(@elsa, to_params(@herby, @software))
+      @accepted << EndorsementService.create(@kendra, to_params(@sar, @acting))
+      @accepted << EndorsementService.create(@vince, to_params(@jean, @fencing))
+      @accepted << EndorsementService.create(@gilbert, to_params(@elsa, @design)) 
+      @accepted << EndorsementService.create(@tisha, to_params(@nuno, @design))   
+      @accepted << EndorsementService.create(@rico, to_params(@wid, @beatmaking))
+      @accepted << EndorsementService.create(@stan, to_params(@nuno, @portugal))
+      @accepted << EndorsementService.create(@nuno, to_params(@franky, @beatmaking))
+      @accepted << EndorsementService.create(@elsa, to_params(@stan, @basketball))
 
     
 
@@ -134,26 +140,7 @@ module TestDataHelper
 
   module SampleResults
 
-    def sars_cooking_network 
-      {
-        "nodes"=> [
-          {"label"=>"Sar Skillz", "type"=>"Person", "id"=>293},
-          {"label"=>"Fauzi Skillz", "type"=>"Person", "id"=>288},
-          {"label"=>"Franky Skillz", "type"=>"Person", "id"=>243},
-          {"label"=>"Cooking", "type"=>"Topic", "id"=>324},
-          {"label"=>"Fauzi Skillz Endorses someone for Cooking", "type"=>"Endorsement", "id"=>333}
-        ],
-
-        "links"=> [
-          {"source"=>297, "target"=>287, "type"=>"KNOWS"},
-          {"source"=>340, "target"=>287, "type"=>"ENDORSEMENT_SOURCE"},
-          {"source"=>340, "target"=>324, "type"=>"TOPIC"},
-          {"source"=>288, "target"=>297, "type"=>"KNOWS"},
-          {"source"=>333, "target"=>288, "type"=>"ENDORSEMENT_SOURCE"},
-          {"source"=>333, "target"=>324, "type"=>"TOPIC"}
-        ]
-      }
-    end
+ 
   end 
 
   module Utils
@@ -164,43 +151,7 @@ module TestDataHelper
 
 
 
-#
-  # vince    --> tisha --> kendra
-  #                    \
-  #                      herby  --> franky 
-  #                           : --> fauzi
-  #                           : --> elsa
-  #                                      \__ --> sar
-  #                                      /
-  #                           : --> jean
-  #
-  #
-  # tisha --> herby  : --> franky
-  #                  : --> elsa
-  #                  : --> jean
-  #
-  #
-  #
-  #
-  # herby -->  : --> franky 
-  #            : --> fauzi
-  #            : --> elsa  ---\
-  #                            -->    sar
-  #            : --> jean  ---/     /
-  #                           \ --> vince
-  #            : --> tisha ---/
-  #                           \--> Kendra
-  #
-  #
-  # sar -->    : --> elsa 
-  #            : --> franky 
-  #
-  #
-  #
-  #
-  #
-  #
-  #
+
 
 
 end
