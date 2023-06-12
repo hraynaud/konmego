@@ -4,16 +4,33 @@ require 'ostruct'
 class Person
 
   include KonmegoNeo4jNode
+  include ActiveModel::SecurePassword
 
-  validates :identity, presence: true, if: :is_member
+  # validates :identity, presence: true, if: :is_member
+
+  has_secure_password
+
+  validates :first_name, presence: true
+  validates :last_name, presence: true
+  validates :email, uniqueness: true
+  validates :email, presence: true, unless: :is_oauth?
+  validate :email_format
+  validates :password, :length => { :minimum => 8 }, allow_nil: true,  on: :create, unless: :is_oauth?
+
+  has_one :in, :person, type: nil
+
+  property :first_name, type: String
+  property :last_name, type: String
+  property :email, type: String
+  property :password_digest, type: String
+  scope :by_email, ->(login){where(email: login)}
+
 
   has_one :out, :identity, type: :IDENTITY
   has_many :both, :contacts, model_class: :Person, type: :KNOWS, unique: true
   has_many :out, :followings, model_class: :Person, type: :FOLLOWINGS, unique: true
   has_many :in, :followers, model_class: :Person, type: :FOLLOWINGS
-  # has_many :in, :incoming_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_TARGET
-  # has_many :in, :outgoing_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_SOURCE
-  # has_many :both, :endorsements, model_class: :Endorsement, type: false
+
 
   has_many :in, :endorsers, rel_class: :Endorse
   has_many :out, :endorsees, rel_class: :Endorse
@@ -29,7 +46,7 @@ class Person
   property :is_member, type: Boolean, default: false
   property :name, type: String
 
-  before_create :set_name
+  # before_create :set_name
 
   #TODO Add profile model
 
@@ -54,13 +71,13 @@ class Person
                    avatar_url: avatar_url, profile_image_url: profile_image_url, name: "#{first_name} #{last_name}", id: id)
   end
 
-  def first_name
-    identity.first_name
-  end
+  # def first_name
+  #   identity.first_name
+  # end
 
-  def last_name
-    identity.last_name
-  end
+  # def last_name
+  #   identity.last_name
+  # end
 
   # def name
   #   "#{first_name} #{last_name}"
@@ -74,29 +91,18 @@ class Person
     email
   end
 
-  def identity_id
-    identity.id
-  end
+  # def identity_id
+  #   identity.id
+  # end
 
 
-  def email
-    identity.email
-  end
+  # def email
+  #   identity.email
+  # end
 
   def friends 
     contacts_by_depth 1
   end
-
-  # def endorsees
-  #   outgoing_endorsements.map(&:endorsee)
-  # end
-
- 
-
-
-  # def endorsers
-  #   incoming_endorsements.map(&:endorser)
-  # end
 
   def contacts_by_depth depth 
     contacts(:contacts, :r, rel_length: 0..depth).distinct
@@ -107,7 +113,7 @@ class Person
   end
 
   def endorsed_by? person
-    incoming_endorsements.endorser.include? person
+    endorsers.include? person
   end
 
   def endorses_topic? topic
@@ -132,9 +138,28 @@ class Person
 
   private
 
+  def is_oauth?
+    #handle.present? && uid.present?
+    false
+  end
+
   def set_name
     return if identity.nil?
     
     self.name = "#{identity.first_name} #{identity.last_name.slice(0)}"
+  end
+
+  def using_pwd?
+    password.present? && email.present?
+  end
+
+  def email_format
+    if email && !is_valid_email?
+      errors.add( :email, "is invalid")
+    end
+  end
+
+  def is_valid_email?
+    !!(email =~ URI::MailTo::EMAIL_REGEXP)
   end
 end

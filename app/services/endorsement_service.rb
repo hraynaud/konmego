@@ -4,44 +4,50 @@ class EndorsementService
   ENDORSEMENT_LIMIT = 50
 
   class << self
-
-    def has_available_endorsements? endorser
+    def has_available_endorsements?(endorser)
       endorser.outgoing_endorsements.size > ENDORSEMENT_LIMIT
     end
 
-    def create endorser, params
- 
-      topic = find_or_create_topic params
+    def create(endorser, params)
       endorsee = Person.where(id: params[:endorsee_id]).first
+      topic = TopicService.get(params[:topic_id])
 
-      if endorsee 
-        create_from_nodes(endorser, endorsee, topic)
+      if topic
+        topic_name = topic.name
       else
-        invite = InviteService.create endorser, invite_params(params)
-        invite
+        topic_name = params[:new_topic_name]
+        raise raise StandardError, 'Please provide a topic' if topic_name.nil?
+      end
+
+      if endorsee
+        if already_exists? endorser, endorsee, topic_name
+          raise raise StandardError, "You've alread endorsed #{@p2.name} for #{topic_name}"
+        end
+
+        create_from_nodes(endorser, endorsee, topic_name)
+      else
+        InviteService.create endorser, params
+
       end
     end
-   
 
-    def destroy e
+    def destroy(e)
       e.destroy
     end
 
-
-    def find id
-     Endorsement.find_by(id: id)
+    def find(id)
+      Endorsement.find_by(id: id)
     end
 
+    def accept(invite)
+      endorsement = create_from_invite invite
+      endorsement.accepted!
+      endorsement.save
+      RelationshipManager.create_friendship_if_none_exists_for(endorsement)
 
-    def accept endorsement
-      endorsement.tap do |e|
-        RelationshipManager.create_friendship_if_none_exists_for(e)
-        e.accepted!
-        e.save
-      end
     end
 
-    def search_by_status user, status
+    def search_by_status(user, status)
       case status
       when Endorsement.statuses[:pending]
         user.endorsements.pending
@@ -49,12 +55,12 @@ class EndorsementService
         user.endorsements.declined
       when Endorsement.statuses[:accepted]
         user.endorsements.accepted
-      else 
+      else
         user.endorsements.accepted_or_pending
       end
-    end 
+    end
 
-    def decline endorsement
+    def decline(endorsement)
       endorsement.declined!
       endorsement.save
       endorsement
@@ -62,34 +68,25 @@ class EndorsementService
 
     private
 
-    def invite_params params
+    def create_from_invite(invite)
+      topic = invite.topic || TopicService.find_or_create_by_name(invite.topic_name)
+      to = invite.receiver || PersonService.find_or_create_from_invite(invite)
+      create_from_nodes(invite.sender, to, topic.name)
+    end
+
+    def already_exists?(endorser, endorsee, topic)
+      endorser.endorsees.each_rel.select { |r| r.to_node == endorsee && r.topic == topic }.count > 0
+    end
+
+    def invite_params(params)
       params.except(:new_topic_name, :new_topic_category, :endorsee_id)
-    end  
-
-    def find_or_create_topic params
-      TopicService.get(topic_id: params[:topic_id], name: params[:new_topic_name], category: params[:new_topic_category])
     end
 
-    def create_from_nodes endorser, endorsee, topic
-      return build_endorsement(endorser, endorsee, topic).tap do |endorsement|
-        endorsement.save!
-      end
+    def create_from_nodes(endorser, endorsee, topic_name)
+      c = Endorse.new(from_node: endorser, to_node: endorsee)
+      c.topic = topic_name
+      c.save
+      c
     end
-
-    def build_endorsement endorser, endorsee, topic
-     # create relationship object in addition to model since we might get
-     # get rid of the model.x
-      c = Endorse.new(from_node: endorser, to_node:endorsee)
-      c.topic = topic.name
-      return c
-
-      # return Endorsement.new.tap do |endorsement|
-      #   endorsement.endorser = endorser
-      #   endorsement.endorsee = endorsee
-      #   endorsement.topic = topic
-      # end
-    end
-
   end
-
 end

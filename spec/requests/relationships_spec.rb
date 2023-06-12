@@ -69,7 +69,7 @@ describe Api::V1::PeopleController do
   end
 
   def expected_friends contacts
-    contacts.map{|c| c.name}.to_set
+    contacts.map{|c| c.full_name}.to_set
   end
 
   def full_name p

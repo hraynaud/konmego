@@ -2,20 +2,20 @@ module TopicService
 
   class << self
 
-    def get params
-      Topic.where(id: params[:topic_id]).first or 
-        Topic.where(name: params[:name]).first or
-        Topic.create(name: params[:name], category: params[:category])
-
+    def get id
+      Topic.where(id: id).first
     end
+
 
     def find_related_or_synonym name
       #TODO implement
       [] 
     end
 
-    def create name, description
-      Topic.create(name: name, description: description);
+    def find_or_create_by_name params
+      
+        Topic.where(name: params[:name]).first or
+        Topic.create(name: params[:name], category: params[:category])
     end
 
   end

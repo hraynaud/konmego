@@ -3,8 +3,13 @@ FactoryBot.define do
     profile_image_url {""}
     avatar_url {""}
     factory :member do
-      association :identity,  factory: :identity
+
       is_member {true}
+
+      sequence(:first_name) { |n| "foo#{n}" }
+      sequence(:last_name) { |n| "bar#{n}" }
+      sequence(:email) { |n| "foo#{n}@mail.com" }
+      password {"passwordyword"}
     end
 
   end
