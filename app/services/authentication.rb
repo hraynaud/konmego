@@ -4,19 +4,19 @@ class Authentication
   USER_ID_KEY_PARAM = "uid"
 
   def self.login_by_password email, pwd
-    identity = Identity.find_by email: email
-
-    if identity && identity.authenticate(pwd)
-      login_success identity
+    p = Person.find_by email: email
+   binding.pry
+    if p && p.authenticate(pwd)
+      login_success p
     else 
       OpenStruct.new({jwt: nil, error: "Incorrect email or password"})
     end
   end
 
-  def self.login_success identity
+  def self.login_success person
     Rails.logger.debug("login was successful")
 
-    OpenStruct.new({jwt: jwt_for(identity)})
+    OpenStruct.new({jwt: jwt_for(person)})
   end
 
   def self.uid_from_from_request_auth_hdr auth_hdr
@@ -30,10 +30,8 @@ class Authentication
   end
 
 
-
-  def self.jwt_for identity 
-    p = identity.person
-    JWT.encode({uid: identity.id, email: identity.email, name: p.name, exp: 1.day.from_now.to_i}, Rails.application.secret_key_base,'HS256')
+  def self.jwt_for p 
+    JWT.encode({uid: p.id, email: p.email, name: p.name, exp: 1.day.from_now.to_i}, Rails.application.secret_key_base,'HS256')
   end
 
 end

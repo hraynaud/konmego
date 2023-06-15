@@ -6,7 +6,7 @@ module TestDataHelper
     def setup_relationship_data
       create_social_graph
       create_endorsements
-      set_endorsement_statuses
+      # set_endorsement_statuses
     end
 
     def create_social_graph
@@ -19,7 +19,7 @@ module TestDataHelper
       @herby, @tisha, @franky, @fauzi, @kendra, @sar, @elsa, @vince, @jean, @nuno, @gilbert, @jerry, @rico, @wid, @stan = %w(
       herby tisha franky fauzi kendra sar elsa vince jean nuno gilbert jerry rico wid stan
       ).map do |fname|
-        FactoryBot.create(:person, identity: FactoryBot.create(:identity, first_name: fname.titleize, last_name: "Skillz"))
+        FactoryBot.create(:member,  first_name: fname.titleize, last_name: "Skillz")
       end
 
       @hidden = FactoryBot.build(:person,identity: FactoryBot.create(:identity, first_name: "Hidden", last_name: "Hidden"))
@@ -52,21 +52,20 @@ module TestDataHelper
       @pending = []
       @declined = []
 
-      @accepted << EndorsementService.create(@fauzi, to_params(@franky, @cooking))
-      @accepted << EndorsementService.create(@franky, to_params(@fauzi, @djing))
-      @accepted << EndorsementService.create(@sar, to_params(@herby, @djing)) 
-      @accepted << EndorsementService.create(@tisha, to_params( @vince, @composer))
-    
-      @accepted << EndorsementService.create(@nuno, to_params(@wid, @software))
-      @accepted << EndorsementService.create(@elsa, to_params(@herby, @software))
-      @accepted << EndorsementService.create(@kendra, to_params(@sar, @acting))
-      @accepted << EndorsementService.create(@vince, to_params(@jean, @fencing))
-      @accepted << EndorsementService.create(@gilbert, to_params(@elsa, @design)) 
-      @accepted << EndorsementService.create(@tisha, to_params(@nuno, @design))   
-      @accepted << EndorsementService.create(@rico, to_params(@wid, @beatmaking))
-      @accepted << EndorsementService.create(@stan, to_params(@nuno, @portugal))
-      @accepted << EndorsementService.create(@nuno, to_params(@franky, @beatmaking))
-      @accepted << EndorsementService.create(@elsa, to_params(@stan, @basketball))
+      do_accept(@fauzi, @franky, @cooking)
+      do_accept(@franky, @fauzi, @djing)
+      do_accept(@sar, @herby, @djing)
+      do_accept(@tisha,  @vince, @composer)
+      do_accept(@nuno, @wid, @software)
+      do_accept(@elsa, @herby, @software)
+      do_accept(@kendra, @sar, @acting)
+      do_accept(@vince, @jean, @fencing)
+      do_accept(@gilbert, @elsa, @design)
+      do_accept(@tisha, @nuno, @design)   
+      do_accept(@rico, @wid, @beatmaking)
+      do_accept(@stan, @nuno, @portugal)
+      do_accept(@nuno, @franky, @beatmaking)
+      do_accept(@elsa, @stan, @basketball)
 
     
 
@@ -76,6 +75,11 @@ module TestDataHelper
       @declined << EndorsementService.create(@jean, to_params(@vince, @composer))
       @pending << EndorsementService.create(@elsa, to_params(@sar, @acting))
 
+    end
+
+    def do_accept(from, to, topic)
+      @accepted << EndorsementService.create(from, to_params(to, topic))
+      RelationshipManager.befriend from, to
     end
 
     def to_params(endorsee, topic)

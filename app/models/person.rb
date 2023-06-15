@@ -10,21 +10,7 @@ class Person
 
   has_secure_password
 
-  validates :first_name, presence: true
-  validates :last_name, presence: true
-  validates :email, uniqueness: true
-  validates :email, presence: true, unless: :is_oauth?
-  validate :email_format
-  validates :password, :length => { :minimum => 8 }, allow_nil: true,  on: :create, unless: :is_oauth?
-
   has_one :in, :person, type: nil
-
-  property :first_name, type: String
-  property :last_name, type: String
-  property :email, type: String
-  property :password_digest, type: String
-  scope :by_email, ->(login){where(email: login)}
-
 
   has_one :out, :identity, type: :IDENTITY
   has_many :both, :contacts, model_class: :Person, type: :KNOWS, unique: true
@@ -40,16 +26,31 @@ class Person
   has_many :in, :posts, origin: :author
   has_many :in, :comments, origin: :author
 
+
+  property :first_name, type: String
+  property :last_name, type: String
+  property :email, type: String
+  property :password_digest, type: String
   property :bio, type: String
   property :profile_image_url, type: String
   property :avatar_url, type: String
   property :is_member, type: Boolean, default: false
   property :name, type: String
 
-  # before_create :set_name
+  property :status, type: String
+  property :reg_code, type: String
+  property :reg_code_expiration, type: Integer
 
-  #TODO Add profile model
 
+
+  validates :first_name, presence: true
+  validates :last_name, presence: true
+  validates :email, uniqueness: true
+  validates :email, presence: true, unless: :is_oauth?
+  validate :email_format
+  validates :password, :length => { :minimum => 8 }, allow_nil: true,  on: :create, unless: :is_oauth?
+
+  scope :by_email, ->(login){where(email: login)}
 
   DEFAULT_RELATIONSHIP_DEPTH = 3
 
@@ -91,15 +92,6 @@ class Person
     email
   end
 
-  # def identity_id
-  #   identity.id
-  # end
-
-
-  # def email
-  #   identity.email
-  # end
-
   def friends 
     contacts_by_depth 1
   end
@@ -117,11 +109,11 @@ class Person
   end
 
   def endorses_topic? topic
-    outgoing_endorsements.topic.include? topic
+    endorsees.each_rel.select{|r|r.topic}.include? topic
   end
 
   def has_endorsement_for_topic? topic
-    incoming_endorsements.topic.include? topic
+    endorsers.each_rel.select{|r|r.topic}.include? topic
   end
 
   def friends_with? person

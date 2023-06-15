@@ -25,7 +25,7 @@ describe Project do
       context "has owner" do 
 
         before do 
-          person = FactoryBot.create(:person)
+          person = FactoryBot.create(:member)
           project.owner = person
         end
 

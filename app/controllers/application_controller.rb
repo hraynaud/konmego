@@ -53,7 +53,7 @@ class ApplicationController < ActionController::API
     begin
       logger.debug "attempting to authenticate request with auth header: #{request.headers['Authorization']}"
       uid = Authentication.uid_from_from_request_auth_hdr request.headers['Authorization']
-      @current_user = Identity.find(uid).person
+      @current_user = Person.find(uid)
     rescue => e 
       do_auth_failed e.message
     end

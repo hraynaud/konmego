@@ -10,8 +10,11 @@ describe Person do
     setup_relationship_data
   end
 
+  #TODO might be redundant with test in RelationshipManager
   describe ".contacts" do 
     it "finds all friends of given user" do
+      RelationshipManager.befriend @tisha, @vince
+      RelationshipManager.befriend @tisha, @nuno
       expect(extract_names(@tisha.contacts)).to eq extract_names([@nuno,@vince])
     end
   end

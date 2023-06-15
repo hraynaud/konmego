@@ -10,14 +10,13 @@ describe "Signup and registration" do
     it "creates  registration" do
       expect{
         post "/register", params: person_params
-      }.to change{Registration.count}.by(1)
-        .and change{Identity.count}.by(1)
+      }.to change{Person.count}.by(1)
     end
 
     it "sends email" do
       post "/register",  params: person_params
-      expect {RegistrationMailer.with(id: Registration.last.id).confirm_email.deliver_later}.to have_enqueued_mail(RegistrationMailer, :confirm_email)
-        .with(params: {id: Registration.last.id}, args:[])
+      expect {RegistrationMailer.with(id: Person.last.id).confirm_email.deliver_later}.to have_enqueued_mail(RegistrationMailer, :confirm_email)
+        .with(params: {id: Person.last.id}, args:[])
     end
 
     it "fails on missing email" do
@@ -47,13 +46,13 @@ describe "Signup and registration" do
     end
 
     it "fails on duplicate email" do
-      i = FactoryBot.create(:identity)
-
+      i = FactoryBot.create(:person)
+ 
       post "/register", params: build_invalid_params({email: i.email})
 
       aggregate_failures "testing response" do
         expect_http response, :unprocessable_entity
-        expect(Identity.count).to eq(1)
+        expect(Person.count).to eq(1)
       end
     end
 
@@ -86,26 +85,22 @@ describe "Signup and registration" do
 
   describe "confirm" do
     let(:reg){FactoryBot.create(:registration)}
-    let(:identity){FactoryBot.build(:identity)} #NOTE avoid hard coding the test pwd grabit from a new identity instance since it converted to a digest after sace by has_secure_password.
-
+   
     it "confirms registration" do
-      post "/confirm", params:{id: reg.id, password: identity.password, code: reg.reg_code}
+      post "/confirm", params:{id: reg.id, password: reg.password, code: reg.reg_code}
       expect(reg.reload.status).to eq("confirmed")
-      expect(Identity.count).to eq(1)
       expect(Person.count).to eq(1)
     end
 
     it "fails on invalid code" do
-      post "/confirm", params:{id: reg.id, password: identity.password, code: '123456'}
+      post "/confirm", params:{id: reg.id, password: reg.password, code: '123456'}
       expect_http response, :unprocessable_entity
-      expect(Person.count).to eq(0)
       expect(reg.status).to eq("pending")
     end
 
     it "fails on invalid password" do
       post "/confirm", params:{id: reg.id, password: "   ", code: reg.reg_code}
       expect_http response, :unprocessable_entity
-      expect(Person.count).to eq(0)
       expect(reg.status).to eq("pending")
     end
   end
@@ -117,7 +112,6 @@ describe "Signup and registration" do
   def expect_error_response_and_person_not_created
     expect_http response, :unprocessable_entity
     expect(Person.count).to eq(0)
-    expect(Identity.count).to eq(0)
   end
 
   def person_params

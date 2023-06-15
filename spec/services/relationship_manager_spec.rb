@@ -2,11 +2,12 @@ require 'rails_helper'
 describe RelationshipManager do
 
   before do 
+    Person.delete_all
     @topic1 = FactoryBot.create(:topic)
     @topic2 = FactoryBot.create(:topic)
-    @endorsement = FactoryBot.create(:endorsement, topic: @topic1)
-    @endorsee = @endorsement.endorsee
-    @endorser = @endorsement.endorser
+    @endorser = FactoryBot.create(:member)
+    @endorsee = FactoryBot.create(:member)
+    @endorsement = EndorsementService.create(@endorser, {endorsee_id: @endorsee.id, topic_id: @topic1.id})
   end
 
   describe ".create_friendship_if_none_exists_for" do 
