@@ -5,7 +5,6 @@ class InviteService
     def create sender, params
       invite = Invite.new
       invite.sender = sender 
-
       topic = Topic.where(id: params[:topic_id]).first
       topic_name = topic.try(:name) || params[:new_topic_name]
       invite.topic_name = topic_name

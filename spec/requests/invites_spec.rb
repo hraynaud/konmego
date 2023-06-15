@@ -11,6 +11,7 @@ describe "Send Invite" do
   after do
     clear_db
   end
+
   describe "create" do
     it "creates  Invite" do
       expect{
@@ -81,7 +82,8 @@ describe "Send Invite" do
         email: "blah@zay.com",
         firstName: "Someone",
         lastName: "Special",
-        topicId: nil
+        topicId: nil,
+        new_topic_name: "Topically"
       }
     }
   end

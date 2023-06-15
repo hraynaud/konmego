@@ -7,7 +7,7 @@ class RegistrationMailer < ApplicationMailer
   REG_ENDORSEMENT_INVITE_MSG = "You've been invited to join konmego as"
 
   before_action do
-    @registration = Registration.find(params[:id]) 
+    @registration = Person.find(params[:id]) 
   end
 
   def confirm_email

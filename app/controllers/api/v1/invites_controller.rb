@@ -14,7 +14,7 @@ class Api::V1::InvitesController < ApplicationController
 
 
   def invite_params
-    params.require(:invite).permit(:first_name, :last_name, :email, :topic_id)
+    params.require(:invite).permit(:first_name, :last_name, :email, :topic_id,:new_topic_name)
   end
 
 end
