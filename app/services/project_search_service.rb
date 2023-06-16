@@ -24,7 +24,6 @@ class ProjectSearchService
     end
 
     def initial_scope user, params
-      
       depth = params[:depth] || DEFAULT_PROJECT_SEARCH_DEPTH
       friend = are_first_friends? user, resolve_friend(params[:friend])
       friend ? projects_for(friend) : projects_for(user.contacts_by_depth(depth))

@@ -127,14 +127,14 @@ module TestDataHelper
 
       # jean
       @app_project = FactoryBot.create(:project, :valid, name: "App", topic: @software, owner: @jean, visibility: :friends)
-      @vocalist_project = FactoryBot.create(:project, :valid, name: "Vocalist", topic: @singing, owner: @jean) #private
+      @singing_project = FactoryBot.create(:project, :valid, name: "Vocalist", topic: @singing, owner: @jean) #private default
 
       # sar
       @acting_project = FactoryBot.create(:project, :valid, name: "Acting", topic: @acting, owner: @sar, visibility: :friends)
 
       # NO OWNERS
       @fencing_project = FactoryBot.create(:project, :valid, name: "Fencing", topic: @fencing)
-      @vocalist2_project = FactoryBot.create(:project, :valid, name: "Vocalist 2", topic: @singing, visibility: :public)
+      @singing_project_2 = FactoryBot.create(:project, :valid, name: "Vocalist 2", topic: @singing, visibility: :public)
 
       #TODO Add new in_network project
       #@producer_project = FactoryBot.create(:project, :valid, name: "Make beats", topic: @beatmaking, owner: @fauzi, visibility: :in_network)

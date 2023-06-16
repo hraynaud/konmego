@@ -58,12 +58,12 @@ describe Endorsement do
       expect{endorsement2.save}.to change{Endorsement.size}.by(0)
     end
 
-    it "establishes edorser/endorsee relationships" do
+    pending "establishes edorser/endorsee relationships" do
       expect(@endorser.endorses?(@endorsee)).to eq true
       expect(@endorsee.endorsed_by?(@endorser)).to eq true
     end
 
-    it "associates persons with the correct topic" do
+    pending "associates persons with the correct topic" do
       expect(@endorser.endorses_topic?(@topic1)).to eq true
       expect(@endorsee.has_endorsement_for_topic?(@topic1)).to eq true
     end

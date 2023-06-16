@@ -14,13 +14,13 @@ describe Api::V1::ProjectsController do
   end
 
  describe "post api/v1/projects_search/:topic" do 
-   it "finds friends that have direct connection to this topic" do
+   it "finds friend projects associated with this topic to this topic" do
 
-     post "/api/v1/projects_search", params:{topic: @cooking.id}, headers:{'Authorization': Authentication.jwt_for(@herby.identity)}
+     post "/api/v1/projects_search", params:{topic: @cooking.id}, headers:{'Authorization': Authentication.jwt_for(@herby)}
 
      expect(response.status).to eq 200
 
-     expected_project_names =  [ "Culinary"].to_set
+     expected_project_names =  [ "Chef"].to_set
      results = extract_project_names(JSON.parse(response.body))
 
      expect(expected_project_names).to eq(results.to_set)

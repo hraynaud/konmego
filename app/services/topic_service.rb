@@ -6,6 +6,9 @@ module TopicService
       Topic.where(id: id).first
     end
 
+    def find_by_name name
+      Topic.where(name: name).first
+    end
 
     def find_related_or_synonym name
       #TODO implement
@@ -13,8 +16,7 @@ module TopicService
     end
 
     def find_or_create_by_name params
-      
-        Topic.where(name: params[:name]).first or
+        find_by_name(params[:name]) or
         Topic.create(name: params[:name], category: params[:category])
     end
 
