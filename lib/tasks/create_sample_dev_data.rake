@@ -41,10 +41,8 @@ end
 def create_user user
   FactoryBot.create(
     :person,
-    identity: FactoryBot.create(:identity, 
-                                first_name: user["name"]["first"], 
-                                last_name: user["name"]["last"]
-                               ),
+    first_name: user["name"]["first"], 
+    last_name: user["name"]["last"],
     profile_image_url: user["picture"]["large"],
     avatar_url: user["picture"]["thumbnail"],
   )
@@ -69,11 +67,13 @@ class RandomEndorsementBuilder
     end
   end
 
-  def create_sample_endorsement u
 
+  def create_sample_endorsement u
+    @accepted = []
+    @pending = []
+   
     begin
-    e = EndorsementService.create(u, {endorsee_id: random_user.id, topic_id: random_topic.id})
-    EndorsementService.accept(e)
+      do_accept(u, random_user, random_topic)
     rescue ActiveGraph::Node::Persistence::RecordInvalidError
       #no op
     end
@@ -142,15 +142,7 @@ class RandomProjectBuilder
     end
   end
 
-  def create_sample_endorsement u
-
-    begin
-    e = EndorsementService.create(u, {endorsee_id: random_user.id, topic_id: random_topic.id})
-    EndorsementService.accept(e)
-    rescue ActiveGraph::Node::Persistence::RecordInvalidError
-      #no op
-    end
-  end
+  
 
   def random_user
     @users[rand(@users.count)]

@@ -33,20 +33,7 @@ module TestDataHelper
       end
     end
 
-    def create_friendships
-      # RelationshipManager.befriend @herby, @tisha
-      # RelationshipManager.befriend @herby,  @franky 
-      # RelationshipManager.befriend @franky,  @sar
-      # RelationshipManager.befriend @kendra, @vince
-      # RelationshipManager.befriend @kendra, @sar
-      # RelationshipManager.befriend @sar, @elsa
-      # RelationshipManager.befriend @gilbert, @nuno
-      # RelationshipManager.befriend @gilbert, @jean
-      # RelationshipManager.befriend @herby, @rico
-      # RelationshipManager.befriend @rico, @wid
-      # RelationshipManager.befriend @wid, @stan
-    end
-
+  
     def create_endorsements
       @accepted = []
       @pending = []
