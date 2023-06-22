@@ -4,10 +4,10 @@ class PersonSerializer
   attributes :id, :first_name, :last_name, :bio, :avatar_url, :profile_image_url
   
   attribute :endorsees do |p, _params|
-    get_data(p.endorsees(:friend,:rel)) #.pluck(:friend,:rel),"out")
+    get_data(p.endorsees(:friend,:rel))
   end
   attribute :endorsers do |p, _params|
-      get_data(p.endorsers(:friend,:rel)) #.pluck(:friend,:rel),"in")
+    get_data(p.endorsers(:friend,:rel))
   end
 
 
@@ -26,6 +26,6 @@ class PersonSerializer
           description: rel.description
         }
       end
-      end
+    end
   end
 end

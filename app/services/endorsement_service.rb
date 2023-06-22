@@ -5,7 +5,7 @@ class EndorsementService
 
   class << self
     def has_available_endorsements?(endorser)
-      endorser.outgoing_endorsements.size > ENDORSEMENT_LIMIT
+      endorser.endorsees.size > ENDORSEMENT_LIMIT
     end
 
     def create(endorser, params)
@@ -56,7 +56,7 @@ class EndorsementService
       when Endorsement.statuses[:accepted]
         user.endorsements.accepted
       else
-        user.endorsements.accepted_or_pending
+        user.endorsements
       end
     end
 

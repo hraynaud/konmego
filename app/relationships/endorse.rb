@@ -8,6 +8,7 @@ class Endorse
 
   property :topic
   property :topic_id
+  property :topic_image
   property :description
   enum status: [:pending, :accepted, :declined], _default: :pending
   enum topic_status: [:proposed, :existing], _default: :proposed
@@ -28,6 +29,14 @@ class Endorse
 
   def endorser_name
     from_node.name
+  end
+
+  def endorsee_id
+    to_node.id
+  end
+
+  def endorser_id
+    from_node.id
   end
 
 end
