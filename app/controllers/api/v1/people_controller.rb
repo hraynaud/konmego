@@ -6,9 +6,9 @@ class Api::V1::PeopleController < ApplicationController
   end
 
   def show
-    p = Person.from_identity(params[:id]).try(:first)
+    p = Person.find(params[:id]).try(:first)
     options = {}
-    options[:include] = [:incoming_endorsements, :outgoing_endorsements]
+    options[:include] = [:endorsers, :endorsees]
     options[:params] ={ref_user: p}
     render json: PersonSerializer.new(p, options).serializable_hash.to_json
 

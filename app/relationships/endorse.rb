@@ -7,25 +7,27 @@ class Endorse
   creates_unique on: [:topic]
 
   property :topic
-  enum topic_status: [:new, :existing], _default: :new
+  property :topic_id
   property :description
   enum status: [:pending, :accepted, :declined], _default: :pending
+  enum topic_status: [:proposed, :existing], _default: :proposed
 
   validates_presence_of :topic
-  # validate :is_unique_across_endorser_endorsee_and_topic, on: :create, if: :all_valid?
+  
+  def endorser_avatar_url
+    from_node.avatar_url
+  end
 
+  def endorsee_avatar_url
+    to_node.avatar_url
+  end
 
-  # def is_unique_across_endorser_endorsee_and_topic
-  #   binding.pry
-  #   if (from_node.endorsees.include? to_node) && from_node
-  #     errors.add(:base, "You have already endorsed #{to_node.name} for #{topic_name}")
-  #     return false
-  #   end
-  # end
+  def endorsee_name
+    to_node.name
+  end
 
+  def endorser_name
+    from_node.name
+  end
 
-
-  # def all_valid?
-  #   from_node && from_node.valid? && to_node && to_node.valid? && topic.present?
-  # end
 end

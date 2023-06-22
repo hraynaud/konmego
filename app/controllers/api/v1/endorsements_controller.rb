@@ -34,7 +34,7 @@ class Api::V1::EndorsementsController < ApplicationController
   end
 
   def for_user
-    params[:user_id] ? Person.from_identity(params[:user_id]) : current_user
+    params[:user_id] ? PersonService.find_by(id: params[:user_id]) : current_user
   end
 
   def destroy

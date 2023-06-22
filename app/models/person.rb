@@ -6,21 +6,16 @@ class Person
   include KonmegoNeo4jNode
   include ActiveModel::SecurePassword
 
-  # validates :identity, presence: true, if: :is_member
-
   has_secure_password
 
   has_one :in, :person, type: nil
-
   has_one :out, :identity, type: :IDENTITY
   has_many :both, :contacts, model_class: :Person, type: :KNOWS, unique: true
   has_many :out, :followings, model_class: :Person, type: :FOLLOWINGS, unique: true
   has_many :in, :followers, model_class: :Person, type: :FOLLOWINGS
-
-
   has_many :in, :endorsers, rel_class: :Endorse
   has_many :out, :endorsees, rel_class: :Endorse
-
+  has_many :both, :endorsements, rel_class: :Endorse
   has_many :out, :projects, origin: :owner
   has_many :out, :participations, model_class: :Project, type: :PARTICIPATES_IN
   has_many :in, :posts, origin: :author
@@ -36,12 +31,9 @@ class Person
   property :avatar_url, type: String
   property :is_member, type: Boolean, default: false
   property :name, type: String
-
   property :status, type: String
   property :reg_code, type: String
   property :reg_code_expiration, type: Integer
-
-
 
   validates :first_name, presence: true
   validates :last_name, presence: true
@@ -61,10 +53,6 @@ class Person
       by_email(email).person.first
     end
 
-    def from_identity id
-      identity(:i).where(id: id).person
-    end
-
   end 
 
   def extract
@@ -72,17 +60,9 @@ class Person
                    avatar_url: avatar_url, profile_image_url: profile_image_url, name: "#{first_name} #{last_name}", id: id)
   end
 
-  # def first_name
-  #   identity.first_name
-  # end
-
-  # def last_name
-  #   identity.last_name
-  # end
-
-  # def name
-  #   "#{first_name} #{last_name}"
-  # end
+  def name
+    "#{first_name} #{last_name}"
+  end
 
   def full_name
     "#{first_name} #{last_name}"
@@ -101,7 +81,7 @@ class Person
   end
 
   def endorses? person
-    outgoing_endorsements.endorsee.include? person
+    endorsees.include? person
   end
 
   def endorsed_by? person

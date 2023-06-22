@@ -5,7 +5,6 @@ class Authentication
 
   def self.login_by_password email, pwd
     p = Person.find_by email: email
-   binding.pry
     if p && p.authenticate(pwd)
       login_success p
     else 
