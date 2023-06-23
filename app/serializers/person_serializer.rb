@@ -19,7 +19,7 @@ class PersonSerializer
           firstName: friend.first_name, 
           lastName: friend.last_name,
           endorserAvatarUrl: friend.avatar_url,
-          ndorseeAvatarUrl: rel.from_node.avatar_url,
+          endorseeAvatarUrl: rel.from_node.avatar_url,
           endorseeId: rel.to_node.id,
           endorserId: rel.from_node.id,
           topic: rel.topic,
