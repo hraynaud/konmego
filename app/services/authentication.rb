@@ -30,7 +30,7 @@ class Authentication
 
 
   def self.jwt_for p 
-    JWT.encode({uid: p.id, email: p.email, name: p.name, exp: 1.day.from_now.to_i}, Rails.application.secret_key_base,'HS256')
+    JWT.encode({uid: p.id, email: p.email, name: p.name, avatar: p.avatar_url, exp: 1.day.from_now.to_i}, Rails.application.secret_key_base,'HS256')
   end
 
 end
