@@ -4,28 +4,26 @@ class PersonSerializer
   attributes :id, :first_name, :last_name, :bio, :avatar_url, :profile_image_url
   
   attribute :endorsees do |p, _params|
-    get_data(p.endorsees(:friend,:rel))
+    get_data(p.endorsees, "out")
   end
   attribute :endorsers do |p, _params|
-    get_data(p.endorsers(:friend,:rel))
+    get_data(p.endorsers, "in")
   end
 
 
   class << self 
-    def get_data(group) 
- 
-      group.pluck(:friend, :rel).map do |friend, rel|
-        {
-          firstName: friend.first_name, 
-          lastName: friend.last_name,
-          endorserAvatarUrl: friend.avatar_url,
-          endorseeAvatarUrl: rel.from_node.avatar_url,
-          endorseeId: rel.to_node.id,
-          endorserId: rel.from_node.id,
-          topic: rel.topic,
-          description: rel.description
-        }
-      end
+    def get_data(group,dir) 
+      res = EndorsementSerializer.new(group.each_rel{|r|}).serializable_hash 
+      
+      res[:data].map{|d| 
+        attrs = if(dir=="in")
+          d[:attributes]#.except(:endorseeAvatarUrl,:endorseeId, :endorseeName)
+        else
+          d[:attributes]#.except(:endorserAvatarUrl,:endorserId, :endorserName)
+        end
+        d.slice(:id).merge(attrs)
+      }
+      
     end
   end
 end
