@@ -17,6 +17,7 @@ Rails.application.routes.draw do
 
       get 'user_relationships/:group', to: "user_relationships#index", constraints: {group: /contacts|endorsees|endorsers|any/}
       post 'projects_search',  to: "project_search#index"
+      get 'endorsements_search',  to: "endorsement_search#index"
       post 'invite', to: 'invites#create'
 
       resources :people

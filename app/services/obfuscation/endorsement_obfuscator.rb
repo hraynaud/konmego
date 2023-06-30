@@ -2,7 +2,7 @@ module Obfuscation
   class EndorsementObfuscator < Obfuscator
 
    class << self
-     def obfuscate user, endorsement
+     def obfuscate user, path, endorsement
        if friends_with_both? user, endorsement
          endorsement.extract
        else

@@ -20,7 +20,8 @@ describe EndorsementSearchService do
         # fauzi -- ENDORSES('Cooking') --> franky ( A--> KNOWS & ENDORSES -->B )
         #------------------------------------------------------------------------------
         results = EndorsementSearchService.paths_to_resource @fauzi, 'Cooking', 1
-        expect_result_data_to_match_expected(results, [[@fauzi, @franky]])
+        names, _visibility = extract_test_data results
+        expect_result_data_to_match_expected(names, get_names([[@fauzi, @franky]]))
       end
 
       it 'returns path for topic endorsed indirectly through direct contact' do
@@ -29,7 +30,8 @@ describe EndorsementSearchService do
         #  ( A--> KNOWS -->B KNOWS & ENDORSES --> C)
         #------------------------------------------------------------------------------
         results = EndorsementSearchService.paths_to_resource @nuno, 'Composer', 1
-        expect_result_data_to_match_expected(results, [[@nuno, @tisha, @vince]])
+        names, visibility = extract_test_data results
+        expect_result_data_to_match_expected(names, get_names([[@nuno, @tisha, @vince]]))
       end
 
       it "doesn't find path if min distance it too short" do
@@ -37,7 +39,8 @@ describe EndorsementSearchService do
         # fauzi --> KNOWS --> franky --> KNOWS--> (nuno) --> KNOWS --> (tisha)  ENDORSES --> (vince:NOT_RETURNED)
         #------------------------------------------------------------------------------
         results = EndorsementSearchService.paths_to_resource @fauzi, 'Composer', 2
-        expect_result_data_to_match_expected(results, empty_set)
+        names, _visibility = extract_test_data results
+        expect_result_data_to_match_expected(names, empty_set)
       end
 
       it 'finds path to contacts within default distance = 3' do
@@ -45,21 +48,15 @@ describe EndorsementSearchService do
         # fauzi --> KNOWS --> franky --> KNOWS--> (nuno) --> KNOWS --> (tisha)  ENDORSES --> (vince)
         #------------------------------------------------------------------------------
         results = EndorsementSearchService.paths_to_resource @fauzi, 'Composer'
-        expect_result_data_to_match_expected(results, [[@fauzi, @franky, @nuno, @tisha, @vince]])
-      end
-
-      pending 'finds path to contacts within default distance = 3 and obfuscates non direct contacts' do
-        #------------------------------------------------------------------------------
-        # fauzi --> KNOWS --> franky --> KNOWS--> (nuno) --> KNOWS --> (tisha)  ENDORSES --> (vince)
-        #------------------------------------------------------------------------------
-        results = EndorsementSearchService.paths_to_resource @fauzi, 'Composer'
-        expect_result_data_to_match_expected(results, [[@fauzi, @franky, @hidden, @hidden]])
+        names, _visibility = extract_test_data results
+        expect_result_data_to_match_expected(names, get_names([[@fauzi, @franky, @nuno, @tisha, @vince]]))
       end
 
       it 'finds path to contacts that have endorsed the topic by depth' do
         #------------------------------------------------------------------------------
         results = EndorsementSearchService.paths_to_resource @jean, 'Acting', 5
-        expect_result_data_to_match_expected(results, [[@jean, @vince, @tisha, @nuno, @stan, @elsa, @sar]])
+        names, _visibility = extract_test_data results
+        expect_result_data_to_match_expected(names, get_names([[@jean, @vince, @tisha, @nuno, @stan, @elsa, @sar]]))
       end
     end
 
@@ -75,8 +72,9 @@ describe EndorsementSearchService do
         # ["Elsa ", "Stan ", "Nuno ", "Franky "]
         #------------------------------------------------------------------------------
         results = EndorsementSearchService.paths_to_resource @elsa, 'Beatmaking', 4
-        expect_result_data_to_match_expected(results,
-                                             [[@elsa, @stan, @nuno, @wid, @rico], [@elsa, @stan, @nuno, @franky]])
+        names, _visibility = extract_test_data results
+        expect_result_data_to_match_expected(names,
+          get_names([[@elsa, @stan, @nuno, @wid, @rico], [@elsa, @stan, @nuno, @franky]]))
       end
 
       it "doesn't include routes exceeding max distance" do
@@ -91,14 +89,18 @@ describe EndorsementSearchService do
         #------------------------------------------------------------------------------
 
         results = EndorsementSearchService.paths_to_resource @vince, 'Software', 3
-        expect_result_data_to_match_expected(results, [
+        names, _visibility = extract_test_data results
+        expect_result_data_to_match_expected(names, get_names([
                                                [@vince, @tisha, @nuno, @wid]
-                                             ])
+                                             ]))
       end
 
-      it 'does a mixed thing' do
+      it 'finds mixeds paths and marks remote non-friends nodes as invisible' do
         results = EndorsementSearchService.paths_to_resource @fauzi, 'Beatmaking'
-        expect_result_data_to_match_expected(results, [[@fauzi, @franky, @nuno], [@fauzi, @franky, @nuno, @wid, @rico]])
+        
+        names, visibility = extract_test_data results
+        expect_result_data_to_match_expected(names, get_names([[@fauzi, @franky, @nuno], [@fauzi, @franky, @nuno, @wid, @rico]]))
+        expect_result_data_to_match_expected(visibility, [[ true, true, false], [true, true, false, false, false]])
       end
   
       it "doesn't show circular references routes when endorser endorsed directly and reachable through friend path" do
@@ -112,7 +114,9 @@ describe EndorsementSearchService do
         #------------------------------------------------------------------------------
   
         results = EndorsementSearchService.paths_to_resource @herby, 'Basketball'
-        expect_result_data_to_match_expected(results, [[@herby, @elsa, @stan]])
+         
+        names, _visibility = extract_test_data results
+        expect_result_data_to_match_expected(names, get_names([[@herby, @elsa, @stan]]))
       end
 
     end
@@ -121,7 +125,25 @@ describe EndorsementSearchService do
 end
 
 
-def expect_result_data_to_match_expected(result_names, expected)
-  expected_names = expected.map { |path| path.map(&:name) }
-  expect(result_names.to_set).to match_array expected_names.to_set
+def extract_test_data results
+  data = extract_node_data results
+  names = data.map{|p|p.pluck(:name)}
+  visibility = data.map{|p|p.pluck(:is_visible)}
+  return names, visibility
+end
+
+def extract_node_data data
+  data.map do |path|
+    path.map{|n|n.slice(:name, :is_visible)}
+  end
+end
+
+def expect_result_data_to_match_expected(results, expected)
+  expect(results.to_set).to match_array expected.to_set
+end
+
+def get_names expected
+  expected.map { |path| 
+    path.map(&:name) 
+  }
 end

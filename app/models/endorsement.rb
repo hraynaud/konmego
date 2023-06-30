@@ -1,7 +1,7 @@
 require 'ostruct'
 class Endorsement
 
-  # include KonmegoNeo4jNode
+  include KonmegoNeo4jNode
 
   has_one :out, :endorser, type: :ENDORSEMENT_SOURCE, model_class: :Person
   has_one :out, :endorsee, type: :ENDORSEMENT_TARGET, model_class: :Person

@@ -1,56 +1,37 @@
 class PathExtractor
   attr_reader :path, :obfuscated_endorsement
 
-  def initialize user, record
+  def initialize user, path, endorsement
     @user = user
-    @endorser = record[:endorser]
-    @endorsee = record[:endorsee]
-    @endorsement = record[:e]
-    obfuscate record[:full_path]
-
+    @endorsement = endorsement
+    @endorser = endorsement.from_node
+    @endorsee = endorsement.to_node
+    @path = path
   end
 
-  def obfuscate full_path
-    @path =  process_path full_path
-    @obfuscated_endorsement = Obfuscation::EndorsementObfuscator.obfuscate(@user, @endorsement)
+  def obfuscate
+    path.map do |node|
+      
+
+      {
+        name: node.name,
+        avatar_url: node.avatar_url,
+        id: node.id,
+        role: get_role(node),
+        is_visible: can_show?(node)
+      }
+      
+    end
   end
 
   private
 
-  def process_path path
-    path.map do |node|
-      handle_person(node)
-    end
-  end
-
-  def handle_person node
-    role = get_role(node) 
-    if is_current_user? node
-      return extract_node node, role 
-    else
-      return handle_non_current_user node, role
-    end
-  end
-
-  def extract_node node, role
-    add_role(node.extract, role)
+  def can_show? node
+    node == @user || node.friends_with?(@user)
   end
 
   def is_current_user? node
     node === @user
-  end
-
-  def handle_non_current_user node, role
-    if @user.friends_with?(node) 
-      extract_node(node, role) 
-    else 
-      add_role(Obfuscation::PersonObfuscator.obfuscate(node), role)
-    end
-  end
-
-  def add_role person, role
-      person.role = role
-      person
   end
 
   def get_role person
@@ -59,6 +40,8 @@ class PathExtractor
       "endorser"
     when person == @endorsee
       "endorsee"
+    when person == @user
+      "me"
     else
       "contact"
     end

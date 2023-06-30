@@ -44,11 +44,10 @@ class EndorsementService
       endorsement.accepted!
       endorsement.save
       RelationshipManager.create_friendship_if_none_exists_for(endorsement)
-
     end
 
-    def search_by_status(user, status)
-      case status
+    def by_status(user, status)
+    endorsements =  case status
       when Endorsement.statuses[:pending]
         user.endorsements.pending
       when Endorsement.statuses[:declined]
@@ -58,6 +57,9 @@ class EndorsementService
       else
         user.endorsements
       end
+
+       EndorsementSerializer.new(endorsements.each_rel{|r|}).serializable_hash  
+      
     end
 
     def decline(endorsement)

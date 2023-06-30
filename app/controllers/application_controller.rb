@@ -15,6 +15,10 @@ class ApplicationController < ActionController::API
   def json_response(object, status)
     render json: object, status: status
   end
+  
+  def for_user
+    params[:user_id] ? PersonService.find_by(id: params[:user_id]) : current_user
+  end
 
   private
 

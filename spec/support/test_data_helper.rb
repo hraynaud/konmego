@@ -33,6 +33,11 @@ module TestDataHelper
       end
     end
 
+    def create_friendships
+      #TODO create some sample friendships that don't break test
+      # RelationshipManager.befriend @herby, @tisha
+      
+    end
   
     def create_endorsements
       @accepted = []

@@ -3,9 +3,11 @@ class Api::V1::EndorsementsController < ApplicationController
   before_action :validate_params, only:[:create]
 
   def index
-    render json: EndorsementSerializer.
-      new(EndorsementService.search_by_status(for_user,params[:status]))
-      .serializable_hash.to_json
+    render json: EndorsementService.by_status(for_user,params[:status])
+  end
+
+  def search
+
   end
 
   def create
@@ -31,10 +33,6 @@ class Api::V1::EndorsementsController < ApplicationController
 
   def decline
     render json: EndorsementService.decline(@endorsement)
-  end
-
-  def for_user
-    params[:user_id] ? PersonService.find_by(id: params[:user_id]) : current_user
   end
 
   def destroy
