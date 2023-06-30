@@ -11,6 +11,21 @@ class EndorsementSearchService
       extract_paths(current_user, data)
     end
 
+    def search(current_user, topic = nil, hops = nil)
+      data =  paths_to_resource current_user, topic, hops
+      data.map do |path|
+        path.each do|node|
+          if node [:is_visible]
+            node
+          else
+            node.tap do |n|
+              n[:name] = "Anonymous"
+              n[:vatar_url] = "anonymous.png"
+            end
+          end
+        end
+      end
+    end
  
 
     private
@@ -33,7 +48,10 @@ class EndorsementSearchService
     def extract_paths(person, data)
       data.map do |path, endorsement|
         @extractor = ::PathExtractor.new(person, path, endorsement)
-        @extractor.obfuscate
+        {
+          topic: endorsement.topic,
+          path: @extractor.extract
+        }
       end
     end
   end

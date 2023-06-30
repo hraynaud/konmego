@@ -9,7 +9,7 @@ class PathExtractor
     @path = path
   end
 
-  def obfuscate
+  def extract
     path.map do |node|
       
 
