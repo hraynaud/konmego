@@ -58,6 +58,8 @@ module TestDataHelper
       do_accept(@stan, @nuno, @portugal)
       do_accept(@nuno, @franky, @beatmaking)
       do_accept(@elsa, @stan, @basketball)
+      do_accept(@elsa, @sar, @acting)
+
 
     
 
@@ -65,7 +67,8 @@ module TestDataHelper
      # -----------------------
 
       @declined << EndorsementService.create(@jean, to_params(@vince, @composer))
-      @pending << EndorsementService.create(@elsa, to_params(@sar, @acting))
+      # @pending << EndorsementService.create(@elsa, to_params(@sar, @acting))
+      @pending << EndorsementService.create(@stan, to_params(@wid, @electrical))
 
     end
 

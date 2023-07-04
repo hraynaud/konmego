@@ -4,55 +4,28 @@ class EndorsementSearchService
   DEFAULT_ALL_TOPICS_REGEX = '.*'
 
   class << self
-    def paths_to_resource(current_user, topic = nil, hops = nil)
-      depth = hops || DEFAULT_NETWORK_HOPS
-      graph = get_endorsement_graph(current_user, topic, depth)
-      data = graph.pluck(:all_paths, :e)
-      extract_paths(current_user, data)
-    end
-
+  
     def search(current_user, topic = nil, hops = nil)
-      data =  paths_to_resource current_user, topic, hops
-      data.map do |path|
-        path.each do|node|
-          if node [:is_visible]
-            node
-          else
-            node.tap do |n|
-              n[:name] = "Anonymous"
-              n[:vatar_url] = "anonymous.png"
-            end
-          end
-        end
-      end
+      topic = topic || DEFAULT_ALL_TOPICS_REGEX
+      hops = hops || DEFAULT_NETWORK_HOPS
+      exec_endorsement_query(current_user, topic, hops)
     end
  
 
+
     private
 
-    def get_endorsement_graph(current_user, topic, hops)
-      t = topic || DEFAULT_ALL_TOPICS_REGEX
+    def exec_endorsement_query(current_user, topic, hops)
       ActiveGraph::Base.query("
-        Match p = (:Person {uuid: $uuid})-[:`KNOWS`*0..#{hops}]-(endorsee:Person)-[e:ENDORSES]-(endorser:Person)
+        Match p = (starter:Person {uuid: $uuid})-[:`KNOWS`*0..#{hops}]-(endorsee:Person)-[e:ENDORSES]-(endorser:Person)
         WHERE e.topic =~ $topic
-        WITH *
+        WITH p,e
+
         WHERE ALL(x IN NODES(p) WHERE SINGLE(y IN NODES(p) WHERE y = x))
+      
         RETURN nodes(p) as all_paths, e",
-                              topic: t, uuid: current_user.uuid)
+                              topic: topic, uuid: current_user.uuid)
     end
 
-    def by_topic; end
-
-    def by_time_frame; end
-
-    def extract_paths(person, data)
-      data.map do |path, endorsement|
-        @extractor = ::PathExtractor.new(person, path, endorsement)
-        {
-          topic: endorsement.topic,
-          path: @extractor.extract
-        }
-      end
-    end
   end
 end

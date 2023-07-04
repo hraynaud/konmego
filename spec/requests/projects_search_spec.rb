@@ -17,7 +17,6 @@ describe Api::V1::ProjectsController do
    it "finds friend projects associated with this topic to this topic" do
 
      post "/api/v1/projects_search", params:{topic: @cooking.id}, headers:{'Authorization': Authentication.jwt_for(@herby)}
-
      expect(response.status).to eq 200
 
      expected_project_names =  [ "Chef"].to_set

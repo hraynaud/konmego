@@ -17,6 +17,7 @@ describe ProjectSearchService do
   describe '.search' do
     context 'friend non private projects' do
       it 'finds projects belonging to contacts at specified depth' do
+
         expect(project_names(search_by(@tisha,
                                        depth: 2)))
           .to eq project_names(
@@ -24,14 +25,14 @@ describe ProjectSearchService do
           )
         expect(project_names(search_by(@vince, depth: 3)))
           .to eq project_names([@dj_project, @culinary_project, @app_project])
-        expect(project_names(search_by(@elsa, depth: 2))).to eq project_names([@acting_project, @chef_project])
-        expect(project_names(search_by(@gilbert, depth: 1))).to eq project_names([@chef_project])
-        expect(project_names(search_by(@elsa, depth: 1))).to eq  project_names([@chef_project])
+        expect(project_names(search_by(@elsa, depth: 2))).to eq project_names([@chef_project,@acting_project])
+        expect(project_names(search_by(@gilbert, depth:1))).to eq project_names([@chef_project])
+        expect(project_names(search_by(@elsa, depth: 1))).to eq  project_names([@chef_project,@acting_project])
         expect(project_names(search_by(@elsa, depth: 0))).to eq  project_names([@chef_project])
       end
       context 'default depth' do
         it 'includes self projects' do
-          expect(project_names(search_by(@elsa))).to eq project_names([@chef_project])
+          expect(project_names(search_by(@elsa))).to eq project_names([@chef_project,@acting_project])
         end
 
      
