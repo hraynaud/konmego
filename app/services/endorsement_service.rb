@@ -9,66 +9,106 @@ class EndorsementService
     end
 
     def create(endorser, params)
-      endorsee = Person.where(id: params[:endorsee_id]).first
-      topic = TopicService.get(params[:topic_id])
+      topic_name = set_topic params
 
+      endorsee = find_or_create_endorsee(params)
+      validate_non_duplicated_endorsement endorser, endorsee, topic_name
+
+      endorsement = create_from_nodes(endorser, endorsee, topic_name)
+
+      if(endorsee.status == "non_member") #TODO replace with enum
+        EndorsementMailer.with(id: endorsement.id).non_member_email.deliver_later
+      else
+        EndorsementMailer.with(id: endorsement.id).member_email.deliver_later
+      end
+      endorsement
+    end
+
+    def accept(endorsement, user)
+      raise StandardError, "Invalid Operation" if endorsement.to_node != user
+      endorsement.accept!
+      RelationshipManager.create_friendship_if_none_exists_for(endorsement)
+      endorsement
+    end
+
+    def decline(endorsement, user)
+      raise StandardError, "Invalid Operation" if endorsement.to_node != user
+      endorsement.decline!
+      endorsement
+    end
+
+    def destroy(endorsement, user)
+      raise StandardError, "Invalid Operation" unless can_destroy? endorsement, user
+      endorsement.destroy
+    end
+
+    def find_inbound(from_id, to_id, topic,status)
+      to = PersonService.find_by_id(to_id)  
+      to.endorsements.each_rel.select{|r|r.from_node.id == from_id && r.topic == topic && status == r.status }.first
+    end
+
+
+    # def by_status(user, status)
+    #   endorsements = case status
+    #                  when Endorsement.statuses[:pending]
+    #                    user.endorsements.pending
+    #                  when Endorsement.statuses[:declined]
+    #                    user.endorsements.declined
+    #                  when Endorsement.statuses[:accepted]
+    #                    user.endorsements.accepted
+    #                  else
+    #                    user.endorsements
+    #                  end
+
+    #   EndorsementSerializer.new(endorsements.each_rel { |r| }).serializable_hash
+    # end
+
+    private
+
+    def can_destroy? endorsement, user
+      status_accepted_and_user_is_either_party?(endorsement, user) || status_pending_or_declined_and_user_is_endorser?(endorsement, user)
+    end
+
+    def status_accepted_and_user_is_either_party? endorsement, user
+      endorsement.status == Endorse.accepted && (endorsement.to_node == user || endorsement.from_node == user)
+    end
+
+    def status_pending_or_declined_and_user_is_endorser? endorsement, user
+      (endorsement.status == Endorse.pending || endorsement.status == Endorse.declined) && endorsement.from_node == user
+    end
+
+    def find_or_create_endorsee(params)
+      endorsee = Person.where(id: params[:endorsee_id]).first
+      if endorsee
+        return endorsee
+      else
+        unless params[:email] && params[:first_name] && params[:last_name]
+          raise raise StandardError, "Can't create and invite endorsee; email, first_name, last_name are required."
+        end
+        
+        endorsee = PersonService.create_by_endorserment(params)
+      
+        endorsee.status = 'non_member'
+      end
+      endorsee
+    end
+
+    def validate_non_duplicated_endorsement endorser, endorsee, topic_name
+      if already_exists?(endorser, endorsee, topic_name)
+        raise raise StandardError, "You've already endorsed #{endorsee.name} for #{topic_name}"
+      end
+    end
+
+    def set_topic(params)
+      topic = TopicService.get(params[:topic_id])
       if topic
         topic_name = topic.name
       else
         topic_name = params[:new_topic_name]
         raise raise StandardError, 'Please provide a topic' if topic_name.nil?
       end
-
-      if endorsee
-        if already_exists? endorser, endorsee, topic_name
-          raise raise StandardError, "You've alread endorsed #{@p2.name} for #{topic_name}"
-        end
-
-        create_from_nodes(endorser, endorsee, topic_name)
-      else
-        InviteService.create endorser, params
-
-      end
+      topic_name
     end
-
-    def destroy(e)
-      e.destroy
-    end
-
-    def find(id)
-      Endorsement.find_by(id: id)
-    end
-
-    def accept(invite)
-      endorsement = create_from_invite invite
-      endorsement.accepted!
-      endorsement.save
-      RelationshipManager.create_friendship_if_none_exists_for(endorsement)
-    end
-
-    def by_status(user, status)
-    endorsements =  case status
-      when Endorsement.statuses[:pending]
-        user.endorsements.pending
-      when Endorsement.statuses[:declined]
-        user.endorsements.declined
-      when Endorsement.statuses[:accepted]
-        user.endorsements.accepted
-      else
-        user.endorsements
-      end
-
-       EndorsementSerializer.new(endorsements.each_rel{|r|}).serializable_hash  
-      
-    end
-
-    def decline(endorsement)
-      endorsement.declined!
-      endorsement.save
-      endorsement
-    end
-
-    private
 
     def create_from_invite(invite)
       topic = invite.topic || TopicService.find_or_create_by_name(invite.topic_name)
@@ -85,10 +125,10 @@ class EndorsementService
     end
 
     def create_from_nodes(endorser, endorsee, topic_name)
-      c = Endorse.new(from_node: endorser, to_node: endorsee)
-      c.topic = topic_name
-      c.save
-      c
+      e = Endorse.new(from_node: endorser, to_node: endorsee)
+      e.topic = topic_name
+      e.save
+      e
     end
   end
 end

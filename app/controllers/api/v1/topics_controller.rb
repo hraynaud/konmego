@@ -5,7 +5,13 @@ class Api::V1::TopicsController < ApplicationController
     end
      
     def create
-        topic = TopicService.create(current_user,project_params)
+        topic = TopicService.create(current_user,topic_params)
         json_response(topic.to_json, :ok)
-      end
+    end
+
+
+
+    def topic_params
+        params.permit(:topic)
+    end 
 end

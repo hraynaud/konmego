@@ -88,7 +88,17 @@ describe "Signup and registration" do
    
     it "confirms registration" do
       post "/confirm", params:{id: reg.id, password: reg.password, code: reg.reg_code}
-      expect(reg.reload.status).to eq("confirmed")
+      reg.reload
+      expect(reg.status).to eq("confirmed")
+      expect(reg.inviter).to be nil
+      expect(Person.count).to eq(1)
+    end
+
+    pending "confirms registration from invite" do
+      post "/confirm", params:{id: reg.id, password: reg.password, code: reg.reg_code}
+      reg.reload
+      expect(reg.status).to eq("confirmed")
+      expect(reg.inviter).to_not be nil
       expect(Person.count).to eq(1)
     end
 

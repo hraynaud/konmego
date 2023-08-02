@@ -40,54 +40,47 @@ describe Api::V1::EndorsementsController, :type => :request do
       let(:new_topic){ {newTopic: {name: "My New Topic"}} }
       let(:new_person){ {newPerson: {first: "Firstly", last: "Lastly", identity: {email: "first@last.com"}} }}
 
-      context "new topic" do
+      context "new topic only" do
         let(:params){new_topic.merge({endorseeId: @tisha.id})}
 
         it "returns ok" do
           do_post @herby, "/api/v1/endorsements", params
           expect_http response, :ok
-          # expect_response_and_model_json_to_match response, Endorsement.last
         end
 
-        pending "creates new endorsement and new topic" do
+        it "creates new endorsement and but not a new topic" do
           expect{
             do_post @herby, "/api/v1/endorsements", params
           }.to change{@herby.endorsees.count}.by(1)
-            .and change{Topic.count}.by(1)
+            .and change{Topic.count}.by(0)
             .and change{Person.count}.by(0)
         end
       end
 
-      context "new person creates invite" do
+      context "new person only" do
         let(:params){new_person.merge({topicId: @singing.id})}
 
-        it "creates an invite if new person" do
+        it "succeeds and returns created endorsement as response" do
           do_post @herby, "/api/v1/endorsements", params 
           expect_http response, :ok
-          expect_response_and_model_json_to_match response, Invite.last
+          expect_response_and_model_json_to_match response, Endorse.last
         end
 
-        it "creates invite but not endorsement" do
-          expect{
-            do_post @herby, "/api/v1/endorsements", params
-          }.to change{Endorsement.count}.by(0)
-            .and change{Invite.count}.by(1)
-        end
       end
 
-      context "new person an topic creates new invite and topic" do
+      context "new person and new topic" do
         let(:new_person_and_topic){ new_topic.merge(new_person) }
 
         it "creates new endorsement and new person" do
           do_post @herby, "/api/v1/endorsements", new_person_and_topic
           expect_http response, :ok
-          expect_response_and_model_json_to_match response, Invite.last
+          expect_response_and_model_json_to_match response, Endorse.last
         end
 
-        it "creates new invite and topic" do
+        it "creates new endorserment and topic" do
           expect{
             do_post @herby, "/api/v1/endorsements", new_person_and_topic
-          }.to change{Invite.count}.by(1)
+          }.to change{Topic.count}.by(0)
         end
       end
     end
@@ -98,25 +91,19 @@ describe Api::V1::EndorsementsController, :type => :request do
   context "Accept and Decline" do
 
     let(:t){FactoryBot.create(:topic, name: "Skeptic")}
-    let(:e){FactoryBot.create(:endorsement, endorser: @tisha, endorsee: @herby, topic: t)}
-    let(:bad_id){"ABC123"}
+    let(:e){EndorsementService.create(@tisha, {endorsee_id: @herby.id, topic_id: t.id})}
 
     describe "accept" do
 
-      pending "upates the status of the endorsement" do
+      it "upates the status of the endorsement" do
         expect{
-          do_put @herby, accept_api_v1_endorsement_path(e)
-          e.reload
+          do_put @herby, api_v1_accept_endorsement_path(e.from_node.id,e.to_node.id,e.topic)
+          expect_response_and_model_json_to_match response, e.reload
         }.to change{ e.status }.to :accepted
       end
 
-      pending "returns updated endorsement" do
-        do_put @herby, accept_api_v1_endorsement_path(e)
-        expect_response_and_model_json_to_match response, e.reload
-      end
-
       it "fails if endorsement doesn't exist" do
-        do_put @herby, "/api/v1/endorsements/#{bad_id}/accept"
+        do_put @herby, api_v1_accept_endorsement_path(e.to_node.id, e.from_node.id, e.topic)
         expect_http response, :not_found
       end
 
@@ -125,18 +112,13 @@ describe Api::V1::EndorsementsController, :type => :request do
     describe "decline" do
       it "upates the status of the endorsement" do
         expect{
-          do_put @herby,  decline_api_v1_endorsement_path(e)
-          e.reload
+          do_put @herby, api_v1_decline_endorsement_path(e.from_node.id,e.to_node.id,e.topic)
+          expect_response_and_model_json_to_match response, e.reload
         }.to change{ e.status }.to :declined
       end
 
-      it "returns updated endorsement" do
-        do_put @herby, decline_api_v1_endorsement_path(e)
-        expect_response_and_model_json_to_match response, e.reload 
-      end
-
       it "fails if endorsement doesn't exist" do
-        do_put @herby, "/api/v1/endorsements/#{bad_id}/decline"
+        do_put @herby, api_v1_accept_endorsement_path(e.to_node.id, e.from_node.id, e.topic)
         expect_http response, :not_found
       end
 

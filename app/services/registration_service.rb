@@ -9,12 +9,14 @@ class RegistrationService
       reg
     end
 
-    def confirm id, code, password
+   
+    def confirm id, code, password, invite_code = nil
       person = Person.where(id: id).first
       if person && confirmationValid?(person, code, password)
         person.status = "confirmed"
-        person.save
+        person.inviter = find_by_invite_code(invite_code)
         RegistrationMailer.welcome_email(person.id).deliver_later
+        person.save
         login(person)
       else
         raise "Invalid confirmation credentials"
@@ -29,15 +31,26 @@ class RegistrationService
     end
 
     def build_registration params
-      reg = Person.new
-      reg.status= "pending"
-      reg. reg_code = generate_validation_code
-      reg.reg_code_expiration = 1.day.from_now
-      reg.first_name = params[:first_name]
-      reg.last_name = params[:last_name]
-      reg.email = params[:email]
-      reg.password = params[:password]
-      reg
+      registrant = PersonService.create(params)
+      registrant.status= "pending"
+      registrant.reg_code = generate_validation_code
+      registrant.reg_code_expiration = 1.day.from_now
+      registrant.inviter = get_invitation_sender params[:invite_code]
+      registrant
+    end
+
+    def get_invitation_sender invite_code=nil
+      if(invite_code.present?)
+        invite = Invite.where(id: invite_code).first
+        if invite
+          invite.sender
+        end
+      end
+    end
+
+    def find_by_invite_code(invite_code)
+      invite = Invite.where(id: invite_code).first
+      invite ? invite.sender : nil
     end
 
     def person_params
@@ -53,8 +66,10 @@ class RegistrationService
     end
 
     def generate_validation_code
-      6.times.map{rand(10)}.join
+      Authentication.generate_validation_code
     end
+ 
+   
 
   end
 end

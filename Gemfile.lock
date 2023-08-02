@@ -72,6 +72,8 @@ GEM
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
+    addressable (2.8.4)
+      public_suffix (>= 2.0.2, < 6.0)
     ast (2.4.2)
     bcrypt (3.1.18)
     builder (3.2.4)
@@ -103,6 +105,10 @@ GEM
     jsonapi-serializer (2.2.0)
       activesupport (>= 4.2)
     jwt (2.6.0)
+    launchy (2.5.2)
+      addressable (~> 2.8)
+    letter_opener (1.8.1)
+      launchy (>= 2.2, < 3)
     listen (3.0.8)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -159,6 +165,7 @@ GEM
       pry (>= 0.9.10, < 0.15)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
+    public_suffix (5.0.1)
     puma (3.12.6)
     racc (1.6.2)
     rack (2.2.5)
@@ -271,6 +278,7 @@ DEPENDENCIES
   faker
   jsonapi-serializer
   jwt
+  letter_opener
   listen (>= 3.0.5, < 3.2)
   neo4j-rake_tasks
   neo4j-ruby-driver

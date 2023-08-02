@@ -28,6 +28,9 @@ class Authentication
     end
   end
 
+  def self.generate_validation_code
+    6.times.map{rand(10)}.join
+  end
 
   def self.jwt_for p 
     JWT.encode({uid: p.id, email: p.email, name: p.name, avatar: p.avatar_url, exp: 1.day.from_now.to_i}, Rails.application.secret_key_base,'HS256')

@@ -16,10 +16,7 @@ describe EndorsementService do
 
   after do
     Person.delete_all
-    Endorsement.delete_all
     Topic.delete_all
-    Invite.delete_all
-    Identity.delete_all
     # clear_db
   end
 
@@ -47,25 +44,28 @@ describe EndorsementService do
     end
 
     context 'new person' do
-      it 'creates invite if user is new' do
+      it 'creates endorsement and new person if user is new' do
         expect do
-          EndorsementService.create(@p1,
+        e =  EndorsementService.create(@p1,
                                     { topic_id: @topic1.id, first_name: 'new', last_name: 'lasty', email: 'a@b.com' })
-        end.to change { Endorsement.count }.by(0)
-                                           .and change { Invite.count }.by(1)
+                                    expect(e.topic).to eq(@topic1.name)
+        end.to change{Person.count}.by(1)
+        .and change{Topic.count}.by(0)
+        .and change{@p1.endorsees.count}.by(1) #TODO this shouold be pending_endorsees
+   
+                                           
       end
 
       it 'fails with error if endorsement invite is missing email' do
         expect  do
           EndorsementService.create(@p1, { topic_id: @topic1.id, first_name: 'new', last_name: 'lasty' })
-        end.to raise_error(ActiveGraph::Node::Persistence::RecordInvalidError)
+        end.to raise_error(StandardError)
           .and change { @p1.endorsees.count }.by(0)
-          .and change { Invite.count }.by(0)
       end
     end
 
     context 'new topic' do
-      it 'creates endorsement invite if topic params are valid' do
+      it 'creates endorsement if topic params are valid' do
         expect do
           EndorsementService.create(@p1,
                                     { endorsee_id: @p2.id, first_name: 'new', last_name: 'lasty',
@@ -74,54 +74,55 @@ describe EndorsementService do
                                              .and change { Topic.count }.by(0)
       end
 
-      it "doesn't create endorsement invite if missing topic_name" do
+      it "doesn't create endorsement if missing topic_name" do
         expect do
           EndorsementService.create(@p1, { endorsee_id: @p2.id, new_topic_category: 'topical' })
         end.to raise_error(StandardError)
           .and change { @p1.endorsees.count }.by(0)
       end
 
-      # it "doesn't create endorsment if invalid" do
-      #   expect do
-      #     EndorsementService.create(@p1, { endorsee_id: @p2.id, new_topic_name: nil, new_topic_category: 'topical' })
-      #   end.to raise_error(ActiveGraph::Node::Persistence::RecordInvalidError)
-      #     .and change { Endorsement.count }.by(0)
-      # end
     end
 
     context 'new person and new topic' do
-      it 'creates endorsement and new invitation' do
+      it 'creates endorsement and new person' do
         expect do
           EndorsementService.create(@p1,
                                     { new_topic_name: 'newsy', new_topic_category: 'topical', first_name: 'new',
                                       last_name: 'lasty', email: 'a@b.com' })
-        end.to change { Invite.count }.by(1)
-                                      .and change { Topic.count }.by(0)
+        end.to change{Person.count}.by(1)
+        .and change{Topic.count}.by(0)
       end
     end
   end
 
   describe 'accept' do
-    before do
-      @endorsement_invite = FactoryBot.create(:invite,:with_topic,:with_member)
-      @p1 = @endorsement_invite.sender
-      @p2 = @endorsement_invite.receiver
-    end
 
-    it 'creates Friendship' do
-      expect do
-        EndorsementService.accept(@endorsement_invite)
-      end
-        .to change {
-              @p1.contacts.count
-            }.by(1)
+    it 'updates status and creates contact' do
+   
+    expect(RelationshipManager).to receive(:create_friendship_if_none_exists_for).and_call_original
+
+      @endorsement = EndorsementService.create(@p1, { endorsee_id: @p2.id, topic_id: @topic1.id })
+      expect {
+        EndorsementService.accept(@endorsement,@p2)
+         
+      }.to (change{@endorsement.status }.to :accepted)
+        .and change { @p1.contacts.count}.by(1)
         .and change { @p2.contacts.count }.by(1)
+    
     end
 
-    pending 'has endorser follow endorsee' do
+  end
+
+
+  describe 'decline' do
+ 
+    it 'has endorser follow endorsee' do
+      @endorsement = EndorsementService.create(@p1, { endorsee_id: @p2.id, topic_id: @topic1.id })
       expect do
-        EndorsementService.accept(@e)
-      end.to change { @p1.follows?(@p2) }.to(true)
+        EndorsementService.decline(@endorsement, @p2)
+      end.to change { @p1.pending_endorsees.count}.by(-1)
     end
   end
+
+
 end

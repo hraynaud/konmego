@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>Hi <%=@endorsement.endorsee.name %></h1>
+    <p>
+        Your talent and skills are noticed. <%= @endorsement.endorser.name %> would like to endorse you for your 
+        expertise in <%= @endorsement.topic.name %> and add you to their personal network.
+    </p>
+    <p>
+      Login and check out what <% =@endorsement.endorsee.name %> had to say and while you're there see what 
+      the other amazing movers and shakers in your expert network are up to.
+      <%=link_to "Login", "#{CLIENT_BASE_URL}/auth/login"%>
+    </p>
+    <p>
+    </p>
+  </body>
+</html>

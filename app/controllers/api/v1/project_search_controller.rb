@@ -22,7 +22,7 @@ class Api::V1::ProjectSearchController < ApplicationController
 
   def friends_and_topics
     {
-      friends: PersonSerializer.new(current_user.contacts),
+      friends: PersonSerializer.new(current_user.contacts,{fields:{ person: [:name,:id, :avatarUrl] } }),
       topics: TopicSerializer.new(Topic.all)
     }
   end

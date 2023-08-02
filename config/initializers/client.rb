@@ -1,0 +1,1 @@
+CLIENT_BASE_URL = "#{Rails.configuration.client.base_url}"

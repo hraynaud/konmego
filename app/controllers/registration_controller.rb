@@ -8,7 +8,7 @@ class RegistrationController < ApplicationController
   end
 
   def confirm
-    auth = RegistrationService.confirm(params[:id], params[:code], params[:password])
+    auth = RegistrationService.confirm(params[:id], params[:code], params[:password],params[:invite_code])
     respond_with_token auth.jwt
   end
 
@@ -17,7 +17,7 @@ class RegistrationController < ApplicationController
   end
 
   def registration_params
-    params.permit(:email, :password, :confirm_password, :first_name, :last_name, :code, :id) 
+    params.permit(:email, :password, :confirm_password, :first_name, :last_name, :code, :id, :invite_code) 
   end
 
 end

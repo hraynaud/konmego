@@ -2,7 +2,7 @@ class InviteMailer < ApplicationMailer
   default from: 'notifications@example.com'
 
  INVITE_MSG = "You've been invited to join konmego"
- TOPIC_INVITE_MSG= "You've been invited to join Konmego and share your knowledge of "
+ ENDORSEMENT_INVITE_MSG = "You've been invited to join konmego"
 
   before_action do
     @invite = Invite.find(params[:id]) 
@@ -13,8 +13,8 @@ class InviteMailer < ApplicationMailer
   end
 
 
-  def topic_invite_email
-    msg = "#{TOPIC_INVITE_MSG}#{@thing}"
+  def endorsement_invite_email
+    @msg = "#{ENDORSEMENT_INVITE_MSG}"
     mail(to: @invite.email, subject: msg)
   end
 end

@@ -8,8 +8,8 @@ class Person
 
   has_secure_password
 
-  has_one :in, :person, type: nil
-  has_one :out, :identity, type: :IDENTITY
+  has_one :in, :inviter, model_class: :Person, type: :INVITED
+  has_many :out, :invitees, model_class: :Person, type: :INVITED
   has_many :both, :contacts, model_class: :Person, type: :KNOWS, unique: true
   has_many :out, :followings, model_class: :Person, type: :FOLLOWINGS, unique: true
   has_many :in, :followers, model_class: :Person, type: :FOLLOWINGS
@@ -20,6 +20,7 @@ class Person
   has_many :out, :participations, model_class: :Project, type: :PARTICIPATES_IN
   has_many :in, :posts, origin: :author
   has_many :in, :comments, origin: :author
+
 
 
   property :first_name, type: String
@@ -60,6 +61,10 @@ class Person
                    avatar_url: avatar_url, profile_image_url: profile_image_url, name: "#{first_name} #{last_name}", id: id)
   end
 
+  def accepted_endorsees
+      endorsees.each_rel.select{|r| r.status==:accepted}
+  end
+
   def name
     "#{first_name} #{last_name}"
   end
@@ -78,6 +83,10 @@ class Person
 
   def contacts_by_depth depth 
     contacts(:contacts, :r, rel_length: 0..depth).distinct
+  end
+
+  def pending_endorsees
+    endorsees.each_rel.select{|r|r.status ==:pending}
   end
 
   def endorses? person

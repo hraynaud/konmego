@@ -6,7 +6,8 @@
   <body>
     <h1>Welcome to konmego.com, <%= @invite.first_name %></h1>
     <p>
-      Please confirm your idenity by entering the validation code below in the Konmengo app to complete your registraiton.,
+      Please use the invite link below to signup and join the most personally empowering community on the web.
+      <%=link_to "register", "#{CLIENT_BASE_URL}/signup?invite-token=#{@invite.id}&topic=#{@invite.topic_name}"%>
     </p>
     <p>
     </p>

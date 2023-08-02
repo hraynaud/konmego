@@ -17,18 +17,19 @@ Rails.application.routes.draw do
 
       get 'user_relationships/:group', to: "user_relationships#index", constraints: {group: /contacts|endorsees|endorsers|any/}
       post 'projects_search',  to: "project_search#index"
+      post 'invites', to: "invites#create"
+      get 'accept_invite', to: "invites#accept"
+      put 'endorsements/accept/:endorser_id/:endorsee_id/:topic_name', to: "endorsements#accept", as: "accept_endorsement"
+      put 'endorsements/decline/:endorser_id/:endorsee_id/:topic_name', to: "endorsements#decline", as: "decline_endorsement"
+      put 'endorsements/destroy/:endorser_id/:endorsee_id/:topic_name', to: "endorsements#destroy", as: "destroy_endorsement"
       get 'endorsements_search',  to: "endorsement_search#index"
-      post 'invite', to: 'invites#create'
-
+      
+    
       resources :people
       resources :topics, only: [:index]
       resources :contacts, only: [:index, :show]
-      resources :endorsements do
-        member do 
-          put :accept
-          put :decline
-        end
-      end
+      resources :endorsements
+
 
       resources :projects do
         resources :posts do

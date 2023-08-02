@@ -9,9 +9,8 @@ class Api::V1::RelationshipsController < ApplicationController
   end
 
   def show
-    person = params[:id] ? Person.find_by_id(params[:id]) || current_user
-    profile = PersonSerializer.new(person)
-
+    person = params[:id] ? Person.find_by_id(params[:id]) : current_user
+    PersonSerializer.new person
   end
 
   def edit

@@ -4,9 +4,14 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <h1>Welcome to konmego.com, <%= @invite.first_name %></h1>
+    <h1>Hi <%=@invite.first_name %>,  Welcome to konmego.com!</h1>
+    
     <p>
-      Please confirm your idenity by entering the validation code below in the Konmengo app to complete your registraiton.,
+      
+    </p>
+    <p>
+      Please use the invite link below to signup and join the most personally empowering community on the web.
+      <%=link_to "register", "#{CLIENT_BASE_URL}/signup?invite-token=#{@invite.id}"%>
     </p>
   </body>
 </html>

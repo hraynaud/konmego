@@ -1,22 +1,27 @@
 class EndorsementMailer < ApplicationMailer
+  before_action :set_params
   default from: 'notifications@example.com'
+  
+  MEMBER_ENDORSEMENT_MSG = "You've received a new endorsement from "
+  NON_MEMBER_ENDORSEMENT_MSG = "You've been invited to join konmego"
 
-  REG_WELCOME_MSG = 'Welcome to konmego.com'
-  REG_CONFIRM_MSG = 'Confirm your email'
-
-  def accept id
-    @identity = Endorsement.find(id) 
-    mail(to: @identity.email, subject: REG_CONFIRM_MSG)
+  def member_email
+    @msg = message
+    mail(to: @endorsement.endorsee.email, subject: msg)
   end
 
-  def accept_and_register id
-    @identity = Endorsement.find(id) 
-    mail(to: @identity.email, subject: REG_CONFIRM_MSG)
+  def non_member_email
+    @msg = "#{NON_MEMBER_ENDORSEMENT_MSG}#{@thing}"
+    mail(to: @endorsement.endorsee.email, subject: msg)
   end
 
-  #def decline
-    #@identity = Endorsement.find(params[:id]) 
-    #mail(to: @identity.email, subject: REG_WELCOME_MSG)
-  #end
+  def set_params
+    @endorsement = params[:endorsement]
+  end
 
+  def message
+    "#{MEMBER_ENDORSEMENT_MSG}#{@endorsement.endorser} for your experience and knowledge in #{@endorsement.topic_name}"
+  end
+
+  
 end

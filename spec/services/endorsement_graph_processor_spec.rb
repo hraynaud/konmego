@@ -82,8 +82,8 @@ end
 def extract_assertable_data(results)
   results.map do |result|
     {
-      topic: result[:topic],
-      path: result[:path].map { |p| p.slice(:name, :role, :is_visible) }
+      topic: result.topic,
+      path: result.path.map { |p| p.slice(:name, :role, :is_visible) }
     }
   end
 end

@@ -22,7 +22,7 @@ module TestDataHelper
         FactoryBot.create(:member,  first_name: fname.titleize, last_name: "Skillz")
       end
 
-      @hidden = FactoryBot.build(:person,identity: FactoryBot.create(:identity, first_name: "Hidden", last_name: "Hidden"))
+      @hidden = FactoryBot.build(:person,first_name: "Hidden", last_name: "Hidden")
     end
 
     def create_topics

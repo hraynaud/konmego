@@ -8,7 +8,7 @@ RSpec.describe InviteMailer, type: :mailer do
   end
 
   describe 'invite_email' do
-    let(:invite) { FactoryBot.create(:invite,:with_topic_name) } 
+    let(:invite) { FactoryBot.create(:invite) } 
     let(:mail) { InviteMailer.with(id: invite.id).invite_email.deliver_now }
 
     it 'renders the subject' do
@@ -18,7 +18,7 @@ RSpec.describe InviteMailer, type: :mailer do
     end
   end
 
-  describe 'topic_invite_email' do
+  pending 'topic_invite_email' do
     let(:invite) { FactoryBot.create(:invite,:with_topic) } 
     let(:mail) { InviteMailer.with(id: invite.id).topic_invite_email.deliver_now }
 

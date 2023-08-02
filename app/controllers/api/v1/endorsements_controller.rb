@@ -1,5 +1,5 @@
 class Api::V1::EndorsementsController < ApplicationController
-  before_action :find_endorsement, except:[:index, :create]
+
   before_action :validate_params, only:[:create]
 
   def index
@@ -11,7 +11,6 @@ class Api::V1::EndorsementsController < ApplicationController
   end
 
   def create
-
     endorsement = EndorsementService.create(
       current_user,
       {
@@ -28,18 +27,38 @@ class Api::V1::EndorsementsController < ApplicationController
   end
 
   def accept
-    render json: EndorsementService.accept(@endorsement)
+    handle_inbound_endorsement_response
   end
 
   def decline
-    render json: EndorsementService.decline(@endorsement)
+    @endorsement = find_endorsement Endorse.pending
+    render :json => { :errors =>["Invalid Operation"] }, :status => :unprocessable_entity if @endorsement.to_node != current_user
+    if @endorsement
+      render json: EndorsementService.decline(@endorsement,current_user)
+    else
+      render :json => { :errors =>["Endorsement not found"] }, :status => :not_found
+    end
   end
 
   def destroy
-    EndorsementService.destroy(@endorsement) ? json_response({}, :ok) : respond_with_error("unable to delete endorsement with id #{@endorsement.id}")
+    @endorsement = find_endorsement
+    if @endorsement
+      render json: EndorsementService.destroy(@endorsement,current_user)
+    else
+      render :json => { :errors =>["Endorsement not found"] }, :status => :not_found
+    end
   end
 
   private
+
+  def handle_inbound_endorsement_response
+    @endorsement = find_endorsement Endorse.pending
+    if @endorsement
+      render json: EndorsementService.accept(@endorsement, current_user)
+    else
+      render :json => { :errors =>["Endorsement not found"] }, :status => :not_found
+    end
+  end
 
   def validate_params
     render :json => { :errors =>["Invalid parameters provided"] }, :status => :unprocessable_entity if invalid_params_provided?
@@ -89,14 +108,17 @@ class Api::V1::EndorsementsController < ApplicationController
     params[:new_person]
   end
 
-  def find_endorsement
-    @endorsement = EndorsementService.find(params[:id])
-    raise ActiveGraph::Node::Labels::RecordNotFound if @endorsement.nil?
+  def find_endorsement status
+    from_id = endorsement_params[:endorser_id]
+    to_id = endorsement_params[:endorsee_id]
+    topic = endorsement_params[:topic_name]
+    @endorsement = EndorsementService.find_inbound(from_id, to_id, topic, status)
+
   end
 
   def endorsement_params
     params.permit(:id,
-                  :endorsee_id, :topic_id,
+                  :endorsee_id, :topic_id, :endorser_id,:topic_name,
                   new_person: [ :first, :last, identity: [:email]],
                   new_topic: [:name, :description]
                  )

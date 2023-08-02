@@ -38,6 +38,7 @@ module Konmego
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore
     config.middleware.use config.session_store
+    config.client = config_for(:client)
     
   end
 end

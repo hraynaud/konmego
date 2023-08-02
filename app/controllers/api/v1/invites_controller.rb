@@ -7,14 +7,16 @@ class Api::V1::InvitesController < ApplicationController
   end
 
   def accept
-    invite = Invite.find(params[:id])
-    InviteService.accept invite
-
+    invite = Invite.find_by_id(params[:invite_token])
+    if invite
+      InviteService.accept invite
+    else
+    end
   end
 
 
   def invite_params
-    params.require(:invite).permit(:first_name, :last_name, :email, :topic_id,:new_topic_name)
+    params.permit(:first_name, :last_name, :email, :invite_token)
   end
 
 end

@@ -33,6 +33,7 @@ group :development, :test do
   gem "neo4j-rake_tasks"
   gem "faker"
   gem "rubocop"
+  gem "letter_opener"
 end
 
 group :development do

@@ -10,10 +10,41 @@ class Endorse
   property :topic_id
   property :topic_image
   property :description
-  enum status: [:pending, :accepted, :declined], _default: :pending
+  property :path
+  enum status: [:pending, :accepted, :declined], _default: :pending, _index: false
   enum topic_status: [:proposed, :existing], _default: :proposed
 
   validates_presence_of :topic
+
+
+  class << self
+    def pending
+      statuses.keys[0]
+    end
+
+    def accepted
+      statuses.keys[1]
+    end
+
+    def declined
+      statuses.keys[2]
+    end
+  end
+  
+  def accept!
+    self.status = :accepted
+    save
+  end
+
+  def decline!
+    self.status = :declined
+    save
+  end
+
+  def destroy!
+   
+    save
+  end
   
   def endorser_avatar_url
     from_node.avatar_url
@@ -37,6 +68,27 @@ class Endorse
 
   def endorser_id
     from_node.id
+  end
+
+  def endorser
+    from_node
+  end 
+
+  def endorsee
+    to_node
+  end 
+
+  def obfuscate type="all"
+    case type  
+      when "all"
+        puts "all"
+      when "from"
+        puts "from"
+      when "to"
+        puts "to"
+    end
+
+
   end
 
 end
