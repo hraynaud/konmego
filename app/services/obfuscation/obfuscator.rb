@@ -1,5 +1,2 @@
-module Obfuscation
-  class Obfuscator
-    HIDDEN = "Hidden"
-  end
+class Obfuscation::Obfuscator
 end

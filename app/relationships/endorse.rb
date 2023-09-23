@@ -1,3 +1,5 @@
+require 'base64'
+
 class Endorse
   include ActiveGraph::Relationship
 
@@ -28,6 +30,10 @@ class Endorse
 
     def declined
       statuses.keys[2]
+    end
+
+    def decode_id id
+      Base64.urlsafe_decode64(id)
     end
   end
   
@@ -78,6 +84,10 @@ class Endorse
     to_node
   end 
 
+  def id
+    EndorsementService.generate_id(endorser_id,endorsee_id,topic)
+  end
+
   def obfuscate type="all"
     case type  
       when "all"
@@ -87,8 +97,6 @@ class Endorse
       when "to"
         puts "to"
     end
-
-
   end
 
 end

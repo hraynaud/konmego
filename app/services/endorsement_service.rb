@@ -1,4 +1,4 @@
-require 'securerandom'
+require 'base64'
 
 class EndorsementService
   ENDORSEMENT_LIMIT = 50
@@ -37,16 +37,29 @@ class EndorsementService
       endorsement
     end
 
-    def destroy(endorsement, user)
+    def destroy endorsement, user
       raise StandardError, "Invalid Operation" unless can_destroy? endorsement, user
       endorsement.destroy
     end
 
-    def find_inbound(from_id, to_id, topic,status)
-      to = PersonService.find_by_id(to_id)  
-      to.endorsements.each_rel.select{|r|r.from_node.id == from_id && r.topic == topic && status == r.status }.first
+    def find(id)
+      endorser_id, endorsee_id, topic = decompose_id(id)
+      from = PersonService.find_by_id(endorser_id)  
+      from.endorsements.each_rel.select{|r|r.to_node.id == endorsee_id && r.topic == topic}.first
     end
 
+    def generate_id endorser_id, endorsee_id, topic
+      from_id = Obfuscation::IdCodec.encode(endorser_id)
+      to_id =  Obfuscation::IdCodec.encode(endorsee_id)
+      encoded= "#{from_id}:#{to_id}:#{topic}"
+      Obfuscation::IdCodec.urlsafe_encode64(encoded)
+    end
+
+    def decompose_id encoded_id
+      _unbase64 = Obfuscation::IdCodec.urlsafe_decode64(encoded_id)
+      _from, _to, topic = _unbase64.split(":")
+      return [Obfuscation::IdCodec.decode(_from), Obfuscation::IdCodec.decode(_to),topic]
+    end
 
     # def by_status(user, status)
     #   endorsements = case status

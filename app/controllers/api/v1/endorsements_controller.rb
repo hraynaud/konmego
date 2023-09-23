@@ -108,12 +108,8 @@ class Api::V1::EndorsementsController < ApplicationController
     params[:new_person]
   end
 
-  def find_endorsement status
-    from_id = endorsement_params[:endorser_id]
-    to_id = endorsement_params[:endorsee_id]
-    topic = endorsement_params[:topic_name]
-    @endorsement = EndorsementService.find_inbound(from_id, to_id, topic, status)
-
+  def find_endorsement  
+    @endorsement = EndorsementService.find(endorsement_params[:id])
   end
 
   def endorsement_params
