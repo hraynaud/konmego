@@ -39,6 +39,7 @@ module Konmego
     config.middleware.use ActionDispatch::Session::CookieStore
     config.middleware.use config.session_store
     config.client = config_for(:client)
+    config.active_record.legacy_connection_handling = false
     
   end
 end
