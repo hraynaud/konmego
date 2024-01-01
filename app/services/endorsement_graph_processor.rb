@@ -11,11 +11,7 @@ class EndorsementGraphProcessor
         def process_and_obfuscate_paths (person, path_data)
             path_data.map do |endorsement, path|
             @path_processor = PathProcessor.new(person, path, endorsement)    
-            # {
-            #     topic: endorsement.topic,
-            #     path: @path_processor.obfuscate
-            # }
-            EndorsementPath.new(endorsement.topic,@path_processor.obfuscate)
+            EndorsementPath.new(endorsement,@path_processor.obfuscate)
             end
         end
     end
