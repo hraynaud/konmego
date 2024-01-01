@@ -15,5 +15,9 @@ module ExceptionHandler
     rescue_from ::RuntimeError do |e|
       respond_with_error(e.message, :unprocessable_entity, [])
     end
+
+    rescue_from ::StandardError do |e|
+      respond_with_error(e.message, :unprocessable_entity, [])
+    end
   end
 end
