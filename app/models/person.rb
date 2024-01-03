@@ -1,8 +1,6 @@
-
 require 'ostruct'
 
 class Person
-
   include KonmegoNeo4jNode
   include ActiveModel::SecurePassword
 
@@ -20,8 +18,6 @@ class Person
   has_many :out, :participations, model_class: :Project, type: :PARTICIPATES_IN
   has_many :in, :posts, origin: :author
   has_many :in, :comments, origin: :author
-
-
 
   property :first_name, type: String
   property :last_name, type: String
@@ -41,20 +37,18 @@ class Person
   validates :email, uniqueness: true
   validates :email, presence: true, unless: :is_oauth?
   validate :email_format
-  validates :password, :length => { :minimum => 8 }, allow_nil: true,  on: :create, unless: :is_oauth?
+  validates :password, length: { minimum: 8 }, allow_nil: true, on: :create, unless: :is_oauth?
 
-  scope :by_email, ->(login){where(email: login)}
+  scope :by_email, ->(login) { where(email: login) }
 
   DEFAULT_RELATIONSHIP_DEPTH = 3
-
   class << self
     delegate :by_email, to: :Identity
-    
-    def by_login email
+
+    def by_login(email)
       by_email(email).person.first
     end
-
-  end 
+  end
 
   def extract
     OpenStruct.new(first_name: first_name, last_name: last_name,
@@ -62,7 +56,7 @@ class Person
   end
 
   def accepted_endorsees
-      endorsees.each_rel.select{|r| r.status==:accepted}
+    endorsees.each_rel.select { |r| r.status == :accepted }
   end
 
   def name
@@ -71,62 +65,62 @@ class Person
 
   def full_name
     "#{first_name} #{last_name}"
-  end 
+  end
 
   def login
     email
   end
 
-  def friends 
+  def friends
     contacts_by_depth 1
   end
 
-  def contacts_by_depth depth 
+  def contacts_by_depth(depth)
     contacts(:contacts, :r, rel_length: 0..depth).distinct
   end
 
   def pending_endorsees
-    endorsees.each_rel.select{|r|r.status ==:pending}
+    endorsees.each_rel.select { |r| r.status == :pending }
   end
 
-  def endorses? person
+  def endorses?(person)
     endorsees.include? person
   end
 
-  def endorsed_by? person
+  def endorsed_by?(person)
     endorsers.include? person
   end
 
-  def endorses_topic? topic
-    endorsees.each_rel.select{|r|r.topic}.include? topic
+  def endorses_topic?(topic)
+    endorsees.each_rel.select { |r| r.topic }.include? topic
   end
 
-  def has_endorsement_for_topic? topic
-    endorsers.each_rel.select{|r|r.topic}.include? topic
+  def has_endorsement_for_topic?(topic) # rubocop:disable Naming/PredicateName
+    endorsers.each_rel.select { |r| r.topic }.include? topic
   end
 
-  def friends_with? person
+  def friends_with?(person)
     contacts.include? person
   end
 
-  def follows? person
+  def follows?(person)
     followings.include? person
   end
 
-  def followed_by? person
+  def followed_by?(person)
     followers.include? person
   end
 
   private
 
   def is_oauth?
-    #handle.present? && uid.present?
+    # handle.present? && uid.present?
     false
   end
 
   def set_name
     return if identity.nil?
-    
+
     self.name = "#{identity.first_name} #{identity.last_name.slice(0)}"
   end
 
@@ -135,9 +129,9 @@ class Person
   end
 
   def email_format
-    if email && !is_valid_email?
-      errors.add( :email, "is invalid")
-    end
+    return unless email && !is_valid_email?
+
+    errors.add(:email, 'is invalid')
   end
 
   def is_valid_email?
