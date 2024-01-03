@@ -40,7 +40,7 @@ Rails.application.configure do
   config.active_record.verbose_query_logs = false
   config.neo4j.verbose_query_logs = false
   config.neo4j.logger nil 
-  config.log_level = :info     
+  config.log_level = :debug    
 
 
   # Raises error for missing translations

@@ -18,6 +18,12 @@ class Endorse
 
   validates_presence_of :topic
 
+  before_create :add_description
+
+
+  def add_description
+    self.description = "#{endorser.name} endorses #{endorsee.name} for #{topic}"
+  end
 
   class << self
     def pending
