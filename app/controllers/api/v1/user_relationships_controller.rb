@@ -1,23 +1,21 @@
+module Api
+  module V1
+    class UserRelationshipsController < ApplicationController
+      def index
+        render json: PersonSerializer.new(group).serializable_hash.to_json
+      end
 
-class Api::V1::UserRelationshipsController < ApplicationController
+      private
 
-  def index
+      def group
+        current_user.send(params[:group].to_sym)
+      end
 
-    render json: PersonSerializer.new(group).serializable_hash.to_json
+      def person_params
+        params.permit(
+          :group
+        )
+      end
+    end
   end
-
-
-  private
-
-  def group
-    current_user.send(params[:group].to_sym)
-  end
-
-  def person_params
-    params.permit(
-      :group,
-    )
-  end
-
-
 end
