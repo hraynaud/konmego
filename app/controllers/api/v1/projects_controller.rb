@@ -6,12 +6,12 @@ class Api::V1::ProjectsController < ApplicationController
   end
 
   def create
-    project = ProjectService.create(current_user,project_params)
+    project = ProjectService.create(current_user, project_params)
     json_response(project.to_json, :ok)
   end
 
   def show
-    options[:include] = [:obstacles, :'obstacles.description']
+    options[:include] = %i[obstacles obstacles.description]
     project = current_user.projects.find(params[:id])
     ProjectSerializer.new(project, options)
   end
@@ -22,9 +22,8 @@ class Api::V1::ProjectsController < ApplicationController
 
   def project_params
     params.require(:project).permit(
-      :name, :description, :start_date, 
+      :name, :description, :start_date,
       :deadline, :topic
     )
   end
 end
-
