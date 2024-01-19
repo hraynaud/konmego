@@ -19,15 +19,6 @@ class EndorsementPathSerializer
     can_show?(params[:current_user], endorsement.endorsee) ? endorsement.endorsee.profile_image_url : 'anonymous.png'
   end
 
-  # attribute :description do |endorsement, params|
-  #   if can_show?(params[:current_user],
-  #                endorsement.endorsee)
-  #     endorsement.description
-  #   else
-  #     "This person in your network has been endorsed for their knowledge of #{endorsement.topic} by someone in your immediate network. You cannot access any details about this endorsement until you are connected to this person directly"
-  #   end
-  # end
-
   attribute :description do |endorsement, params|
     if can_show?(params[:current_user],
                  endorsement.endorsee) && can_show?(params[:current_user], endorsement.endorser)
