@@ -1,0 +1,144 @@
+[
+  {
+    "category": "Outdoor & Nature",
+    "icon": "nature",
+    "topics": [
+      {"topic": "Rock Climbing", "icon": "sports_climbing"},
+      {"topic": "Hiking", "icon": "hiking"},
+      {"topic": "Kayaking", "icon": "kayaking"},
+      {"topic": "Sailing", "icon": "sailing"},
+      {"topic": "Birdwatching", "icon": "visibility"},
+      {"topic": "Trail Running", "icon": "directions_run"},
+      {"topic": "Wildlife Conservation", "icon": "park"},
+      {"topic": "Environmental Activism", "icon": "eco"},
+      {"topic": "Marine Conservation", "icon": "water"},
+      {"topic": "Gardening", "icon": "flower_pot"},
+      {"topic": "Urban Gardening", "icon": "yard"},
+      {"topic": "Landscape Photography", "icon": "landscape"},
+      {"topic": "Nature Photography", "icon": "photo_camera"}
+    ]
+  },
+  {
+    "category": "Science & Technology",
+    "icon": "science",
+    "topics": [
+      {"topic": "Data Science", "icon": "insights"},
+      {"topic": "Big Data Analytics", "icon": "analytics"},
+      {"topic": "Medicine", "icon": "medical_services"},
+      {"topic": "Heart Disease", "icon": "favorite"},
+      {"topic": "Engineering", "icon": "engineering"},
+      {"topic": "Sustainable Development", "icon": "sustainability"},
+      {"topic": "Software Engineering", "icon": "code"},
+      {"topic": "Machine Learning", "icon": "auto_awesome_mosaic"},
+      {"topic": "Environmental Science", "icon": "public"},
+      {"topic": "Climate Change", "icon": "thermostat"},
+      {"topic": "Entrepreneurship", "icon": "lightbulb"},
+      {"topic": "Renewable Energy", "icon": "bolt"},
+      {"topic": "Biochemistry", "icon": "biotech"},
+      {"topic": "Pharmaceutical Research", "icon": "science"},
+      {"topic": "Biomedical Engineering", "icon": "health_and_safety"},
+      {"topic": "Medical Technology", "icon": "medical_services"}
+    ]
+  },
+  {
+    "category": "Arts & Creative Activities",
+    "icon": "brush",
+    "topics": [
+      {"topic": "Graphic Design", "icon": "design_services"},
+      {"topic": "UI/UX Design", "icon": "desktop_windows"},
+      {"topic": "Fashion Design", "icon": "checkroom"},
+      {"topic": "Sustainable Fashion", "icon": "recycling"},
+      {"topic": "Painting", "icon": "palette"},
+      {"topic": "Sketching", "icon": "edit"},
+      {"topic": "Documentary Filmmaking", "icon": "movie"},
+      {"topic": "Photography", "icon": "photo_camera"},
+      {"topic": "Music", "icon": "music_note"},
+      {"topic": "Violin", "icon": "music_note"},
+      {"topic": "Piano", "icon": "piano"},
+      {"topic": "Craft Beer Brewing", "icon": "local_drink"},
+      {"topic": "Pottery", "icon": "brush"}
+    ]
+  },
+  {
+    "category": "Culinary Arts",
+    "icon": "restaurant_menu",
+    "topics": [
+      {"topic": "Culinary Arts", "icon": "restaurant"},
+      {"topic": "Cooking", "icon": "kitchen"},
+      {"topic": "Baking", "icon": "cake"},
+      {"topic": "French Cuisine", "icon": "restaurant_menu"},
+      {"topic": "Italian Cuisine", "icon": "lunch_dining"},
+      {"topic": "Asian Cuisine", "icon": "rice_bowl"}
+    ]
+  },
+  {
+    "category": "Professional & Academic",
+    "icon": "school",
+    "topics": [
+      {"topic": "Law", "icon": "gavel"},
+      {"topic": "Finance", "icon": "account_balance"},
+      {"topic": "Corporate Finance", "icon": "business_center"},
+      {"topic": "Public Relations", "icon": "record_voice_over"},
+      {"topic": "Corporate Communications", "icon": "corporate_fare"},
+      {"topic": "Architecture", "icon": "architecture"},
+      {"topic": "Residential Design", "icon": "home"},
+      {"topic": "Green Building", "icon": "grass"},
+      {"topic": "Journalism", "icon": "article"},
+      {"topic": "Environmental Reporting", "icon": "article"},
+      {"topic": "Veterinary Medicine", "icon": "pets"},
+      {"topic": "Child Healthcare", "icon": "child_care"},
+      {"topic": "Leadership Development", "icon": "leaderboard"}
+    ]
+  },
+  {
+    "category": "Recreation & Hobbies",
+    "icon": "sports_esports",
+    "topics": [
+      {"topic": "Salsa Dancing", "icon": "dancing"},
+      {"topic": "Yoga", "icon": "self_improvement"},
+      {"topic": "Chess", "icon": "chess_king"},
+      {"topic": "Reading", "icon": "book"},
+      {"topic": "Knitting", "icon": "knitting"}
+    ]
+  },
+  {
+    "category": "Sports",
+    "icon": "sports_soccer",
+    "topics": [
+      {"topic": "Golf", "icon": "golf_course"},
+      {"topic": "Cycling", "icon": "pedal_bike"},
+      {"topic": "Running", "icon": "directions_run"},
+      {"topic": "Trail Running", "icon": "directions_run"},
+      {"topic": "Rock Climbing", "icon": "sports_climbing"},
+      {"topic": "Kayaking", "icon": "kayaking"},
+      {"topic": "Sailing", "icon": "sailing"},
+      {"topic": "Birdwatching", "icon": "visibility"}
+    ]
+  },
+  {
+    "category": "Cities",
+    "icon": "location_city",
+    "topics": [
+      {"topic": "Seattle", "icon": "location_on"},
+      {"topic": "New York", "icon": "location_on"},
+      {"topic": "Denver", "icon": "location_on"},
+      {"topic": "Toronto", "icon": "location_on"},
+      {"topic": "Austin", "icon": "location_on"},
+      {"topic": "Melbourne", "icon": "location_on"},
+      {"topic": "Paris", "icon": "location_on"},
+      {"topic": "San Francisco", "icon": "location_on"},
+      {"topic": "Berlin", "icon": "location_on"},
+      {"topic": "Boulder", "icon": "location_on"},
+      {"topic": "Vancouver", "icon": "location_on"},
+      {"topic": "Sydney", "icon": "location_on"},
+      {"topic": "Copenhagen", "icon": "location_on"},
+      {"topic": "Miami", "icon": "location_on"},
+      {"topic": "London", "icon": "location_on"},
+      {"topic": "Barcelona", "icon": "location_on"},
+      {"topic": "Milan", "icon": "location_on"},
+      {"topic": "Charleston", "icon": "location_on"},
+      {"topic": "Zurich", "icon": "location_on"},
+      {"topic": "Boston", "icon": "location_on"}
+    ]
+  }
+]
