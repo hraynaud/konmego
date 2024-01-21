@@ -17,5 +17,4 @@ users.each do |user|
   users_with_images.push(user)
 end
 
-users_with_images.inspect
 File.open(File.join(__dir__, 'users_gpt.json'), 'w') { |f| f.write JSON.generate(users_with_images) }
