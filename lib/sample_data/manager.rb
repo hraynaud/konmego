@@ -50,7 +50,7 @@ module Manager
 
     def create_endorsements
       Person.all.each do |u|
-        endorsements_to_create = rand(MAX_ENDORSEMENTS + 1)
+        endorsements_to_create = rand(MAX_ENDORSEMENTS)
 
         while endorsements_to_create.positive?
           create_endorsement(u)

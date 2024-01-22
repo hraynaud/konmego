@@ -50,7 +50,7 @@ module OpenAiAssistant
     def create_run
       path = "/#{@thread_id}/runs"
       message_body = {
-        "assistant_id": 'asst_qsOee1BHdjmjdT5r8fkxO3LG'
+        "assistant_id": @assistant_id
       }
       run = send_request(Net::HTTP::Post, path, message_body)
       @run_id = run['id']
@@ -93,7 +93,15 @@ module OpenAiAssistant
 
   class ProjectGenerator < Generator
     def initialize
+      @assistant_id = 'asst_qsOee1BHdjmjdT5r8fkxO3LG'
       super 'Please generate a project pertaining to '
+    end
+  end
+
+  class EndorsementGenerator < Generator
+    def initialize
+      @assistant_id = 'asst_lwv2AnN4tVc9oEDCKc8E6Yo9'
+      super 'Please endorse'
     end
   end
 end
