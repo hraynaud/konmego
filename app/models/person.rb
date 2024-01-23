@@ -28,6 +28,7 @@ class Person
   property :avatar_url, type: String
   property :is_member, type: Boolean, default: false
   property :name, type: String
+  property :pursuits, type: Hash
   property :status, type: String
   property :reg_code, type: String
   property :reg_code_expiration, type: Integer

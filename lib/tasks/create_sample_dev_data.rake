@@ -44,6 +44,11 @@ namespace :sample_data do # rubocop:disable Metrics/BlockLength
       Manager.create_users
     end
 
+    desc 'ceate topics from sample category topics json'
+    task topics: [:environment] do
+      Manager.create_topics
+    end
+
     desc 'ceate projects from sample project json'
     task projects: [:environment] do
       Manager.create_projects
@@ -58,7 +63,11 @@ namespace :sample_data do # rubocop:disable Metrics/BlockLength
   namespace :clear do
     desc 'clear all data and relationships'
     task all: [:environment] do
-      Manager::Cleaner.clear_all
+      Manager::Clean.all
+    end
+
+    task topics: [:environment] do
+      Manager::Clean.topics
     end
   end
 end

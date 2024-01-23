@@ -1,4 +1,4 @@
-module Manager
+module Manager # rubocop:disable Metrics/ModuleLength
   SAMPLE_DATA_ROOT_DIR = "#{Rails.root}/etc/sample_data".freeze
   MAX_ENDORSEMENTS = 5
 
@@ -6,18 +6,19 @@ module Manager
     def create_users
       file_data = read_file('users_gpt.json')
       user_data = JSON.parse(file_data)
-      user_data.each do |u, idx|
+      user_data.each_with_index do |u, idx|
         create_user(u, idx)
       end
     end
 
-    def create_user(user, idx)
-      Person.new(
+    def create_user(user, idx) # rubocop:disable Metrics/MethodLength
+      p = Person.new(
         first_name: user['firstName'],
         last_name: user['lastName'],
         email: "foo#{idx}@mail.com",
         password: 'konmego.far',
         bio: user['bio'],
+        pursuits: user['pursuits'],
         profile_image_url: user['picture']['large'],
         avatar_url: user['picture']['thumbnail']
       )
@@ -46,28 +47,61 @@ module Manager
         roadblocks: project['roadblocks']
       )
       p.owner = random_user
+      p
     end
 
-    def create_endorsements
-      Person.all.each do |u|
-        endorsements_to_create = rand(MAX_ENDORSEMENTS)
+    def create_endorsements # rubocop:disable Metrics/MethodLength
+      raise 'Create sample users before assigning projects' if Person.count.zero?
 
+      data = read_file('endorsements_gpt.json')
+      @praises = JSON.parse(data)
+
+
+      Person.all.each do |person|
+        endorsements_to_create = rand(MAX_ENDORSEMENTS)
         while endorsements_to_create.positive?
-          create_endorsement(u)
+          topic_name = random_user_pursuit(person)
+          create_endorsement(person, topic_name)
           endorsements_to_create -= 1
         end
       end
     end
 
-    def create_endorsement(user)
-      do_accept(user, random_user, random_topic)
+    def create_endorsement(endorsee, topic_name)
+      endorser = random_user
+      content = random_endorsement_by(topic_name)
+      topic = TopicService.find_by_name(topic_name)
+      create_relations(endorser, endorsee, topic, content)
     rescue ActiveGraph::Node::Persistence::RecordInvalidError
       # no op
     end
 
-    def do_accept(from, to, topic)
-      EndorsementService.create(from, to_params(to, topic))
+    def random_endorsement_by(topic_name)
+      if @praises.key? topic
+        rnd_idx = rand(praises[topic].count)
+        @praises[topic][rnd_idx]
+      else
+        "{{person}} is a boss when it comes to #{topic}"
+      end
+    end
+
+    def create_topics
+      data = File.read("#{SAMPLE_DATA_ROOT_DIR}/category_topics_gpt.json")
+      category_topics = JSON.parse(data)
+      category_topics.each do |cat|
+        cat['topics'].each do |topic|
+          TopicService.find_or_create_by_name({ name: topic['topic'], category: cat['category'], icon: topic['icon'] })
+        end
+      end
+    end
+
+    def create_relations(from, to, topic, description)
+      EndorsementService.create(from, { endorsee_id: to.id, topic_id: topic.id, description: description })
       RelationshipManager.befriend from, to
+    end
+
+    def to_params(endorsee, topic)
+      { endorsee_id: endorsee.id, topic_id: topic.id, description: description }
     end
 
     def read_file(file_name)
@@ -76,42 +110,60 @@ module Manager
 
     def random_user
       @users ||= Person.all
-      @users[rand(@users.count + 1)]
+      @users[rand(@users.count)]
     end
 
-    def random_topic
+    def random_user_pursuit(user)
+      topics = user['pursuits'].map { |p| p['topic'] }
+      topics[rand(topics.count)]
+    end
+
+    def random_global_topic
       @topics ||= Topic.all
       @topics[rand(@topics.count)]
     end
+
+    def group_content(flowers)
+      by_topic = {}
+      flowers.each do |f|
+        topic = f['topic']
+        content = f['content']
+
+        by_topic[topic] = [] if by_topic[topic].nil?
+
+        by_topic[topic] << content
+      end
+      by_topic
+    end
   end
 
-  module Cleaner
+  module Clean
     class << self
-      def clear_all
-        clear_topics
-        clear_users
-        clear_endorsments
-        clear_identities
-        clear_projects
+      def all
+        topics
+        users
+        endorsments
+        identities
+        projects
       end
 
-      def clear_topics
+      def topics
         ActiveGraph::Base.query('MATCH (n:Topic) DETACH DELETE n')
       end
 
-      def clear_users
+      def users
         ActiveGraph::Base.query('MATCH (n:Person) DETACH DELETE n')
       end
 
-      def clear_endorsments
+      def endorsments
         ActiveGraph::Base.query('MATCH (n:Endorsement) DETACH DELETE n')
       end
 
-      def clear_identities
+      def identities
         ActiveGraph::Base.query('MATCH (n:Identity) DETACH DELETE n')
       end
 
-      def clear_projects
+      def projects
         ActiveGraph::Base.query('MATCH (n:Project) DETACH DELETE n')
       end
     end

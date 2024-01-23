@@ -10,18 +10,22 @@ class EndorsementService
 
     def create(endorser, params)
       topic_name = set_topic params
-
       endorsee = find_or_create_endorsee(params)
+
       validate_non_duplicated_endorsement endorser, endorsee, topic_name
 
-      endorsement = create_from_nodes(endorser, endorsee, topic_name)
+      endorsement = create_from_nodes(endorser, endorsee, topic_name, params['description'])
 
-      if endorsee.status == 'non_member' # TODO: replace with enum
+      send_confirmation endorsement
+      endorsement
+    end
+
+    def send_confirmation(endorsement, endorsee)
+      if endorsee.status == 'non_member'
         EndorsementMailer.with(id: endorsement.id).non_member_email.deliver_later
       else
         EndorsementMailer.with(id: endorsement.id).member_email.deliver_later
       end
-      endorsement
     end
 
     def accept(endorsement, user)
@@ -141,9 +145,10 @@ class EndorsementService
       params.except(:new_topic_name, :new_topic_category, :endorsee_id)
     end
 
-    def create_from_nodes(endorser, endorsee, topic_name)
+    def create_from_nodes(endorser, endorsee, topic_name, description = nil)
       e = Endorse.new(from_node: endorser, to_node: endorsee)
       e.topic = topic_name
+      e.description = description
       e.save
       e
     end

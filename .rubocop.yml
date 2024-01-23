@@ -6,3 +6,6 @@ Style/FrozenStringLiteralComment:
 
 Metrics/ClassLength:
   Enabled: false
+
+AllCops:
+  NewCops: enable
