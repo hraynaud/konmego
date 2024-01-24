@@ -15,10 +15,8 @@ module TopicService
 
     def find_or_create_by_name(params)
       topic = find_by_name(params[:name])
-      if topic.nil?
-        topic = Topic.new(name: params[:name], icon: params[:icon])
-      end
-      topic.categories << params[:category]
+      topic = Topic.new(name: params[:name], icon: params[:icon], categories: []) if topic.nil?
+      topic.categories += [params[:category]]
       topic.save
       topic
     end

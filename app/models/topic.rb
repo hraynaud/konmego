@@ -1,3 +1,5 @@
+# require "#{Rails.root}/lib/neo4jrb/array_converter.rb"
+
 class Topic
   include KonmegoNeo4jNode
 
@@ -12,9 +14,11 @@ class Topic
 
   before_save :de_dup_categories
 
+  serialize :categories
+
   private
-  
+
   def de_dup_categories
-    self.categories = categories.uniq
+    # self.categories = categories.uniq
   end
 end

@@ -20,8 +20,9 @@ class EndorsementService
       endorsement
     end
 
-    def send_confirmation(endorsement, endorsee)
-      if endorsee.status == 'non_member'
+    def send_confirmation(endorsement)
+
+      if endorsement.endorsee.status == 'non_member'
         EndorsementMailer.with(id: endorsement.id).non_member_email.deliver_later
       else
         EndorsementMailer.with(id: endorsement.id).member_email.deliver_later

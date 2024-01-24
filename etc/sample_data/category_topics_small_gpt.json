@@ -1,0 +1,45 @@
+[
+  {
+    "category": "Outdoor & Nature",
+    "icon": "nature",
+    "topics": [
+      {"topic": "Rock Climbing", "icon": "sports_climbing"},
+      {"topic": "Hiking", "icon": "hiking"},
+      {"topic": "Kayaking", "icon": "kayaking"}
+    ]
+  },
+  {
+    "category": "Science & Technology",
+    "icon": "science",
+    "topics": [
+      {"topic": "Data Science", "icon": "insights"},
+      {"topic": "UI/UX Design", "icon": "desktop_windows"}
+    ]
+  },
+  {
+    "category": "Arts & Creative Activities",
+    "icon": "brush",
+    "topics": [
+      {"topic": "Graphic Design", "icon": "design_services"},
+      {"topic": "UI/UX Design", "icon": "desktop_windows"}
+    ]
+  },
+  {
+    "category": "Culinary Arts",
+    "icon": "restaurant_menu",
+    "topics": [
+      {"topic": "Culinary Arts", "icon": "restaurant"}
+    ]
+  },
+  
+  {
+    "category": "Cities",
+    "icon": "location_city",
+    "topics": [
+      {"topic": "Seattle", "icon": "location_on"},
+      {"topic": "New York", "icon": "location_on"},
+      {"topic": "Denver", "icon": "location_on"},
+      {"topic": "Toronto", "icon": "location_on"}
+    ]
+  }
+]

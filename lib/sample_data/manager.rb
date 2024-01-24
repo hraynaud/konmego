@@ -70,32 +70,40 @@ module Manager # rubocop:disable Metrics/ModuleLength
     def create_endorsement(endorsee, topic_name)
       endorser = random_user
       content = random_endorsement_by(topic_name)
-      topic = TopicService.find_by_name(topic_name)
-      create_relations(endorser, endorsee, topic, content)
+      topic = TopicService.find_or_create_by_name({name: topic_name})
+      create_relationships(endorser, endorsee, topic, content.gsub('<<person>>', endorsee.first_name))
     rescue ActiveGraph::Node::Persistence::RecordInvalidError
       # no op
     end
 
     def random_endorsement_by(topic_name)
-      if @praises.key? topic
-        rnd_idx = rand(praises[topic].count)
-        @praises[topic][rnd_idx]
+      if @praises.key? topic_name
+        num_items = @praises[topic_name].count
+        rnd_idx = rand(num_items)
+        @praises[topic_name][rnd_idx]
       else
-        "{{person}} is a boss when it comes to #{topic}"
+        "{{person}} is a boss when it comes to #{topic_name}"
       end
     end
 
     def create_topics
       data = File.read("#{SAMPLE_DATA_ROOT_DIR}/category_topics_gpt.json")
       category_topics = JSON.parse(data)
-      category_topics.each do |cat|
-        cat['topics'].each do |topic|
-          TopicService.find_or_create_by_name({ name: topic['topic'], category: cat['category'], icon: topic['icon'] })
+
+      category_topics.each do |category|
+        cat_name = category['category']
+        category['topics'].each do |topic|
+          topic_name = topic['topic']
+          icon_name = topic['icon']
+          params = { name: topic_name, category: cat_name, icon: icon_name }
+
+          TopicService.find_or_create_by_name(params)
         end
       end
     end
 
-    def create_relations(from, to, topic, description)
+    def create_relationships(from, to, topic, description)
+
       EndorsementService.create(from, { endorsee_id: to.id, topic_id: topic.id, description: description })
       RelationshipManager.befriend from, to
     end
