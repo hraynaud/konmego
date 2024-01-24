@@ -47,7 +47,7 @@ module Manager # rubocop:disable Metrics/ModuleLength
         roadblocks: project['roadblocks']
       )
       p.owner = random_user
-      p
+      p.save
     end
 
     def create_endorsements # rubocop:disable Metrics/MethodLength
@@ -61,8 +61,13 @@ module Manager # rubocop:disable Metrics/ModuleLength
         endorsements_to_create = rand(MAX_ENDORSEMENTS)
         while endorsements_to_create.positive?
           topic_name = random_user_pursuit(person)
-          create_endorsement(person, topic_name)
-          endorsements_to_create -= 1
+          begin
+            create_endorsement(person, topic_name)
+            endorsements_to_create -= 1
+          rescue
+            Rails.logger.warn("duplicate endorsment")
+          end
+
         end
       end
     end

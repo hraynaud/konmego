@@ -13,8 +13,7 @@ class EndorsementService
       endorsee = find_or_create_endorsee(params)
 
       validate_non_duplicated_endorsement endorser, endorsee, topic_name
-
-      endorsement = create_from_nodes(endorser, endorsee, topic_name, params['description'])
+      endorsement = create_from_nodes(endorser, endorsee, topic_name, params[:description])
 
       send_confirmation endorsement
       endorsement
@@ -146,7 +145,7 @@ class EndorsementService
       params.except(:new_topic_name, :new_topic_category, :endorsee_id)
     end
 
-    def create_from_nodes(endorser, endorsee, topic_name, description = nil)
+    def create_from_nodes(endorser, endorsee, topic_name, description)
       e = Endorse.new(from_node: endorser, to_node: endorsee)
       e.topic = topic_name
       e.description = description

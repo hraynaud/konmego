@@ -66,6 +66,11 @@ namespace :sample_data do # rubocop:disable Metrics/BlockLength
       Manager::Clean.all
     end
 
+    task users: [:environment] do
+      Manager::Clean.users
+    end
+
+
     task topics: [:environment] do
       Manager::Clean.topics
     end
