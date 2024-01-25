@@ -1,4 +1,4 @@
-Style/Documentation: 
+Style/Documentation:
   Enabled: false
 
 Style/FrozenStringLiteralComment:
@@ -9,3 +9,5 @@ Metrics/ClassLength:
 
 AllCops:
   NewCops: enable
+Layout/EmptyLinesAroundBlockBody:
+  Enabled: false
