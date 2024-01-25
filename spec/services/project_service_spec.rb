@@ -5,7 +5,7 @@ include TestDataHelper::Utils
 
 describe ProjectService do
   before(:all) do
-    clear_db 
+    clear_db
     @owner = FactoryBot.create(:member)
     @topic = FactoryBot.create(:topic)
     @obstacle = FactoryBot.create(:obstacle)
@@ -43,13 +43,13 @@ describe ProjectService do
         end
 
         it "updates field" do
-          ProjectService.update(@project, update_params ) 
+          ProjectService.update(@project, update_params )
         end
 
         it "changes topic" do
           topic =  FactoryBot.create(:topic)
           @project.topic = topic
-          ProjectService.update(@project, update_params ) 
+          ProjectService.update(@project, update_params )
           expect(@project.topic_name).to eq(topic.name)
         end
       end
@@ -57,13 +57,11 @@ describe ProjectService do
       context "activatable" do
         before do
           @project = FactoryBot.create(:project, :creatable)
-          @obstacle = FactoryBot.create(:obstacle)
         end
 
         it "activates project" do
-          @project.obstacles  << @obstacle
           @project.status = 'active'
-          ProjectService.update(@project, update_params ) 
+          ProjectService.update(@project, update_params )
         end
       end
     end
@@ -91,6 +89,3 @@ describe ProjectService do
     }
   end
 end
-
-
-

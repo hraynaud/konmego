@@ -22,9 +22,9 @@ describe Project do
         expect(project.owner).to be_nil
       end
 
-      context "has owner" do 
+      context "has owner" do
 
-        before do 
+        before do
           person = FactoryBot.create(:member)
           project.owner = person
         end
@@ -56,14 +56,14 @@ describe Project do
     end
 
     context "activation blocked" do
-      before do 
+      before do
         @project = FactoryBot.create(:project, :valid)
         @project.status = "active"
-        
+
       end
 
       it "it is missing obstacles" do
-        @project.obstacles = []
+        @project.roadblocks = []
         expect(@project.valid?(:update)).to be false
       end
 
@@ -75,21 +75,21 @@ describe Project do
       it "it missing topc" do
         @project.topic = nil
         expect(@project.valid?(:update)).to be false
-      end 
+      end
 
       it "it missing start_date" do
         @project.start_date = nil
         expect(@project.valid?(:update)).to be false
-      end 
+      end
 
       it "it missing deadline" do
         @project.deadline = nil
         expect(@project.valid?(:update)).to be false
-      end 
+      end
     end
 
     context "is Valid for update when" do
-      before do 
+      before do
         @project = FactoryBot.create(:project, :valid)
       end
 
@@ -100,4 +100,3 @@ describe Project do
 
   end
 end
-

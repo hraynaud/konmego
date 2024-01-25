@@ -14,7 +14,6 @@ module Api
 
       def show
         options = { params: { current_user: current_user } }
-        options[:include] = %i[obstacles obstacles.description]
         project = ProjectService.find_by_id(params[:id])
         render json: ProjectSerializer.new(project).serializable_hash.to_json
       end

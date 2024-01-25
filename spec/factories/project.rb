@@ -17,10 +17,6 @@ FactoryBot.define do
       with_topic
     end
 
-    trait :with_obstacles do
-      obstacles { build_list :obstacle, 3 }
-    end
-
 
     trait :with_topic do
       association :topic,  factory: :topic
