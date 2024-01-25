@@ -87,7 +87,7 @@ module Manager # rubocop:disable Metrics/ModuleLength
         rnd_idx = rand(num_items)
         @praises[topic_name][rnd_idx]
       else
-        "{{person}} is a boss when it comes to #{topic_name}"
+        "<<person>> is a boss when it comes to #{topic_name}"
       end
     end
 
