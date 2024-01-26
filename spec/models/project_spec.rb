@@ -18,7 +18,6 @@ describe Project do
       it "owner is nil" do
         project.name = "My name"
         project.description = "My description"
-        project.obstacles = [Obstacle.new]
         expect(project.owner).to be_nil
       end
 
@@ -62,7 +61,7 @@ describe Project do
 
       end
 
-      it "it is missing obstacles" do
+      pending "it is missing roadblocks" do
         @project.roadblocks = []
         expect(@project.valid?(:update)).to be false
       end

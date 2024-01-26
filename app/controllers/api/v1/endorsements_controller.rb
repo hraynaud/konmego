@@ -14,8 +14,8 @@ class Api::V1::EndorsementsController < ApplicationController
     endorsement = EndorsementService.create(
       current_user,
       {
-        endorsee_id: params[:endorsee_id], 
-        topic_id: params[:topic_id], 
+        endorsee_id: params[:endorsee_id],
+        topic_id: params[:topic_id],
         first_name: params.dig(:new_person,:first),
         last_name: params.dig(:new_person,:last),
         email: params.dig(:new_person,:identity, :email),
@@ -31,7 +31,7 @@ class Api::V1::EndorsementsController < ApplicationController
   end
 
   def decline
-    @endorsement = find_endorsement Endorse.pending
+    @endorsement = find_endorsement
     render :json => { :errors =>["Invalid Operation"] }, :status => :unprocessable_entity if @endorsement.to_node != current_user
     if @endorsement
       render json: EndorsementService.decline(@endorsement,current_user)
@@ -52,7 +52,7 @@ class Api::V1::EndorsementsController < ApplicationController
   private
 
   def handle_inbound_endorsement_response
-    @endorsement = find_endorsement Endorse.pending
+    @endorsement = find_endorsement
     if @endorsement
       render json: EndorsementService.accept(@endorsement, current_user)
     else
@@ -66,7 +66,7 @@ class Api::V1::EndorsementsController < ApplicationController
 
   def invalid_params_provided?
     has_invalid_topic_params? || has_invalid_endorsee_params?
-  end 
+  end
 
   def has_invalid_topic_params?
     both_topic_id_and_new_topic_provided? || neither_new_topic_name_nor_topic_id_provided?
@@ -108,8 +108,9 @@ class Api::V1::EndorsementsController < ApplicationController
     params[:new_person]
   end
 
-  def find_endorsement  
-    @endorsement = EndorsementService.find(endorsement_params[:id])
+  def find_endorsement
+
+    @endorsement = EndorsementService.find(endorsement_params)
   end
 
   def endorsement_params
@@ -121,4 +122,3 @@ class Api::V1::EndorsementsController < ApplicationController
   end
 
 end
-

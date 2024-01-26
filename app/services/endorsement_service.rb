@@ -49,10 +49,12 @@ class EndorsementService
       endorsement.destroy
     end
 
-    def find(id)
-      endorser_id, endorsee_id, topic = decompose_id(id)
-      from = PersonService.find_by_id(endorser_id)
-      from.endorsements.each_rel.select { |r| r.to_node.id == endorsee_id && r.topic == topic }.first
+    def find(params)
+      # binding.pry
+      # endorser_id, endorsee_id, topic = decompose_id(id)
+
+      from = PersonService.find_by_id(params[:endorser_id])
+      from.endorsements.each_rel.select { |r| r.to_node.id == params[:endorsee_id] && r.topic == params[:topic_name] }.first
     end
 
     def generate_id(endorser_id, endorsee_id, topic)

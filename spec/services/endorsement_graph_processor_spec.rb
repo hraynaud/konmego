@@ -6,7 +6,7 @@ include TestDataHelper::Utils
 
 describe EndorsementGraphProcessor do
   before(:all) do
-    @anon = OpenStruct.new(name: 'Anonymous')
+    @anon = OpenStruct.new(first_name: 'Anonymous')
     clear_db
     setup_relationship_data
   end
@@ -96,7 +96,7 @@ end
 
 def to_endorsement_node(person, role, is_visible)
   {
-    name: person.name,
+    name: person.first_name,
     role: role,
     is_visible: is_visible
   }
