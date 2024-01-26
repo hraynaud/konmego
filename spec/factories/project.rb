@@ -13,7 +13,7 @@ FactoryBot.define do
     trait :valid do
       start_date {Date.today}
       deadline {1.month.from_now}
-      with_obstacles
+      # with_
       with_topic
     end
 
