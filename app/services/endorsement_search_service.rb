@@ -14,7 +14,7 @@ class EndorsementSearchService
 
     def exec_endorsement_query(current_user, topic, hops)
       ActiveGraph::Base.query("
-        Match p = (starter:Person {uuid: $uuid})-[:`KNOWS`*0..#{hops}]-(endorsee:Person)-[e:ENDORSES]-(endorser:Person)
+        Match p = (starter:Person {uuid: $uuid})-[:`KNOWS`*0..#{hops}]-(endorser:Person)-[e:ENDORSES]-(endorsee:Person)
         WHERE e.topic =~ $topic
         WITH p,e
 
