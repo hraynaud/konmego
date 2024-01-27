@@ -1,10 +1,11 @@
 require 'set'
 require 'ostruct'
 require 'rails_helper'
+
 include TestDataHelper::Relationships
 include TestDataHelper::Utils
 
-describe EndorsementGraphProcessor do
+describe EndorsementGraphProcessor do # rubocop:disable Metrics/BlockLength
   before(:all) do
     @anon = OpenStruct.new(first_name: 'Anonymous')
     clear_db
@@ -15,7 +16,7 @@ describe EndorsementGraphProcessor do
     clear_db
   end
 
-  describe '.search' do
+  describe '.search' do # rubocop:disable Metrics/BlockLength
     context 'root node is endorser or endorser is in friend chain between the root node and endorsee' do
       it "doesn't anonymize if current user is endorser and knows endorsee directly " do
         #------------------------------------------------------------------------------
@@ -45,7 +46,7 @@ describe EndorsementGraphProcessor do
         expected = [
           {
             topic: 'Composer',
-            path: to_path_nodes([[@nuno, 'me', true], [@tisha, 'endorser', true],[@anon, 'endorsee', false]])
+            path: to_path_nodes([[@nuno, 'me', true], [@tisha, 'endorser', true], [@anon, 'endorsee', false]])
           }
         ]
         expect(actual).to eq(expected)
@@ -72,7 +73,6 @@ describe EndorsementGraphProcessor do
           )
         }
       ]
-
 
       expect(actual).to eq(expected)
     end

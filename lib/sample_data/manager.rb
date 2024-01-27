@@ -30,6 +30,7 @@ module Manager # rubocop:disable Metrics/ModuleLength
 
       file_data = read_file('projects_gpt.json')
       project_data = JSON.parse(file_data)
+      binding.pry
       project_data.each do |p|
         create_project(p)
       end
@@ -56,7 +57,6 @@ module Manager # rubocop:disable Metrics/ModuleLength
       data = read_file('endorsements_gpt.json')
       @praises = JSON.parse(data)
 
-
       Person.all.each do |person|
         endorsements_to_create = rand(MAX_ENDORSEMENTS)
         while endorsements_to_create.positive?
@@ -64,8 +64,8 @@ module Manager # rubocop:disable Metrics/ModuleLength
           begin
             create_endorsement(person, topic_name)
             endorsements_to_create -= 1
-          rescue
-            Rails.logger.warn("duplicate endorsment")
+          rescue StandardError
+            Rails.logger.warn('duplicate endorsment')
           end
 
         end
@@ -75,7 +75,7 @@ module Manager # rubocop:disable Metrics/ModuleLength
     def create_endorsement(endorsee, topic_name)
       endorser = random_user
       content = random_endorsement_by(topic_name)
-      topic = TopicService.find_or_create_by_name({name: topic_name})
+      topic = TopicService.find_or_create_by_name({ name: topic_name })
       create_relationships(endorser, endorsee, topic, content.gsub('<<person>>', endorsee.first_name))
     rescue ActiveGraph::Node::Persistence::RecordInvalidError
       # no op
@@ -91,7 +91,7 @@ module Manager # rubocop:disable Metrics/ModuleLength
       end
     end
 
-    def create_topics
+    def create_topics # rubocop:disable Metrics/MethodLength
       data = File.read("#{SAMPLE_DATA_ROOT_DIR}/category_topics_gpt.json")
       category_topics = JSON.parse(data)
 
@@ -101,14 +101,12 @@ module Manager # rubocop:disable Metrics/ModuleLength
           topic_name = topic['topic']
           icon_name = topic['icon']
           params = { name: topic_name, category: cat_name, icon: icon_name }
-
           TopicService.find_or_create_by_name(params)
         end
       end
     end
 
     def create_relationships(from, to, topic, description)
-
       EndorsementService.create(from, { endorsee_id: to.id, topic_id: topic.id, description: description })
       RelationshipManager.befriend from, to
     end
@@ -128,7 +126,12 @@ module Manager # rubocop:disable Metrics/ModuleLength
 
     def random_user_pursuit(user)
       topics = user['pursuits'].map { |p| p['topic'] }
-      topics[rand(topics.count)]
+      if topics.empty?
+        topic = random_global_topic
+        topic.name
+      else
+        topics[rand(topics.count)]
+      end
     end
 
     def random_global_topic
@@ -155,7 +158,8 @@ module Manager # rubocop:disable Metrics/ModuleLength
       def all
         topics
         users
-        endorsments
+        endorsements
+        endorsment_nodes
         identities
         projects
       end
@@ -168,8 +172,16 @@ module Manager # rubocop:disable Metrics/ModuleLength
         ActiveGraph::Base.query('MATCH (n:Person) DETACH DELETE n')
       end
 
-      def endorsments
+      def endorsment_nodes
         ActiveGraph::Base.query('MATCH (n:Endorsement) DETACH DELETE n')
+      end
+
+      def endorsements
+        ActiveGraph::Base.query('MATCH (p1:Person)-[r:ENDORSES]-(p2:Person) DELETE r')
+      end
+
+      def friendships
+        ActiveGraph::Base.query('MATCH (p1:Person)-[r:KNOWS]-(p2:Person) DELETE r')
       end
 
       def identities
