@@ -11,32 +11,10 @@ namespace :sample_data do # rubocop:disable Metrics/BlockLength
     task all: [:environment] do
       raise 'You cannot run this task in production' unless Rails.env.development?
 
-      # clear_dev_data
-      file_data = File.read("#{SAMPLE_DATA_ROOT_DIR}/category_topics_gpt.json")
-      category_topic_data = JSON.parse(file_data)
-
-      file_data = File.read("#{SAMPLE_DATA_ROOT_DIR}/users_gpt.json")
-      user_data = JSON.parse(file_data)
-
-      @users = []
-      @topics = []
-      @categories = []
-
-      user_data.each do |u|
-        @users << create_user(u)
-      end
-
-      category_topic_data.each do |category|
-        create_category_topics(category)
-      end
-
-      # # sample endorsements
-      # builder = RandomEndorsementBuilder.new(@users, @topics)
-      # builder.build
-
-      # sample projet
-      builder = RandomProjectBuilder.new(@users, @topics)
-      builder.build
+      Manager.create_topics
+      Manager.create_users
+      Manager.create_projects
+      Manager.create_endorsements
     end
 
     desc 'ceate users from sample user json'
