@@ -48,14 +48,13 @@ describe EndorsementGraphProcessor do
             path: to_path_nodes([[@nuno, 'me', true], [@tisha, 'endorser', true],[@anon, 'endorsee', false]])
           }
         ]
-
         expect(actual).to eq(expected)
 
       end
     end
 
     it 'processes multiple paths correctly' do
-      graph = EndorsementSearchService.search @fauzi, 'Beatmaking'
+      graph = EndorsementSearchService.search @fauzi, 'Beatmaking', 4
       results = EndorsementGraphProcessor.process @fauzi, graph
       actual = extract_assertable_data(results)
       expected = [
@@ -73,6 +72,7 @@ describe EndorsementGraphProcessor do
           )
         }
       ]
+
 
       expect(actual).to eq(expected)
     end
