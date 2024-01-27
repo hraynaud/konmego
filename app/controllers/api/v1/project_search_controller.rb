@@ -2,7 +2,7 @@ module Api
   module V1
     class ProjectSearchController < ApplicationController
       def index
-        render json: projects_and_topics
+        render json: projects
       end
 
       private
@@ -18,7 +18,8 @@ module Api
       end
 
       def search_results
-        ProjectSearchService.search(current_user, topic: filter_params[:topic], friend: filter_params[:friend])
+        user_scope = params[:scope] || current_user.uuid
+        ProjectSearchService.search(user_scope, topic: filter_params[:topic], friend: filter_params[:friend])
       end
 
       def friends_and_topics
