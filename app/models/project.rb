@@ -26,7 +26,7 @@ class Project
 
   validate :cannot_set_status_active_without_required_attributes_set, on: :update
 
-  scope :public, -> { where('projects.visibility > ? ', Project.visibilities[:private]) }
+  scope :public, -> { where('projects.visibility > ? ', Project.visibilities[:public]) }
 
   def topic_name
     topic.try(:name)
