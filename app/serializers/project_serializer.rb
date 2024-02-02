@@ -8,5 +8,4 @@ class ProjectSerializer
   attribute :owner_profile_image_url do |p, _params|
     p.owner.profile_image_url
   end
-
 end

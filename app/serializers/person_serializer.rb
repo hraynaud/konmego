@@ -41,7 +41,7 @@ class PersonSerializer
     end
 
     def get_data(group, dir, params)
-      relationships = group.each_rel { |r| }
+      relationships = group.each_rel { |r| } # rubocop:disable Lint/EmptyBlock
       serializer = EndorsementSerializer.new(relationships, params: params)
       serialized_result = serializer.serializable_hash
 
