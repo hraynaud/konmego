@@ -1,21 +1,21 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.0.0'
+ruby '3.1.2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~>7.0'
+gem 'bcrypt', '~> 3.1.7'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 3.11'
-gem 'bcrypt', '~> 3.1.7'
-#gem 'bootsnap', '>= 1.1.0', require: false
-gem 'rack-cors'
-gem 'oauth'
-gem 'jwt'
-gem 'activegraph', '~> 10.1.0' # For example, see https://rubygems.org/gems/activegraph/versions for the latest versions
-gem 'neo4j-ruby-driver'#, '~> 1.7.0'
+gem 'rails', '~>7.1'
+# gem 'bootsnap', '>= 1.1.0', require: false
+gem 'activegraph', '11.5.0.beta.3' # For example, see https://rubygems.org/gems/activegraph/versions for the latest versions
 gem 'delayed_job_active_record'
 gem 'jsonapi-serializer'
+gem 'jwt'
+gem 'neo4j-ruby-driver'
+gem 'oauth'
+gem 'rack-cors'
 gem 'rubyzip', '2.3.0'
 gem 'set', '1.1.0'
 
@@ -24,19 +24,19 @@ group :production do
 end
 
 group :development, :test do
+  gem 'factory_bot'
+  gem 'factory_bot_rails'
+  gem 'faker'
+  gem 'letter_opener'
+  gem 'neo4j-rake_tasks'
   gem 'pry'
-  gem 'pry-rails'
   gem 'pry-nav'
+  gem 'pry-rails'
   gem 'rspec'
   gem 'rspec-rails'
-  gem 'factory_bot'
-  gem "factory_bot_rails"
-  gem "neo4j-rake_tasks"
-  gem "faker"
-  gem "rubocop"
-  gem "letter_opener"
+  gem 'rubocop'
 end
 
 group :development do
-  gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'listen'#, '>= 3.0.5', '< 3.2'
 end

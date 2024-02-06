@@ -31,7 +31,7 @@ module Konmego
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
-    config.generators { |g| g.orm :active_record }
+    config.generators { |g| g.orm :active_graph }
     config.logger = Logger.new(STDOUT)
 
     config.session_store :cookie_store, key: '_session_id'
@@ -39,7 +39,9 @@ module Konmego
     config.middleware.use ActionDispatch::Session::CookieStore
     config.middleware.use config.session_store
     config.client = config_for(:client)
-    config.active_record.legacy_connection_handling = false
-    
+    config.neo4j.driver.username = 'neo4j'
+    config.neo4j.driver.password = 'password'
+    # config.active_record.legacy_connection_handling = false
+
   end
 end

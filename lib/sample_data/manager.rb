@@ -30,7 +30,6 @@ module Manager # rubocop:disable Metrics/ModuleLength
 
       file_data = read_file('projects_gpt.json')
       project_data = JSON.parse(file_data)
-      binding.pry
       project_data.each do |p|
         create_project(p)
       end
@@ -107,12 +106,12 @@ module Manager # rubocop:disable Metrics/ModuleLength
     end
 
     def create_relationships(from, to, topic, description)
-      EndorsementService.create(from, { endorsee_id: to.id, topic_id: topic.id, description: description })
+      EndorsementService.create(from, { endorsee_id: to.id, topic_id: topic.id, description: })
       RelationshipManager.befriend from, to
     end
 
     def to_params(endorsee, topic)
-      { endorsee_id: endorsee.id, topic_id: topic.id, description: description }
+      { endorsee_id: endorsee.id, topic_id: topic.id, description: }
     end
 
     def read_file(file_name)
