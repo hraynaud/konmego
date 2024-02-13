@@ -30,13 +30,22 @@ node_modules
 
 !/db/neo4j
 /db/neo4j/**
+#include subdirectories above conf but ignore all files
 !/db/neo4j/test
 /db/neo4j/test/**
 !/db/neo4j/test/conf
 /db/neo4j/test/conf/**
+#include neo4j.conf 
 !/db/neo4j/test/conf/neo4j.conf
 
-/db/neo4j/development
+
+#include subdirectories above conf but ignore all files
+!/db/neo4j/development
+/db/neo4j/development/**
+!/db/neo4j/development/conf
+/db/neo4j/development/conf/**
+#include neo4j.conf 
+!/db/neo4j/development/conf/neo4j.conf
 
 /.bundle
 /vendor/bundle
