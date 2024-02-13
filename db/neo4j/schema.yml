@@ -12,27 +12,40 @@
 
 ---
 :constraints:
-- CONSTRAINT ON ( `activegraph::migrations::schemamigration`:`ActiveGraph::Migrations::SchemaMigration`
-  ) ASSERT `activegraph::migrations::schemamigration`.migration_id IS UNIQUE
-- CONSTRAINT ON ( activity:Activity ) ASSERT activity.uuid IS UNIQUE
-- CONSTRAINT ON ( comment:Comment ) ASSERT comment.uuid IS UNIQUE
-- CONSTRAINT ON ( endorsement:Endorsement ) ASSERT endorsement.uuid IS UNIQUE
-- CONSTRAINT ON ( identity:Identity ) ASSERT identity.uuid IS UNIQUE
-- CONSTRAINT ON ( invite:Invite ) ASSERT invite.uuid IS UNIQUE
-- CONSTRAINT ON ( obstacle:Obstacle ) ASSERT obstacle.uuid IS UNIQUE
-- CONSTRAINT ON ( obstaclecategory:ObstacleCategory ) ASSERT obstaclecategory.uuid
-  IS UNIQUE
-- CONSTRAINT ON ( person:Person ) ASSERT person.uuid IS UNIQUE
-- CONSTRAINT ON ( post:Post ) ASSERT post.uuid IS UNIQUE
-- CONSTRAINT ON ( project:Project ) ASSERT project.uuid IS UNIQUE
-- CONSTRAINT ON ( registration:Registration ) ASSERT registration.uuid IS UNIQUE
-- CONSTRAINT ON ( topic:Topic ) ASSERT topic.uuid IS UNIQUE
+- 'CREATE CONSTRAINT `comment_uuid_uniq` FOR (n:`Comment`) REQUIRE (n.`uuid`) IS UNIQUE
+  OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
+- 'CREATE CONSTRAINT `constraint_26885d30` FOR (n:`Obstacle`) REQUIRE (n.`uuid`) IS
+  UNIQUE OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
+- 'CREATE CONSTRAINT `constraint_308f952c` FOR (n:`Identity`) REQUIRE (n.`uuid`) IS
+  UNIQUE OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
+- 'CREATE CONSTRAINT `constraint_d6502a12` FOR (n:`ActiveGraph::Migrations::SchemaMigration`)
+  REQUIRE (n.`migration_id`) IS UNIQUE OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
+- 'CREATE CONSTRAINT `constraint_e2ca317b` FOR (n:`ObstacleCategory`) REQUIRE (n.`uuid`)
+  IS UNIQUE OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
+- 'CREATE CONSTRAINT `constraint_e35df01c` FOR (n:`Activity`) REQUIRE (n.`uuid`) IS
+  UNIQUE OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
+- 'CREATE CONSTRAINT `constraint_eae8a740` FOR (n:`Endorsement`) REQUIRE (n.`uuid`)
+  IS UNIQUE OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
+- 'CREATE CONSTRAINT `invite_uuid_uniq` FOR (n:`Invite`) REQUIRE (n.`uuid`) IS UNIQUE
+  OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
+- 'CREATE CONSTRAINT `person_uuid_uniq` FOR (n:`Person`) REQUIRE (n.`uuid`) IS UNIQUE
+  OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
+- 'CREATE CONSTRAINT `post_uuid_uniq` FOR (n:`Post`) REQUIRE (n.`uuid`) IS UNIQUE
+  OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
+- 'CREATE CONSTRAINT `project_uuid_uniq` FOR (n:`Project`) REQUIRE (n.`uuid`) IS UNIQUE
+  OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
+- 'CREATE CONSTRAINT `registration_uuid_uniq` FOR (n:`Registration`) REQUIRE (n.`uuid`)
+  IS UNIQUE OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
+- 'CREATE CONSTRAINT `schema_migration_uuid_uniq` FOR (n:`ActiveGraph::Migrations::SchemaMigration`)
+  REQUIRE (n.`uuid`) IS UNIQUE OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
+- 'CREATE CONSTRAINT `topic_uuid_uniq` FOR (n:`Topic`) REQUIRE (n.`uuid`) IS UNIQUE
+  OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
 :indexes:
-- INDEX ON :Endorsement(status)
-- INDEX ON :Endorsement(type)
-- INDEX ON :Person(is_member)
-- INDEX ON :Project(status)
-- INDEX ON :Project(visibility)
+- CREATE RANGE INDEX `index_5be57233` FOR (n:`Endorsement`) ON (n.`type`)
+- CREATE RANGE INDEX `index_c5dfce8` FOR (n:`Endorsement`) ON (n.`status`)
+- CREATE RANGE INDEX `person_person_is_member` FOR (n:`Person`) ON (n.`is_member`)
+- CREATE RANGE INDEX `project_project_status` FOR (n:`Project`) ON (n.`status`)
+- CREATE RANGE INDEX `project_project_visibility` FOR (n:`Project`) ON (n.`visibility`)
 :versions:
 - '20190616005444'
 - '20190616005600'
