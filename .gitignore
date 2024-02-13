@@ -27,7 +27,15 @@ tags
 node_modules
 /dist
 
-/db/neo4j/test
+
+!/db/neo4j
+/db/neo4j/**
+!/db/neo4j/test
+/db/neo4j/test/**
+!/db/neo4j/test/conf
+/db/neo4j/test/conf/**
+!/db/neo4j/test/conf/neo4j.conf
+
 /db/neo4j/development
 
 /.bundle
