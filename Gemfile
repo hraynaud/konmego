@@ -5,17 +5,20 @@ ruby '3.1.2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'bcrypt', '~> 3.1.7'
-gem 'pg', '>= 0.18', '< 2.0'
-gem 'puma', '~> 3.11'
-gem 'rails', '~>7.1'
+
 # gem 'bootsnap', '>= 1.1.0', require: false
 gem 'activegraph', '11.5.0.beta.3' # For example, see https://rubygems.org/gems/activegraph/versions for the latest versions
 gem 'delayed_job_active_record'
 gem 'jsonapi-serializer'
 gem 'jwt'
+gem 'langchainrb'
 gem 'neo4j-ruby-driver'
 gem 'oauth'
+gem 'ollama-ai', '~> 1.2.0'
+gem 'pg', '>= 0.18', '< 2.0'
+gem 'puma', '~> 3.11'
 gem 'rack-cors'
+gem 'rails', '~>7.1'
 gem 'rubyzip', '2.3.0'
 gem 'set', '1.1.0'
 
@@ -38,5 +41,5 @@ group :development, :test do
 end
 
 group :development do
-  gem 'listen'#, '>= 3.0.5', '< 3.2'
+  gem 'listen' # , '>= 3.0.5', '< 3.2'
 end

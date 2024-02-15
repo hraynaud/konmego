@@ -20,7 +20,6 @@ class EndorsementService
     end
 
     def send_confirmation(endorsement)
-
       if endorsement.endorsee.status == 'non_member'
         EndorsementMailer.with(id: endorsement.id).non_member_email.deliver_later
       else
@@ -54,7 +53,9 @@ class EndorsementService
       # endorser_id, endorsee_id, topic = decompose_id(id)
 
       from = PersonService.find_by_id(params[:endorser_id])
-      from.endorsements.each_rel.select { |r| r.to_node.id == params[:endorsee_id] && r.topic == params[:topic_name] }.first
+      from.endorsements.each_rel.select do |r|
+        r.to_node.id == params[:endorsee_id] && r.topic == params[:topic_name]
+      end.first
     end
 
     def generate_id(endorser_id, endorsee_id, topic)
@@ -136,11 +137,11 @@ class EndorsementService
     def create_from_invite(invite)
       topic = invite.topic || TopicService.find_or_create_by_name(invite.topic_name)
       to = invite.receiver || PersonService.find_or_create_from_invite(invite)
-      create_from_nodes(invite.sender, to, topic.name)
+      create_from_nodes(invite.sender, to, topic.name, "this person is amazing at #{topic.name}")
     end
 
     def already_exists?(endorser, endorsee, topic)
-      endorser.endorsees.each_rel.select { |r| r.to_node == endorsee && r.topic == topic }.count > 0
+      endorser.endorsees.each_rel.select { |r| r.to_node == endorsee && r.topic == topic }.count.positive?
     end
 
     def invite_params(params)

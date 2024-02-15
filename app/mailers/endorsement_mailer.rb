@@ -1,9 +1,9 @@
 class EndorsementMailer < ApplicationMailer
   before_action :set_params
   default from: 'notifications@example.com'
-  
-  MEMBER_ENDORSEMENT_MSG = "You've received a new endorsement from "
-  NON_MEMBER_ENDORSEMENT_MSG = "You've been invited to join konmego"
+
+  MEMBER_ENDORSEMENT_MSG = "You've received a new endorsement from ".freeze
+  NON_MEMBER_ENDORSEMENT_MSG = "You've been invited to join konmego".freeze
 
   def member_email
     @msg = message
@@ -22,6 +22,4 @@ class EndorsementMailer < ApplicationMailer
   def message
     "#{MEMBER_ENDORSEMENT_MSG}#{@endorsement.endorser} for your experience and knowledge in #{@endorsement.topic_name}"
   end
-
-  
 end
