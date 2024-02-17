@@ -9,7 +9,10 @@ class EndorsementService
     end
 
     def create(endorser, params)
-      topic_name = set_topic params
+      topic = find_or_create_topic(params)
+      raise raise StandardError, 'Please provide a topic' if topic.nil?
+
+      topic_name = topic.name
       endorsee = find_or_create_endorsee(params)
 
       validate_non_duplicated_endorsement endorser, endorsee, topic_name
@@ -20,7 +23,6 @@ class EndorsementService
     end
 
     def send_confirmation(endorsement)
-
       if endorsement.endorsee.status == 'non_member'
         EndorsementMailer.with(id: endorsement.id).non_member_email.deliver_later
       else
@@ -54,7 +56,9 @@ class EndorsementService
       # endorser_id, endorsee_id, topic = decompose_id(id)
 
       from = PersonService.find_by_id(params[:endorser_id])
-      from.endorsements.each_rel.select { |r| r.to_node.id == params[:endorsee_id] && r.topic == params[:topic_name] }.first
+      from.endorsements.each_rel.select do |r|
+        r.to_node.id == params[:endorsee_id] && r.topic == params[:topic_name]
+      end.first
     end
 
     def generate_id(endorser_id, endorsee_id, topic)
@@ -122,15 +126,12 @@ class EndorsementService
       raise raise StandardError, "You've already endorsed #{endorsee.name} for #{topic_name}"
     end
 
-    def set_topic(params)
-      topic = TopicService.get(params[:topic_id])
-      if topic
-        topic_name = topic.name
-      else
-        topic_name = params[:new_topic_name]
-        raise raise StandardError, 'Please provide a topic' if topic_name.nil?
+    def find_or_create_topic(params)
+      if params[:topic_id]
+        TopicService.get(params[:topic_id])
+      elsif params[:new_topic_name]
+        TopicService.find_or_create_by_name({ name: params[:new_topic_name], category: params[:new_category_name] })
       end
-      topic_name
     end
 
     def create_from_invite(invite)
@@ -147,10 +148,19 @@ class EndorsementService
       params.except(:new_topic_name, :new_topic_category, :endorsee_id)
     end
 
-    def create_from_nodes(endorser, endorsee, topic_name, description)
+    def create_from_nodes(endorser, endorsee, topic_name, description) # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
+      Endorsement.new.tap do |endorsement|
+        endorsement.endorser = endorser
+        endorsement.endorsee = endorsee
+        endorsement.status = Endorsement.statuses[:pending]
+        endorsement.topic = @topic
+        endorsement.save
+      end
+
       e = Endorse.new(from_node: endorser, to_node: endorsee)
       e.topic = topic_name
       e.description = description
+      e.status = Endorse.statuses[:pending]
       e.save
       e
     end

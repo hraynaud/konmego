@@ -13,6 +13,8 @@ class Person
   has_many :in, :followers, model_class: :Person, type: :FOLLOWINGS
   has_many :in, :endorsers, rel_class: :Endorse
   has_many :out, :endorsees, rel_class: :Endorse
+  has_many :in, :incoming_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_TARGET
+  has_many :out, :outgoing_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_SOURCE
   has_many :both, :endorsements, rel_class: :Endorse
   has_many :out, :projects, origin: :owner
   has_many :out, :participations, model_class: :Project, type: :PARTICIPATES_IN
@@ -52,8 +54,8 @@ class Person
   end
 
   def extract
-    OpenStruct.new(first_name: first_name, last_name: last_name,
-                   avatar_url: avatar_url, profile_image_url: profile_image_url, name: "#{first_name} #{last_name}", id: id)
+    OpenStruct.new(first_name:, last_name:,
+                   avatar_url:, profile_image_url:, name: "#{first_name} #{last_name}", id:)
   end
 
   def accepted_endorsees
@@ -110,6 +112,26 @@ class Person
 
   def followed_by?(person)
     followers.include? person
+  end
+
+  def n_endorsers
+    incoming_endorsements.map(&:endorser)
+  end
+
+  def n_endorses?(person)
+    outgoing_endorsements.endorsee.include? person
+  end
+
+  def n_endorsed_by?(person)
+    incoming_endorsements.endorser.include? person
+  end
+
+  def n_endorses_topic?(topic)
+    outgoing_endorsements.topic.include? topic
+  end
+
+  def n_endorsement_for_topic?(topic)
+    incoming_endorsements.topic.include? topic
   end
 
   private

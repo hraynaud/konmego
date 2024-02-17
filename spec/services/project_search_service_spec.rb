@@ -25,17 +25,15 @@ describe ProjectSearchService do
           )
         expect(project_names(search_by(@vince, depth: 3)))
           .to eq project_names([@dj_project, @culinary_project, @app_project])
-        expect(project_names(search_by(@elsa, depth: 2))).to eq project_names([@chef_project,@acting_project])
-        expect(project_names(search_by(@gilbert, depth:1))).to eq project_names([@chef_project])
-        expect(project_names(search_by(@elsa, depth: 1))).to eq  project_names([@chef_project,@acting_project])
+        expect(project_names(search_by(@elsa, depth: 2))).to eq project_names([@chef_project, @acting_project])
+        expect(project_names(search_by(@gilbert, depth: 1))).to eq project_names([@chef_project])
+        expect(project_names(search_by(@elsa, depth: 1))).to eq  project_names([@chef_project, @acting_project])
         expect(project_names(search_by(@elsa, depth: 0))).to eq  project_names([@chef_project])
       end
       context 'default depth' do
         it 'includes self projects' do
-          expect(project_names(search_by(@elsa))).to eq project_names([@chef_project,@acting_project])
+          expect(project_names(search_by(@elsa))).to eq project_names([@chef_project, @acting_project])
         end
-
-     
 
         it 'finds projects belonging to friends at default depth' do
           expect(project_names(search_by(@vince))).to eq project_names([@app_project])
@@ -60,8 +58,8 @@ describe ProjectSearchService do
         expect(project_names(search_by(@elsa,
                                        { depth: 4,
                                          topic: @cooking.id })))
-        .to eq project_names([@chef_project, @dining_project,
-                          @culinary_project])
+          .to eq project_names([@chef_project, @dining_project,
+                                @culinary_project])
       end
     end
 
@@ -82,17 +80,17 @@ describe ProjectSearchService do
       end
     end
 
-    context "visibility private" do
+    context 'visibility private' do
       it 'ignores private projects' do
         new_proj = FactoryBot.create(:project)
         @sar.projects << new_proj
         expect(@sar.projects.count == 2)
-        expect(new_proj.visibility == "private") #default
+        expect(new_proj.visibility == 'private') # default
         expect(project_names(search_by(@kendra)))
           .to eq project_names(
             [@acting_project]
           )
-        
+
       end
 
       it 'excludes self private projects' do
@@ -121,7 +119,7 @@ describe ProjectSearchService do
     [].to_set
   end
 
-  def search_by(user, params = {})
-    ProjectSearchService.search(user, params)
+  def search_by(_user, params = {})
+    ProjectSearchService.search(params)
   end
 end

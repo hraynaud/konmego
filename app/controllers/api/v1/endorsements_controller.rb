@@ -1,14 +1,11 @@
 class Api::V1::EndorsementsController < ApplicationController
-
-  before_action :validate_params, only:[:create]
+  before_action :validate_params, only: [:create]
 
   def index
-    render json: EndorsementService.by_status(for_user,params[:status])
+    render json: EndorsementService.by_status(for_user, params[:status])
   end
 
-  def search
-
-  end
+  def search; end
 
   def create
     endorsement = EndorsementService.create(
@@ -16,9 +13,9 @@ class Api::V1::EndorsementsController < ApplicationController
       {
         endorsee_id: params[:endorsee_id],
         topic_id: params[:topic_id],
-        first_name: params.dig(:new_person,:first),
-        last_name: params.dig(:new_person,:last),
-        email: params.dig(:new_person,:identity, :email),
+        first_name: params.dig(:new_person, :first),
+        last_name: params.dig(:new_person, :last),
+        email: params.dig(:new_person, :identity, :email),
         new_topic_name: params.dig(:new_topic, :name),
         new_topic_category: params.dig(:new_topic, :category)
       }
@@ -32,20 +29,23 @@ class Api::V1::EndorsementsController < ApplicationController
 
   def decline
     @endorsement = find_endorsement
-    render :json => { :errors =>["Invalid Operation"] }, :status => :unprocessable_entity if @endorsement.to_node != current_user
+    if @endorsement.to_node != current_user
+      render json: { errors: ['Invalid Operation'] },
+             status: :unprocessable_entity
+    end
     if @endorsement
-      render json: EndorsementService.decline(@endorsement,current_user)
+      render json: EndorsementService.decline(@endorsement, current_user)
     else
-      render :json => { :errors =>["Endorsement not found"] }, :status => :not_found
+      render json: { errors: ['Endorsement not found'] }, status: :not_found
     end
   end
 
   def destroy
     @endorsement = find_endorsement
     if @endorsement
-      render json: EndorsementService.destroy(@endorsement,current_user)
+      render json: EndorsementService.destroy(@endorsement, current_user)
     else
-      render :json => { :errors =>["Endorsement not found"] }, :status => :not_found
+      render json: { errors: ['Endorsement not found'] }, status: :not_found
     end
   end
 
@@ -56,12 +56,15 @@ class Api::V1::EndorsementsController < ApplicationController
     if @endorsement
       render json: EndorsementService.accept(@endorsement, current_user)
     else
-      render :json => { :errors =>["Endorsement not found"] }, :status => :not_found
+      render json: { errors: ['Endorsement not found'] }, status: :not_found
     end
   end
 
   def validate_params
-    render :json => { :errors =>["Invalid parameters provided"] }, :status => :unprocessable_entity if invalid_params_provided?
+    return unless invalid_params_provided?
+
+    render json: { errors: ['Invalid parameters provided'] },
+           status: :unprocessable_entity
   end
 
   def invalid_params_provided?
@@ -109,16 +112,13 @@ class Api::V1::EndorsementsController < ApplicationController
   end
 
   def find_endorsement
-
     @endorsement = EndorsementService.find(endorsement_params)
   end
 
   def endorsement_params
     params.permit(:id,
-                  :endorsee_id, :topic_id, :endorser_id,:topic_name,
-                  new_person: [ :first, :last, identity: [:email]],
-                  new_topic: [:name, :description]
-                 )
+                  :endorsee_id, :topic_id, :endorser_id, :topic_name,
+                  new_person: [:first, :last, { identity: [:email] }],
+                  new_topic: %i[name description])
   end
-
 end

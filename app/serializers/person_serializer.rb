@@ -24,11 +24,21 @@ class PersonSerializer
   end
 
   attribute :endorsees do |person, params|
-    can_show?(params[:current_user], person) ? get_data(person.endorsees, 'endorsees', params) : []
+    if can_show?(params[:current_user],
+                 person) && !person.endorsees.empty?
+      get_data(person.endorsees, 'endorsees', params)
+    else
+      []
+    end
   end
 
   attribute :endorsers do |person, params|
-    can_show?(params[:current_user], person) ? get_data(person.endorsers, 'endorsers', params) : []
+    if can_show?(params[:current_user],
+                 person) && !person.endorsers.empty?
+      get_data(person.endorsers, 'endorsers', params)
+    else
+      []
+    end
   end
 
   class << self
@@ -42,7 +52,7 @@ class PersonSerializer
 
     def get_data(group, dir, params)
       relationships = group.each_rel { |r| } # rubocop:disable Lint/EmptyBlock
-      serializer = EndorsementSerializer.new(relationships, params: params)
+      serializer = EndorsementSerializer.new(relationships, params:)
       serialized_result = serializer.serializable_hash
 
       serialized_result[:data].map do |d|

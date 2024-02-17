@@ -1,6 +1,5 @@
 require 'ostruct'
 class Endorsement
-
   include KonmegoNeo4jNode
 
   has_one :out, :endorser, type: :ENDORSEMENT_SOURCE, model_class: :Person
@@ -8,7 +7,7 @@ class Endorsement
   has_one :out, :topic, type: :TOPIC
 
   property :description
-  enum status: {pending: "pending", accepted: "accepted", declined: "declined"}, _default: :pending
+  enum status: { pending: 'pending', accepted: 'accepted', declined: 'declined' }, _default: :pending
 
   before_create :add_description
 
@@ -18,16 +17,16 @@ class Endorsement
   validate :has_valid_endorsee
   validate :is_unique_across_endorser_endorsee_and_topic, on: :create, if: :all_valid?
 
-  scope :accepted,  ->{where(status: :accepted)}
-  scope :accepted_or_pending,  ->{where(status: [:pending,:accepted])}
+  scope :accepted, -> { where(status: :accepted) }
+  scope :accepted_or_pending, -> { where(status: %i[pending accepted]) }
 
-  def topic_name 
+  def topic_name
     topic.name
   end
 
   def topic_image
     topic.default_image_file
-  end 
+  end
 
   def endorser_id
     endorser.neo_id
@@ -45,12 +44,12 @@ class Endorsement
     endorsee.avatar_url
   end
 
-  def direction_from_person p
-    endorser == p ? "outgoing" : "incoming" 
+  def direction_from_person(p)
+    endorser == p ? 'outgoing' : 'incoming'
   end
 
   def extract
-    OpenStruct.new(endorser: endorser, endorsee: endorsee, description: description)
+    OpenStruct.new(endorser:, endorsee:, description:)
   end
 
   private
@@ -60,26 +59,30 @@ class Endorsement
   end
 
   def is_unique_across_endorser_endorsee_and_topic
-    if Endorsement.where(endorser: endorser, endorsee: endorsee, topic: topic).any?
-      errors.add(:base, "You have already endorsed #{endorsee.name} for #{topic_name}")
-      return false
-    end
+    return unless Endorsement.where(endorser:, endorsee:, topic:).any?
+
+    errors.add(:base, "You have already endorsed #{endorsee.name} for #{topic_name}")
+    false
   end
 
   def has_valid_topic
-    if topic
-      errors.add(
-        :topic, topic.errors.full_messages.to_sentence
-      ) unless topic.valid? 
-    end
+    return unless topic
+
+    return if topic.valid?
+
+    errors.add(
+      :topic, topic.errors.full_messages.to_sentence
+    )
   end
 
   def has_valid_endorsee
-    if endorsee
-      errors.add(
-        :endorsee, endorsee.errors.full_messages.to_sentence
-      ) unless endorsee.valid?
-    end
+    return unless endorsee
+
+    return if endorsee.valid?
+
+    errors.add(
+      :endorsee, endorsee.errors.full_messages.to_sentence
+    )
   end
 
   def all_valid?
@@ -89,6 +92,4 @@ class Endorsement
   def save_endorsee
     endorsee.save if endorsee && endorsee.new_record?
   end
-
-
 end
