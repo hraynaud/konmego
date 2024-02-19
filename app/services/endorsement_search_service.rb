@@ -11,18 +11,16 @@ class EndorsementSearchService
 
     private
 
-    def exec_endorsement_query(current_user, topic, hops) # rubocop:disable Metrics/MethodLength
+    def exec_endorsement_query(current_user, topic, hops)
       ActiveGraph::Base.query(
-        "MATCH p = allShortestPaths((starter:Person {uuid: $uuid})-[:`KNOWS`|`ENDORSES`*0..#{hops}]-(endorser:Person))
-      WHERE ALL(node IN NODES(p) WHERE SINGLE(y IN NODES(p) WHERE y = node))
-      WITH p, endorser
-      MATCH (endorser)-[e:ENDORSES]->(endorsee:Person)
-      WHERE e.topic =~ $topic
-      WITH e, nodes(p) AS pathNodes, endorsee, length(p) AS pathLength
-      ORDER BY pathLength ASC
-      RETURN DISTINCT e,
-          CASE WHEN endorsee IN pathNodes THEN pathNodes ELSE pathNodes + endorsee END AS all_paths
-      ", topic: topic, uuid: current_user.uuid
+        "MATCH p= (starter:Person {uuid: $uuid})-[:`KNOWS`*0..#{hops}]
+        -(endorser:`Person`)<-[r_src:`ENDORSEMENT_SOURCE`]-(e:`Endorsement`)
+      MATCH (e)-[r_target:`ENDORSEMENT_TARGET`]->(endorsee:`Person`)
+      MATCH (e)-[r_topic:`TOPIC`]->(t:`Topic`)
+      WHERE (e.description CONTAINS $topic)
+      WITH *
+     WHERE ALL(x IN NODES(p) WHERE SINGLE(y IN NODES(p) WHERE y = x))
+     return relationships(p) as r_knows, nodes(p) as full_path", topic:, uuid: current_user.uuid
       )
     end
   end

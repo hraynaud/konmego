@@ -70,7 +70,7 @@ module TestDataHelper
     end
 
     def to_params(endorsee, topic)
-      { endorsee_id: endorsee.id, topic_id: topic.id }
+      { endorsee_id: endorsee.id, topic_id: topic.id, description: topic.name }
     end
 
     def set_endorsement_statuses
