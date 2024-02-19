@@ -12,11 +12,10 @@ class EndorsementService
       topic = find_or_create_topic(params)
       raise raise StandardError, 'Please provide a topic' if topic.nil?
 
-      topic_name = topic.name
       endorsee = find_or_create_endorsee(params)
 
-      validate_non_duplicated_endorsement endorser, endorsee, topic_name
-      endorsement = create_from_nodes(endorser, endorsee, topic_name, params[:description])
+      validate_non_duplicated_endorsement endorser, endorsee, topic.name
+      endorsement = create_from_nodes(endorser, endorsee, topic, params[:description])
 
       send_confirmation endorsement
       endorsement
@@ -148,15 +147,24 @@ class EndorsementService
       params.except(:new_topic_name, :new_topic_category, :endorsee_id)
     end
 
-    def create_from_nodes(endorser, endorsee, topic_name, description) # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
+    def create_from_nodes(endorser, endorsee, topic, description)
+      node = as_node(endorser, endorsee, topic, description)
+
+      as_rel(endorser, endorsee, topic.name, description)
+    end
+
+    def as_node(endorser, endorsee, topic, description)
       Endorsement.new.tap do |endorsement|
         endorsement.endorser = endorser
         endorsement.endorsee = endorsee
+        endorsement.description = description
+        endorsement.topic = topic
         endorsement.status = Endorsement.statuses[:pending]
-        endorsement.topic = @topic
         endorsement.save
       end
+    end
 
+    def as_rel(endorser, endorsee, topic_name, description)
       e = Endorse.new(from_node: endorser, to_node: endorsee)
       e.topic = topic_name
       e.description = description

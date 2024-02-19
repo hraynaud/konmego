@@ -9,8 +9,6 @@ class Endorsement
   property :description
   enum status: { pending: 'pending', accepted: 'accepted', declined: 'declined' }, _default: :pending
 
-  before_create :add_description
-
   before_validation :save_endorsee
   validates :endorsee, :endorser, :topic, presence: true
   validate :has_valid_topic
@@ -53,10 +51,6 @@ class Endorsement
   end
 
   private
-
-  def add_description
-    self.description = "#{endorser.name} endorses #{endorsee.name} for #{topic_name}"
-  end
 
   def is_unique_across_endorser_endorsee_and_topic
     return unless Endorsement.where(endorser:, endorsee:, topic:).any?
