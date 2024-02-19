@@ -36,7 +36,7 @@ class ProjectSearchService
       scope
     end
 
-    def exec_project_query
+    def exec_project_query # rubocop:disable Metrics/MethodLength
       ActiveGraph::Base.query(
         "MATCH (starter:Person)-[:`KNOWS`#{@depth}]-(friend:Person)
         -[:OWNS]->(project:Project)-[:CONCERNS]->(topic:Topic)
