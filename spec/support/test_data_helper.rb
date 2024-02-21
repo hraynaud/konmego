@@ -65,7 +65,9 @@ module TestDataHelper
     end
 
     def do_accept(from, to, topic)
-      @accepted << EndorsementService.create(from, to_params(to, topic))
+      accepted = EndorsementService.create(from, to_params(to, topic))
+      accepted.accept!
+      @accepted << accepted
       RelationshipManager.befriend from, to
     end
 

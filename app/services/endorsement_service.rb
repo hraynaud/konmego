@@ -16,7 +16,6 @@ class EndorsementService
 
       validate_non_duplicated_endorsement endorser, endorsee, topic.name
       endorsement = create_from_nodes(endorser, endorsee, topic, params[:description])
-
       send_confirmation endorsement
       endorsement
     end
@@ -148,9 +147,9 @@ class EndorsementService
     end
 
     def create_from_nodes(endorser, endorsee, topic, description)
-      node = as_node(endorser, endorsee, topic, description)
+      as_node(endorser, endorsee, topic, description)
 
-      as_rel(endorser, endorsee, topic.name, description)
+      # as_rel(endorser, endorsee, topic.name, description)
     end
 
     def as_node(endorser, endorsee, topic, description)

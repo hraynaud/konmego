@@ -50,6 +50,16 @@ class Endorsement
     OpenStruct.new(endorser:, endorsee:, description:)
   end
 
+  def accept!
+    self.status = :accepted
+    save
+  end
+
+  def decline!
+    self.status = :declined
+    save
+  end
+
   private
 
   def is_unique_across_endorser_endorsee_and_topic

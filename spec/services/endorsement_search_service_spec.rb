@@ -20,7 +20,7 @@ describe EndorsementSearchService do # rubocop:disable Metrics/BlockLength
         # fauzi -- ENDORSES('Cooking') --> franky ( A--> KNOWS & ENDORSES -->B )
         #------------------------------------------------------------------------------
         results = EndorsementSearchService.search @fauzi, 'Cooking', 1
-        expect_actual_to_match_expected results, 'Cooking', [@fauzi, @franky], @fauzi, @franky
+        expect_actual_to_match_expected results, 'Cooking', [[@fauzi]], @fauzi, @franky
 
       end
 
@@ -30,7 +30,7 @@ describe EndorsementSearchService do # rubocop:disable Metrics/BlockLength
         #  ( A--> KNOWS -->B KNOWS & ENDORSES --> C)
         #------------------------------------------------------------------------------
         results = EndorsementSearchService.search @nuno, 'Composer', 1
-        expect_actual_to_match_expected results, 'Composer', [@nuno, @tisha, @vince], @tisha, @vince
+        expect_actual_to_match_expected results, 'Composer', [[@nuno, @tisha]], @tisha, @vince
       end
 
       it 'finds path to contacts within default distance = 3' do
@@ -38,13 +38,13 @@ describe EndorsementSearchService do # rubocop:disable Metrics/BlockLength
         # fauzi --> KNOWS --> franky --> KNOWS--> (nuno) --> KNOWS --> (tisha)  ENDORSES --> (vince)
         #------------------------------------------------------------------------------
         results = EndorsementSearchService.search @fauzi, 'Composer'
-        expect_actual_to_match_expected results, 'Composer', [@fauzi, @franky, @nuno, @tisha, @vince], @tisha, @vince
+        expect_actual_to_match_expected results, 'Composer', [[@fauzi, @franky, @nuno, @tisha]], @tisha, @vince
       end
 
       it 'finds path to contacts that have endorsed the topic within specified hops' do
         #------------------------------------------------------------------------------
         results = EndorsementSearchService.search @jean, 'Acting', 5
-        expect_actual_to_match_expected results, 'Acting', [@jean, @vince, @tisha, @nuno, @stan, @elsa, @sar], @elsa,
+        expect_actual_to_match_expected results, 'Acting', [[@jean, @vince, @tisha, @nuno, @stan, @elsa]], @elsa,
                                         @sar
       end
 
@@ -54,7 +54,7 @@ describe EndorsementSearchService do # rubocop:disable Metrics/BlockLength
         # ["Gilber", "Elsa ", "Stan ", "Nuno ", "Franky","Fauzi"]
         #------------------------------------------------------------------------------
         results = EndorsementSearchService.search @gilbert, 'Cooking', 5
-        expect_actual_to_match_expected results, 'Cooking', [@gilbert, @elsa, @stan, @nuno, @franky, @fauzi], @fauzi,
+        expect_actual_to_match_expected results, 'Cooking', [[@gilbert, @elsa, @stan, @nuno, @franky, @fauzi]], @fauzi,
                                         @franky
       end
 
@@ -83,10 +83,11 @@ describe EndorsementSearchService do # rubocop:disable Metrics/BlockLength
         #------------------------------------------------------------------------------
 
         it 'finds first path' do
-          results = EndorsementSearchService.search @elsa, 'Beatmaking', 3
-          expect_actual_to_match_expected results, 'Beatmaking', [@elsa, @stan, @nuno, @franky], @nuno, @franky, 0
-          expect_actual_to_match_expected results, 'Beatmaking', [@elsa, @stan, @wid, @rico], @rico, @wid, 1
-
+          results = EndorsementSearchService.search(@elsa, 'Beatmaking', 4)
+          expect_actual_to_match_expected(results, 'Beatmaking',
+                                          [[@elsa, @stan, @nuno], [@elsa, @stan, @nuno, @wid, @rico]], @nuno, @franky, 0)
+          expect_actual_to_match_expected(results, 'Beatmaking',
+                                          [[@elsa, @stan, @nuno], [@elsa, @stan, @nuno, @wid, @rico]], @rico, @wid, 1)
         end
 
       end
@@ -101,18 +102,20 @@ describe EndorsementSearchService do # rubocop:disable Metrics/BlockLength
         #  PATH 2 --INCLUDED
         # ["Vine ", "Tisha", "Nuno ", "Stan", "Elsa", "Herby"]
         #------------------------------------------------------------------------------
-        results = EndorsementSearchService.search @vince, 'Software', 4
-        expect_actual_to_match_expected results, 'Software', [@vince, @tisha, @nuno, @wid], @nuno, @wid, 0
-        expect_actual_to_match_expected results, 'Software', [@vince, @tisha, @nuno, @stan, @elsa, @herby], @elsa,
-                                        @herby, 1
+
+        results = EndorsementSearchService.search @vince, 'Software', (3 + 1)
+        expect_actual_to_match_expected results, 'Software',
+                                        [[@vince, @tisha, @nuno], [@vince, @tisha, @nuno, @stan, @elsa]], @nuno, @wid, 1
+        expect_actual_to_match_expected results, 'Software',
+                                        [[@vince, @tisha, @nuno], [@vince, @tisha, @nuno, @stan, @elsa]], @elsa, @herby, 0
 
         #------------------------------------------------------------------------------
         #  PATH 2 -- NOT INCLUDED
-        # ["Vine ", "Tisha", "Nuno ", "Stan", "Elsa", "Herby"]
+        # ["Vince ", "Tisha", "Nuno ", "Stan", "Elsa", "Herby"]
         #------------------------------------------------------------------------------
 
         results = EndorsementSearchService.search @vince, 'Software', 3
-        expect_actual_to_match_expected results, 'Software', [@vince, @tisha, @nuno, @wid], @nuno, @wid, 0
+        expect_actual_to_match_expected results, 'Software', [[@vince, @tisha, @nuno]], @nuno, @wid, 0
       end
 
       it 'retuns the shortest path' do
@@ -127,12 +130,10 @@ describe EndorsementSearchService do # rubocop:disable Metrics/BlockLength
 
         results = EndorsementSearchService.search @herby, 'Basketball'
 
-        expect(results.count).to eq 1
-
         expect(@herby.friends_with?(@sar)).to be true
         expect(@elsa.friends_with?(@sar)).to be true
-
-        expect_actual_to_match_expected results, 'Basketball', [@herby, @elsa, @stan], @elsa, @stan
+        expect(results.count).to eq 1
+        expect_actual_to_match_expected results, 'Basketball', [[@herby, @elsa]], @elsa, @stan
 
       end
 
@@ -141,12 +142,16 @@ describe EndorsementSearchService do # rubocop:disable Metrics/BlockLength
 
 end
 
-def expect_actual_to_match_expected(results, expected_topic, expected_paths, expected_from, expected_to, index = 0) # rubocop:disable Metrics/AbcSize,Metrics/ParameterLists
+def expect_actual_to_match_expected(results, expected_topic, expected_paths, expected_from, expected_to, index = 0) # rubocop:disable Metrics/ParameterLists
   endorsement = results.pluck(:e)[index]
+  expect(endorsement.endorser).to eq(expected_from)
+  expect(endorsement.endorsee).to eq(expected_to)
+  expect(endorsement.description).to eq(expected_topic)
+  expect_actual_paths_to_contain_expected(results, expected_paths)
+end
 
-  actual_paths = results.pluck(:all_paths)[index]
-  expect(actual_paths).to eq(expected_paths)
-  expect(endorsement.from_node).to eq(expected_from)
-  expect(endorsement.to_node).to eq(expected_to)
-  expect(endorsement.topic).to eq(expected_topic)
+def expect_actual_paths_to_contain_expected(results, expected_paths)
+  actual_paths = results.pluck(:all_paths)
+  expect(results.count).to eq expected_paths.count
+  expect(actual_paths.sort).to eq(expected_paths.sort)
 end
