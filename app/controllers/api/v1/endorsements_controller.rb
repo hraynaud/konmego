@@ -7,7 +7,7 @@ class Api::V1::EndorsementsController < ApplicationController
 
   def search; end
 
-  def create
+  def create # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
     endorsement = EndorsementService.create(
       current_user,
       {
@@ -29,7 +29,7 @@ class Api::V1::EndorsementsController < ApplicationController
 
   def decline
     @endorsement = find_endorsement
-    if @endorsement.to_node != current_user
+    if @endorsement.endorsee != current_user
       render json: { errors: ['Invalid Operation'] },
              status: :unprocessable_entity
     end
@@ -112,8 +112,14 @@ class Api::V1::EndorsementsController < ApplicationController
   end
 
   def find_endorsement
-    @endorsement = EndorsementService.find(endorsement_params)
+    @endorsement = EndorsementService.find(params[:id])
+    raise ActiveGraph::Node::Labels::RecordNotFound if @endorsement.nil?
+
+    @endorsement
   end
+  # def find_endorsement
+  #   @endorsement = EndorsementService.find(endorsement_params)
+  # end
 
   def endorsement_params
     params.permit(:id,

@@ -40,16 +40,16 @@ module TestDataHelper
       @pending = []
       @declined = []
 
+      do_accept(@tisha, @nuno, @design)
+      do_accept(@tisha, @vince, @composer)
       do_accept(@fauzi, @franky, @cooking)
       do_accept(@franky, @fauzi, @djing)
       do_accept(@sar, @herby, @djing)
-      do_accept(@tisha, @vince, @composer)
       do_accept(@nuno, @wid, @software)
       do_accept(@elsa, @herby, @software)
       do_accept(@kendra, @sar, @acting)
       do_accept(@vince, @jean, @fencing)
       do_accept(@gilbert, @elsa, @design)
-      do_accept(@tisha, @nuno, @design)
       do_accept(@rico, @wid, @beatmaking)
       do_accept(@stan, @nuno, @portugal)
       do_accept(@nuno, @franky, @beatmaking)

@@ -49,11 +49,11 @@ describe EndorsementService do # rubocop:disable Metrics/BlockLength
           e = EndorsementService.create(@p1,
                                         { topic_id: @topic1.id, first_name: 'new', last_name: 'lasty',
                                           email: 'a@b.com' })
-          expect(e.topic).to eq(@topic1.name)
+          expect(e.topic).to eq(@topic1)
         end.to change { Person.count }.by(1)
                                       .and change { Topic.count }.by(0)
                                                                  .and change {
-                                                                        @p1.endorsees.count
+                                                                        @p1.reload.endorsees.count
                                                                       }.by(1) # TODO: this shouold be pending_endorsees
 
       end
@@ -72,8 +72,8 @@ describe EndorsementService do # rubocop:disable Metrics/BlockLength
           EndorsementService.create(@p1,
                                     { endorsee_id: @p2.id, first_name: 'new', last_name: 'lasty',
                                       new_topic_name: 'newsy', new_topic_category: 'topical' })
-        end.to change { @p1.endorsees.count }.by(1)
-                                             .and change { Topic.count }.by(1)
+        end.to change { @p1.reload.endorsees.count }.by(1)
+                                                    .and change { Topic.count }.by(1)
       end
 
       it "doesn't create endorsement if missing topic_name" do

@@ -51,9 +51,9 @@ describe Api::V1::EndorsementsController, type: :request do # rubocop:disable Me
         it 'creates new endorsement and a new topic' do
           expect do
             do_post @herby, '/api/v1/endorsements', params
-          end.to change { @herby.endorsees.count }.by(1)
-                                                  .and change { Topic.count }.by(1)
-                                                                             .and change { Person.count }.by(0)
+          end.to change { @herby.reload.endorsees.count }.by(1)
+                                                         .and change { Topic.count }.by(1)
+                                                                                    .and change { Person.count }.by(0)
         end
       end
 
@@ -63,7 +63,7 @@ describe Api::V1::EndorsementsController, type: :request do # rubocop:disable Me
         it 'succeeds and returns created endorsement as response' do
           do_post @herby, '/api/v1/endorsements', params
           expect_http response, :ok
-          expect_response_and_model_json_to_match response, Endorse.last
+          expect_response_and_model_json_to_match response, Endorsement.last
         end
 
       end
@@ -74,7 +74,7 @@ describe Api::V1::EndorsementsController, type: :request do # rubocop:disable Me
         it 'creates new endorsement and new person' do
           do_post @herby, '/api/v1/endorsements', new_person_and_topic
           expect_http response, :ok
-          expect_response_and_model_json_to_match response, Endorse.last
+          expect_response_and_model_json_to_match response, Endorsement.last
         end
 
         it 'creates new endorserment and topic' do
@@ -91,18 +91,18 @@ describe Api::V1::EndorsementsController, type: :request do # rubocop:disable Me
 
     let(:t) { FactoryBot.create(:topic, name: 'Skeptic') }
     let(:e) { EndorsementService.create(@tisha, { endorsee_id: @herby.id, topic_id: t.id }) }
-
+    let(:bad_id) { -1 }
     describe 'accept' do
 
       it 'upates the status of the endorsement' do
         expect do
-          do_put @herby, api_v1_accept_endorsement_path(e.from_node.id, e.to_node.id, e.topic)
+          do_put @herby, accept_api_v1_endorsement_path(e)
           expect_response_and_model_json_to_match response, e.reload
         end.to change { e.status }.to :accepted
       end
 
       it "fails if endorsement doesn't exist" do
-        do_put @herby, api_v1_accept_endorsement_path(e.to_node.id, e.from_node.id, e.topic)
+        do_put @herby, "/api/v1/endorsements/#{bad_id}/accept"
         expect_http response, :not_found
       end
 
@@ -111,13 +111,13 @@ describe Api::V1::EndorsementsController, type: :request do # rubocop:disable Me
     describe 'decline' do
       it 'upates the status of the endorsement' do
         expect do
-          do_put @herby, api_v1_decline_endorsement_path(e.from_node.id, e.to_node.id, e.topic)
+          do_put @herby, decline_api_v1_endorsement_path(e)
           expect_response_and_model_json_to_match response, e.reload
         end.to change { e.status }.to :declined
       end
 
       it "fails if endorsement doesn't exist" do
-        do_put @herby, api_v1_accept_endorsement_path(e.to_node.id, e.from_node.id, e.topic)
+        do_put @herby, "/api/v1/endorsements/#{bad_id}/decline"
         expect_http response, :not_found
       end
 

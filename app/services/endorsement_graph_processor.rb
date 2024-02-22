@@ -22,8 +22,8 @@ class EndorsementGraphProcessor
     def initialize(user, path, endorsement)
       @user = user
       @endorsement = endorsement
-      @endorser = endorsement.from_node
-      @endorsee = endorsement.to_node
+      @endorser = endorsement.endorser
+      @endorsee = endorsement.endorsee
       @path = path
     end
 
@@ -41,7 +41,7 @@ class EndorsementGraphProcessor
 
     def obfuscate
       process.each do |node|
-        if node [:is_visible]
+        if node[:is_visible]
           node
         else
           node.tap do |n|

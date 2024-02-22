@@ -1,7 +1,9 @@
 class PersonSerializer
   include JSONAPI::Serializer
   set_key_transform :camel_lower
-  attributes :id, :first_name, :last_name, :name, :bio, :avatar_url, :profile_image_url
+
+  has_many :incoming_endorsements, serializer: EndorsementSerializer
+  has_many :outgoing_endorsements, serializer: EndorsementSerializer
 
   attribute :first_name do |person, params|
     can_show?(params[:current_user], person) ? person.first_name : 'Hidden'
@@ -23,23 +25,23 @@ class PersonSerializer
     can_show?(params[:current_user], person) ? person.profile_image_url : 'anonymous.png'
   end
 
-  attribute :endorsees do |person, params|
-    if can_show?(params[:current_user],
-                 person) && !person.endorsees.empty?
-      get_data(person.endorsees, 'endorsees', params)
-    else
-      []
-    end
-  end
+  # attribute :endorsees do |person, params|
+  #   if can_show?(params[:current_user],
+  #                person) && !person.endorsees.empty?
+  #     get_data(person.endorsees, 'endorsees', params)
+  #   else
+  #     []
+  #   end
+  # end
 
-  attribute :endorsers do |person, params|
-    if can_show?(params[:current_user],
-                 person) && !person.endorsers.empty?
-      get_data(person.endorsers, 'endorsers', params)
-    else
-      []
-    end
-  end
+  # attribute :endorsers do |person, params|
+  #   if can_show?(params[:current_user],
+  #                person) && !person.endorsers.empty?
+  #     get_data(person.endorsers, 'endorsers', params)
+  #   else
+  #     []
+  #   end
+  # end
 
   class << self
     def can_show?(current_user, contact)
@@ -51,8 +53,9 @@ class PersonSerializer
     end
 
     def get_data(group, dir, params)
-      relationships = group.each_rel { |r| } # rubocop:disable Lint/EmptyBlock
-      serializer = EndorsementSerializer.new(relationships, params:)
+      binding.pry
+      # relationships = group.each_rel { |r| }
+      serializer = EndorsementSerializer.new(group, params:)
       serialized_result = serializer.serializable_hash
 
       serialized_result[:data].map do |d|

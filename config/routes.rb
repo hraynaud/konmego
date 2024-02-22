@@ -21,19 +21,18 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
       post 'projects_random',  to: 'project_search#random'
       post 'invites', to: 'invites#create'
       get 'accept_invite', to: 'invites#accept'
-      put 'endorsements/accept/:endorser_id/:endorsee_id/:topic_name', to: 'endorsements#accept',
-                                                                       as: 'accept_endorsement'
-      put 'endorsements/decline/:endorser_id/:endorsee_id/:topic_name', to: 'endorsements#decline',
-                                                                        as: 'decline_endorsement'
-      put 'endorsements/destroy/:endorser_id/:endorsee_id/:topic_name', to: 'endorsements#destroy',
-                                                                        as: 'destroy_endorsement'
+
       get 'endorsements_search', to: 'endorsement_search#index'
 
       resources :people
       resources :topics, only: [:index]
       resources :contacts, only: %i[index show]
-      resources :endorsements
-
+      resources :endorsements do
+        member do
+          put :accept
+          put :decline
+        end
+      end
       resources :projects do
         resources :posts do
           resources :comments

@@ -14,7 +14,7 @@ class EndorsementService
 
       endorsee = find_or_create_endorsee(params)
 
-      validate_non_duplicated_endorsement endorser, endorsee, topic.name
+      validate_non_duplicated_endorsement endorser, endorsee, topic
       endorsement = create_from_nodes(endorser, endorsee, topic, params[:description])
       send_confirmation endorsement
       endorsement
@@ -29,7 +29,7 @@ class EndorsementService
     end
 
     def accept(endorsement, user)
-      raise StandardError, 'Invalid Operation' if endorsement.to_node != user
+      raise StandardError, 'Invalid Operation' if endorsement.endorsee != user
 
       endorsement.accept!
       RelationshipManager.create_friendship_if_none_exists_for(endorsement)
@@ -37,7 +37,7 @@ class EndorsementService
     end
 
     def decline(endorsement, user)
-      raise StandardError, 'Invalid Operation' if endorsement.to_node != user
+      raise StandardError, 'Invalid Operation' if endorsement.endorsee != user
 
       endorsement.decline!
       endorsement
@@ -49,15 +49,19 @@ class EndorsementService
       endorsement.destroy
     end
 
-    def find(params)
-      # binding.pry
-      # endorser_id, endorsee_id, topic = decompose_id(id)
-
-      from = PersonService.find_by_id(params[:endorser_id])
-      from.endorsements.each_rel.select do |r|
-        r.to_node.id == params[:endorsee_id] && r.topic == params[:topic_name]
-      end.first
+    def find(id)
+      Endorsement.find_by(id:)
     end
+
+    # def find(params)
+    #   # binding.pry
+    #   # endorser_id, endorsee_id, topic = decompose_id(id)
+
+    #   from = PersonService.find_by_id(params[:endorser_id])
+    #   from.endorsements.each_rel.select do |r|
+    #     r.to_node.id == params[:endorsee_id] && r.topic == params[:topic_name]
+    #   end.first
+    # end
 
     def generate_id(endorser_id, endorsee_id, topic)
       from_id = Obfuscation::IdCodec.encode(endorser_id)
@@ -139,7 +143,8 @@ class EndorsementService
     end
 
     def already_exists?(endorser, endorsee, topic)
-      endorser.endorsees.each_rel.select { |r| r.to_node == endorsee && r.topic == topic }.count > 0
+      # endorser.endorsees.each_rel.select { |r| r.to_node == endorsee && r.topic == topic }.count > 0
+      Endorsement.where(topic:, endorsee:, endorser:).count.positive?
     end
 
     def invite_params(params)

@@ -3,11 +3,15 @@ class EndorsementSerializer
   set_key_transform :camel_lower
   attributes :description, :status, :topic_id, :topic, :topic_image
 
+  # attributes :description, :status, :topic_image, :endorser_avatar_url, :endorsee_avatar_url,:topic_id
+
+  # attribute :direction, if: Proc.new {|o, params|
+  #   params && params[:ref_user]} do |o, params|
+  #     o.direction_from_person(params[:ref_user])
+  #   end
+
   attribute :endorsee_id do |endorsement, params|
     can_show?(params[:current_user], endorsement.endorsee) ? endorsement.endorsee_id : 'Anonymous'
-  end
-
-  attribute :endorser_id do |endorsement, params|
   end
 
   attribute :endorser_name do |endorsement, params|
