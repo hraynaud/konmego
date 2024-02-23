@@ -4,7 +4,6 @@ class EndorsementSearchService
 
   class << self
     def search(current_user, topic = nil, hops = nil)
-      topic ||= DEFAULT_ALL_TOPICS_REGEX
       hops ||= DEFAULT_NETWORK_HOPS
       exec_endorsement_query(current_user, topic, hops)
     end
@@ -26,7 +25,6 @@ class EndorsementSearchService
 
     def transform(person, data)
       topic_paths = extract_paths(person, data)
-      binding.pry
       topic_paths.map do |topic_path|
         topic_path
       end
@@ -71,10 +69,13 @@ class EndorsementSearchService
       MATCH (endorser)<-[r_src:`ENDORSEMENT_SOURCE`]-(e:`Endorsement`)
       MATCH (e)-[r_target:`ENDORSEMENT_TARGET`]->(endorsee:`Person`)
       MATCH (e)-[r_topic:`TOPIC`]->(t:`Topic`)
-      WHERE (e.description CONTAINS $topic)
+      WHERE (($topic IS NOT NULL AND e.description CONTAINS $topic) OR
+       ($topic IS NULL AND e.description =~ '.*')) AND endorsee.uuid <> $uuid
       WITH *
      WHERE ALL(x IN NODES(p) WHERE SINGLE(y IN NODES(p) WHERE y = x))
-     return relationships(p) as r_knows, nodes(p) as all_paths, r_src, r_topic, t, e, endorser, endorsee", topic:, uuid: current_user.uuid
+     return relationships(p) as r_knows, nodes(p) as all_paths, r_src, r_topic, t, e, endorser, endorsee
+     ORDER BY t.name
+     ", topic:, uuid: current_user.uuid
       )
     end
   end

@@ -9,7 +9,7 @@ class EndorsementGraphProcessor
 
     def process_and_obfuscate_paths(person, path_data)
       path_data.map do |endorsement, path|
-        _endorsers = person.endorsers # NOTE: important need call endorsers on person to lazy load associations
+        # _endorsers = person.endorsers # NOTE: important need call endorsers on person to lazy load associations
         @path_processor = PathProcessor.new(person, path, endorsement)
         EndorsementPath.new(endorsement, @path_processor.obfuscate)
       end
@@ -45,6 +45,7 @@ class EndorsementGraphProcessor
           node
         else
           node.tap do |n|
+            n[:id] = '000'
             n[:name] = 'Anonymous'
             n[:avatar_url] = 'anonymous.png'
           end

@@ -53,7 +53,6 @@ class PersonSerializer
     end
 
     def get_data(group, dir, params)
-      binding.pry
       # relationships = group.each_rel { |r| }
       serializer = EndorsementSerializer.new(group, params:)
       serialized_result = serializer.serializable_hash
