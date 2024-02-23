@@ -5,7 +5,7 @@ module Api
 
       def show
         p = Person.find(params[:id]).try(:first)
-        options = { params: { current_user: current_user } }
+        options = { params: { current_user: } }
         render json: PersonSerializer.new(p, options).serializable_hash.to_json
       end
 

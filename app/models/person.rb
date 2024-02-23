@@ -11,15 +11,16 @@ class Person
   has_many :both, :contacts, model_class: :Person, type: :KNOWS, unique: true
   has_many :out, :followings, model_class: :Person, type: :FOLLOWINGS, unique: true
   has_many :in, :followers, model_class: :Person, type: :FOLLOWINGS
-  # has_many :in, :endorsers, rel_class: :Endorse
-  # has_many :out, :endorsees, rel_class: :Endorse
-  has_many :in, :incoming_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_TARGET
-  has_many :in, :outgoing_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_SOURCE
-  # has_many :both, :endorsements, rel_class: :Endorse
   has_many :out, :projects, origin: :owner
   has_many :out, :participations, model_class: :Project, type: :PARTICIPATES_IN
   has_many :in, :posts, origin: :author
   has_many :in, :comments, origin: :author
+  has_many :in, :incoming_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_TARGET
+  has_many :in, :outgoing_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_SOURCE
+
+  # has_many :in, :endorsers, rel_class: :Endorse
+  # has_many :out, :endorsees, rel_class: :Endorse
+  # has_many :both, :endorsements, rel_class: :Endorse
 
   property :first_name, type: String
   property :last_name, type: String

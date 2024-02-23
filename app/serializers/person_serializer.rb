@@ -25,23 +25,23 @@ class PersonSerializer
     can_show?(params[:current_user], person) ? person.profile_image_url : 'anonymous.png'
   end
 
-  # attribute :endorsees do |person, params|
-  #   if can_show?(params[:current_user],
-  #                person) && !person.endorsees.empty?
-  #     get_data(person.endorsees, 'endorsees', params)
-  #   else
-  #     []
-  #   end
-  # end
+  attribute :endorsees do |person, params|
+    if can_show?(params[:current_user],
+                 person) && !person.outgoing_endorsements.empty?
+      get_data(person.outgoing_endorsements, 'endorsees', params)
+    else
+      []
+    end
+  end
 
-  # attribute :endorsers do |person, params|
-  #   if can_show?(params[:current_user],
-  #                person) && !person.endorsers.empty?
-  #     get_data(person.endorsers, 'endorsers', params)
-  #   else
-  #     []
-  #   end
-  # end
+  attribute :endorsers do |person, params|
+    if can_show?(params[:current_user],
+                 person) && !person.incoming_endorsements.empty?
+      get_data(person.incoming_endorsements, 'endorsers', params)
+    else
+      []
+    end
+  end
 
   class << self
     def can_show?(current_user, contact)
@@ -53,10 +53,8 @@ class PersonSerializer
     end
 
     def get_data(group, dir, params)
-      # relationships = group.each_rel { |r| }
       serializer = EndorsementSerializer.new(group, params:)
       serialized_result = serializer.serializable_hash
-
       serialized_result[:data].map do |d|
         attrs = filter_out_current_user(d, params, dir)
         d.slice(:id).merge(attrs)
