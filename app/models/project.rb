@@ -12,7 +12,7 @@ class Project
   property :comments
   property :hero_image_url, type: String
 
-  enum status: %i[pending paused inactive active canceled failed], _default: :inactive
+  enum status: %i[pending active inactive canceled failed], _default: :pending
   enum visibility: %i[private friends in_network vendor public], _default: :private
 
   has_one :in, :owner, type: :OWNS, model_class: :Person

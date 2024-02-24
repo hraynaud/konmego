@@ -1,7 +1,9 @@
 class PersonSerializer
   include JSONAPI::Serializer
   set_key_transform :camel_lower
-  attributes :id, :first_name, :last_name, :name, :bio, :avatar_url, :profile_image_url
+
+  has_many :incoming_endorsements, serializer: EndorsementSerializer
+  has_many :outgoing_endorsements, serializer: EndorsementSerializer
 
   attribute :first_name do |person, params|
     can_show?(params[:current_user], person) ? person.first_name : 'Hidden'
@@ -24,11 +26,21 @@ class PersonSerializer
   end
 
   attribute :endorsees do |person, params|
-    can_show?(params[:current_user], person) ? get_data(person.endorsees, 'endorsees', params) : []
+    if can_show?(params[:current_user],
+                 person) && !person.outgoing_endorsements.empty?
+      get_data(person.outgoing_endorsements, 'endorsees', params)
+    else
+      []
+    end
   end
 
   attribute :endorsers do |person, params|
-    can_show?(params[:current_user], person) ? get_data(person.endorsers, 'endorsers', params) : []
+    if can_show?(params[:current_user],
+                 person) && !person.incoming_endorsements.empty?
+      get_data(person.incoming_endorsements, 'endorsers', params)
+    else
+      []
+    end
   end
 
   class << self
@@ -41,10 +53,8 @@ class PersonSerializer
     end
 
     def get_data(group, dir, params)
-      relationships = group.each_rel { |r| } # rubocop:disable Lint/EmptyBlock
-      serializer = EndorsementSerializer.new(relationships, params: params)
+      serializer = EndorsementSerializer.new(group, params:)
       serialized_result = serializer.serializable_hash
-
       serialized_result[:data].map do |d|
         attrs = filter_out_current_user(d, params, dir)
         d.slice(:id).merge(attrs)

@@ -9,12 +9,13 @@ class EndorsementService
     end
 
     def create(endorser, params)
-      topic_name = set_topic params
+      topic = find_or_create_topic(params)
+      raise raise StandardError, 'Please provide a topic' if topic.nil?
+
       endorsee = find_or_create_endorsee(params)
 
-      validate_non_duplicated_endorsement endorser, endorsee, topic_name
-      endorsement = create_from_nodes(endorser, endorsee, topic_name, params[:description])
-
+      validate_non_duplicated_endorsement endorser, endorsee, topic
+      endorsement = create_from_nodes(endorser, endorsee, topic, params[:description])
       send_confirmation endorsement
       endorsement
     end
@@ -28,7 +29,7 @@ class EndorsementService
     end
 
     def accept(endorsement, user)
-      raise StandardError, 'Invalid Operation' if endorsement.to_node != user
+      raise StandardError, 'Invalid Operation' if endorsement.endorsee != user
 
       endorsement.accept!
       RelationshipManager.create_friendship_if_none_exists_for(endorsement)
@@ -36,7 +37,7 @@ class EndorsementService
     end
 
     def decline(endorsement, user)
-      raise StandardError, 'Invalid Operation' if endorsement.to_node != user
+      raise StandardError, 'Invalid Operation' if endorsement.endorsee != user
 
       endorsement.decline!
       endorsement
@@ -48,14 +49,8 @@ class EndorsementService
       endorsement.destroy
     end
 
-    def find(params)
-      # binding.pry
-      # endorser_id, endorsee_id, topic = decompose_id(id)
-
-      from = PersonService.find_by_id(params[:endorser_id])
-      from.endorsements.each_rel.select do |r|
-        r.to_node.id == params[:endorsee_id] && r.topic == params[:topic_name]
-      end.first
+    def find(id)
+      Endorsement.find_by(id:)
     end
 
     def generate_id(endorser_id, endorsee_id, topic)
@@ -123,15 +118,12 @@ class EndorsementService
       raise raise StandardError, "You've already endorsed #{endorsee.name} for #{topic_name}"
     end
 
-    def set_topic(params)
-      topic = TopicService.get(params[:topic_id])
-      if topic
-        topic_name = topic.name
-      else
-        topic_name = params[:new_topic_name]
-        raise raise StandardError, 'Please provide a topic' if topic_name.nil?
+    def find_or_create_topic(params)
+      if params[:topic_id]
+        TopicService.get(params[:topic_id])
+      elsif params[:new_topic_name]
+        TopicService.find_or_create_by_name({ name: params[:new_topic_name], category: params[:new_category_name] })
       end
-      topic_name
     end
 
     def create_from_invite(invite)
@@ -141,19 +133,26 @@ class EndorsementService
     end
 
     def already_exists?(endorser, endorsee, topic)
-      endorser.endorsees.each_rel.select { |r| r.to_node == endorsee && r.topic == topic }.count.positive?
+      Endorsement.where(topic:, endorsee:, endorser:).count.positive?
     end
 
     def invite_params(params)
       params.except(:new_topic_name, :new_topic_category, :endorsee_id)
     end
 
-    def create_from_nodes(endorser, endorsee, topic_name, description)
-      e = Endorse.new(from_node: endorser, to_node: endorsee)
-      e.topic = topic_name
-      e.description = description
-      e.save
-      e
+    def create_from_nodes(endorser, endorsee, topic, description)
+      as_node(endorser, endorsee, topic, description)
+    end
+
+    def as_node(endorser, endorsee, topic, description)
+      Endorsement.new.tap do |endorsement|
+        endorsement.endorser = endorser
+        endorsement.endorsee = endorsee
+        endorsement.description = description
+        endorsement.topic = topic
+        endorsement.status = Endorsement.statuses[:pending]
+        endorsement.save
+      end
     end
   end
 end

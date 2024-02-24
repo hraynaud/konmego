@@ -4,8 +4,12 @@ module Api
       def index
         graph = EndorsementSearchService.search(for_user, search_params[:topic], search_params[:hops])
         data = EndorsementGraphProcessor.process(for_user, graph)
-        options = { params: { current_user: current_user } }
-        render json: EndorsementPathSerializer.new(data, options).serializable_hash.to_json
+        options = { params: { current_user: } }
+
+        result = EndorsementPathSerializer.new(data, options).serializable_hash
+        result[:data] = result[:data].to_set
+
+        render json: result.to_json
       end
 
       def search_params

@@ -11,13 +11,16 @@ class Person
   has_many :both, :contacts, model_class: :Person, type: :KNOWS, unique: true
   has_many :out, :followings, model_class: :Person, type: :FOLLOWINGS, unique: true
   has_many :in, :followers, model_class: :Person, type: :FOLLOWINGS
-  has_many :in, :endorsers, rel_class: :Endorse
-  has_many :out, :endorsees, rel_class: :Endorse
-  has_many :both, :endorsements, rel_class: :Endorse
   has_many :out, :projects, origin: :owner
   has_many :out, :participations, model_class: :Project, type: :PARTICIPATES_IN
   has_many :in, :posts, origin: :author
   has_many :in, :comments, origin: :author
+  has_many :in, :incoming_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_TARGET
+  has_many :in, :outgoing_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_SOURCE
+
+  # has_many :in, :endorsers, rel_class: :Endorse
+  # has_many :out, :endorsees, rel_class: :Endorse
+  # has_many :both, :endorsements, rel_class: :Endorse
 
   property :first_name, type: String
   property :last_name, type: String
@@ -52,12 +55,24 @@ class Person
   end
 
   def extract
-    OpenStruct.new(first_name: first_name, last_name: last_name,
-                   avatar_url: avatar_url, profile_image_url: profile_image_url, name: "#{first_name} #{last_name}", id: id)
+    OpenStruct.new(first_name:, last_name:,
+                   avatar_url:, profile_image_url:, name: "#{first_name} #{last_name}", id:)
+  end
+
+  def endorsers
+    incoming_endorsements.map(&:endorser)
+  end
+
+  def endorsees
+    outgoing_endorsements.map(&:endorsee)
   end
 
   def accepted_endorsees
-    endorsees.each_rel.select { |r| r.status == :accepted }
+    outgoing_endorsements.each.select { |r| r.status == :accepted }
+  end
+
+  def pending_endorsees
+    outgoing_endorsements.each.select { |r| r.status == :pending }
   end
 
   def name
@@ -80,10 +95,6 @@ class Person
     contacts(:contacts, :r, rel_length: 0..depth).distinct
   end
 
-  def pending_endorsees
-    endorsees.each_rel.select { |r| r.status == :pending }
-  end
-
   def endorses?(person)
     endorsees.include? person
   end
@@ -93,11 +104,11 @@ class Person
   end
 
   def endorses_topic?(topic)
-    endorsees.each_rel.select { |r| r.topic }.include? topic
+    outgoing_endorsements.select(&:topic).include? topic
   end
 
   def has_endorsement_for_topic?(topic) # rubocop:disable Naming/PredicateName
-    endorsers.each_rel.select { |r| r.topic }.include? topic
+    oncoming_endorsements.select(&:topic).include? topic
   end
 
   def friends_with?(person)

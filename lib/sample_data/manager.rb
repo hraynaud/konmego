@@ -40,6 +40,7 @@ module Manager # rubocop:disable Metrics/ModuleLength
         name: project['name'],
         description: project['description'],
         start_date: project['startDate'],
+        visibility: rand(4),
         deadline: project['deadline'],
         icon: project['icon'],
         progress: project['progress'],
@@ -47,6 +48,7 @@ module Manager # rubocop:disable Metrics/ModuleLength
         roadblocks: project['roadblocks']
       )
       p.owner = random_user
+      p.topic = random_global_topic
       p.save
     end
 

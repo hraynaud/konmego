@@ -18,11 +18,11 @@ module Api
       end
 
       def search_results
-        ProjectSearchService.search(filter_params)
+        ProjectSearchService.search(filter_params.merge!({ user_scope: current_user.uuid }))
       end
 
       def filter_params
-        params.permit(:topic, :friend, :friend, :visibility, :user_scope, :limit, :random)
+        params.permit(:topic_id, :topic, :friend_id, :visibility, :limit, :random)
       end
     end
   end

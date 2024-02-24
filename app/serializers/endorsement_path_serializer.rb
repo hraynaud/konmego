@@ -1,8 +1,11 @@
 class EndorsementPathSerializer
   include ::JSONAPI::Serializer
   set_key_transform :camel_lower
-  attributes :topic, :path
+  attributes :path
 
+  attributes :topic do |endorsement, _params|
+    endorsement.topic.name
+  end
   attribute :endorser_name do |endorsement, params|
     can_show?(params[:current_user], endorsement.endorser) ? endorsement.endorser.name : 'Anonymous'
   end
@@ -24,20 +27,20 @@ class EndorsementPathSerializer
                  endorsement.endorsee) && can_show?(params[:current_user], endorsement.endorser)
       endorsement.description
     elsif can_show?(params[:current_user], endorsement.endorsee)
-      "Someone has endorsed #{endorsement.endorsee.first_name} for #{endorsement.topic}"
+      "Someone has endorsed #{endorsement.endorsee.first_name} for #{endorsement.topic.name}"
     elsif can_show?(params[:current_user], endorsement.endorser)
-      "#{endorsement.endorser.name} has endorsed somonee for #{endorsement.topic}"
+      "#{endorsement.endorser.name} has endorsed someone for #{endorsement.topic.name}"
     else
-      "You are closely connected to somone who has been endorsed for knowledge of #{endorsement.topic}"
+      "You are closely connected to somone who has been endorsed for knowledge of #{endorsement.topic.name}"
     end
   end
 
-  attribute :endorser_id do |endorsement, _params|
-    endorsement.endorser.id
+  attribute :endorser_id do |endorsement, params|
+    endorsement.endorser.id if can_show?(params[:current_user], endorsement.endorser)
   end
 
-  attribute :endorsee_id do |endorsement, _params|
-    endorsement.endorsee.id
+  attribute :endorsee_id do |endorsement, params|
+    endorsement.endorsee.id if can_show?(params[:current_user], endorsement.endorser)
   end
 
   class << self

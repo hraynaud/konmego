@@ -29,7 +29,7 @@ describe EndorsementGraphProcessor do # rubocop:disable Metrics/BlockLength
         expected = [
           {
             topic: 'Cooking',
-            path: to_path_nodes([[@fauzi, 'endorser', true], [@franky, 'endorsee', true]])
+            path: to_path_nodes([[@fauzi, 'endorser', true]])
           }
         ]
         expect(actual).to eq(expected)
@@ -46,7 +46,7 @@ describe EndorsementGraphProcessor do # rubocop:disable Metrics/BlockLength
         expected = [
           {
             topic: 'Composer',
-            path: to_path_nodes([[@nuno, 'me', true], [@tisha, 'endorser', true], [@anon, 'endorsee', false]])
+            path: to_path_nodes([[@nuno, 'me', true], [@tisha, 'endorser', true]])
           }
         ]
         expect(actual).to eq(expected)
@@ -58,6 +58,7 @@ describe EndorsementGraphProcessor do # rubocop:disable Metrics/BlockLength
       graph = EndorsementSearchService.search @fauzi, 'Beatmaking', 4
       results = EndorsementGraphProcessor.process @fauzi, graph
       actual = extract_assertable_data(results)
+
       expected = [
         {
           topic: 'Beatmaking',
@@ -73,7 +74,6 @@ describe EndorsementGraphProcessor do # rubocop:disable Metrics/BlockLength
           )
         }
       ]
-
       expect(actual).to eq(expected)
     end
   end
@@ -82,7 +82,7 @@ end
 def extract_assertable_data(results)
   results.map do |result|
     {
-      topic: result.topic,
+      topic: result.topic.name,
       path: result.path.map { |p| p.slice(:name, :role, :is_visible) }
     }
   end
@@ -97,7 +97,7 @@ end
 def to_endorsement_node(person, role, is_visible)
   {
     name: person.first_name,
-    role: role,
-    is_visible: is_visible
+    role:,
+    is_visible:
   }
 end

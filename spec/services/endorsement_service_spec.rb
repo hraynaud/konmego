@@ -1,7 +1,7 @@
 require 'rails_helper'
 include TestDataHelper::Utils
 
-describe EndorsementService do
+describe EndorsementService do # rubocop:disable Metrics/BlockLength
   let(:new_endorsee) { { first_name: 'Got', last_name: 'Skillz' } }
   let(:new_topic) { { name: 'My New Topic' } }
   let(:new_person_new_topic) { new_endorsee.merge(new_topic) }
@@ -20,7 +20,7 @@ describe EndorsementService do
     # clear_db
   end
 
-  describe '.create' do
+  describe '.create' do # rubocop:disable Metrics/BlockLength
     context 'all preexisting nodes' do
       it 'create succeeds' do
         EndorsementService.create(@p1, { endorsee_id: @p2.id, topic_id: @topic1.id })
@@ -46,14 +46,16 @@ describe EndorsementService do
     context 'new person' do
       it 'creates endorsement and new person if user is new' do
         expect do
-        e =  EndorsementService.create(@p1,
-                                    { topic_id: @topic1.id, first_name: 'new', last_name: 'lasty', email: 'a@b.com' })
-                                    expect(e.topic).to eq(@topic1.name)
-        end.to change{Person.count}.by(1)
-        .and change{Topic.count}.by(0)
-        .and change{@p1.endorsees.count}.by(1) #TODO this shouold be pending_endorsees
-   
-                                           
+          e = EndorsementService.create(@p1,
+                                        { topic_id: @topic1.id, first_name: 'new', last_name: 'lasty',
+                                          email: 'a@b.com' })
+          expect(e.topic).to eq(@topic1)
+        end.to change { Person.count }.by(1)
+                                      .and change { Topic.count }.by(0)
+                                                                 .and change {
+                                                                        @p1.reload.endorsees.count
+                                                                      }.by(1) # TODO: this shouold be pending_endorsees
+
       end
 
       it 'fails with error if endorsement invite is missing email' do
@@ -70,8 +72,8 @@ describe EndorsementService do
           EndorsementService.create(@p1,
                                     { endorsee_id: @p2.id, first_name: 'new', last_name: 'lasty',
                                       new_topic_name: 'newsy', new_topic_category: 'topical' })
-        end.to change { @p1.endorsees.count }.by(1)
-                                             .and change { Topic.count }.by(0)
+        end.to change { @p1.reload.endorsees.count }.by(1)
+                                                    .and change { Topic.count }.by(1)
       end
 
       it "doesn't create endorsement if missing topic_name" do
@@ -89,8 +91,8 @@ describe EndorsementService do
           EndorsementService.create(@p1,
                                     { new_topic_name: 'newsy', new_topic_category: 'topical', first_name: 'new',
                                       last_name: 'lasty', email: 'a@b.com' })
-        end.to change{Person.count}.by(1)
-        .and change{Topic.count}.by(0)
+        end.to change { Person.count }.by(1)
+                                      .and change { Topic.count }.by(1)
       end
     end
   end
@@ -98,31 +100,28 @@ describe EndorsementService do
   describe 'accept' do
 
     it 'updates status and creates contact' do
-   
-    expect(RelationshipManager).to receive(:create_friendship_if_none_exists_for).and_call_original
+
+      expect(RelationshipManager).to receive(:create_friendship_if_none_exists_for).and_call_original
 
       @endorsement = EndorsementService.create(@p1, { endorsee_id: @p2.id, topic_id: @topic1.id })
-      expect {
-        EndorsementService.accept(@endorsement,@p2)
-         
-      }.to (change{@endorsement.status }.to :accepted)
-        .and change { @p1.contacts.count}.by(1)
+      expect do
+        EndorsementService.accept(@endorsement, @p2)
+      end.to (change { @endorsement.status }.to :accepted)
+        .and change { @p1.contacts.count }.by(1)
         .and change { @p2.contacts.count }.by(1)
-    
+
     end
 
   end
 
-
   describe 'decline' do
- 
+
     it 'has endorser follow endorsee' do
       @endorsement = EndorsementService.create(@p1, { endorsee_id: @p2.id, topic_id: @topic1.id })
       expect do
         EndorsementService.decline(@endorsement, @p2)
-      end.to change { @p1.pending_endorsees.count}.by(-1)
+      end.to change { @p1.reload.pending_endorsees.count }.by(-1)
     end
   end
-
 
 end
