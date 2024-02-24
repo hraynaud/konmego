@@ -7,6 +7,7 @@ class Endorsement
   has_one :out, :topic, type: :TOPIC
 
   property :description
+  property :embeddings
   enum status: { pending: 'pending', accepted: 'accepted', declined: 'declined' }, _default: :pending
 
   before_validation :save_endorsee

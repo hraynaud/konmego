@@ -33,6 +33,8 @@ class EndorsementService
 
       endorsement.accept!
       RelationshipManager.create_friendship_if_none_exists_for(endorsement)
+      endorsement.embeddings = create_embedding(endorsement)
+      endorsement.save
       endorsement
     end
 
@@ -64,6 +66,11 @@ class EndorsementService
       unbase64 = Obfuscation::IdCodec.urlsafe_decode64(encoded_id)
       from, to, topic = unbase64.split(':')
       [Obfuscation::IdCodec.decode(from), Obfuscation::IdCodec.decode(to), topic]
+    end
+
+    def create_embedding(endorsement)
+      prompt = "#{endorsement.topic.name} \n #{endorsement.description}"
+      OllamaService.create_embedding(prompt)
     end
 
     # def by_status(user, status)
