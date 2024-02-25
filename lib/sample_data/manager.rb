@@ -1,6 +1,6 @@
 module Manager # rubocop:disable Metrics/ModuleLength
   SAMPLE_DATA_ROOT_DIR = "#{Rails.root}/etc/sample_data".freeze
-  MAX_ENDORSEMENTS = 5
+  MAX_ENDORSEMENTS = 3
 
   class << self
     def create_users
@@ -77,7 +77,11 @@ module Manager # rubocop:disable Metrics/ModuleLength
       endorser = random_user
       content = random_endorsement_by(topic_name)
       topic = TopicService.find_or_create_by_name({ name: topic_name })
-      create_relationships(endorser, endorsee, topic, content.gsub('<<person>>', endorsee.first_name))
+      params = { endorsee_id: endorsee.id, topic_id: topic.id,
+                 description: content.gsub('<<person>>', endorsee.first_name) }
+
+      endorsement = EndorsementService.create(endorser, params)
+      EndorsementService.accept(endorsement, endorsee)
     rescue ActiveGraph::Node::Persistence::RecordInvalidError
       # no op
     end
@@ -107,10 +111,7 @@ module Manager # rubocop:disable Metrics/ModuleLength
       end
     end
 
-    def create_relationships(from, to, topic, description)
-      EndorsementService.create(from, { endorsee_id: to.id, topic_id: topic.id, description: })
-      RelationshipManager.befriend from, to
-    end
+    def create_relationships(from, to, topic, description); end
 
     def to_params(endorsee, topic)
       { endorsee_id: endorsee.id, topic_id: topic.id, description: }
@@ -160,7 +161,6 @@ module Manager # rubocop:disable Metrics/ModuleLength
         topics
         users
         endorsements
-        endorsment_nodes
         identities
         projects
       end
@@ -173,12 +173,8 @@ module Manager # rubocop:disable Metrics/ModuleLength
         ActiveGraph::Base.query('MATCH (n:Person) DETACH DELETE n')
       end
 
-      def endorsment_nodes
-        ActiveGraph::Base.query('MATCH (n:Endorsement) DETACH DELETE n')
-      end
-
       def endorsements
-        ActiveGraph::Base.query('MATCH (p1:Person)-[r:ENDORSES]-(p2:Person) DELETE r')
+        ActiveGraph::Base.query('MATCH (n:Endorsement) DETACH DELETE n')
       end
 
       def friendships
