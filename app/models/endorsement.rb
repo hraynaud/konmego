@@ -51,6 +51,10 @@ class Endorsement
     OpenStruct.new(endorser:, endorsee:, description:)
   end
 
+  def accept
+    self.status = :accepted
+  end
+
   def accept!
     self.status = :accepted
     save

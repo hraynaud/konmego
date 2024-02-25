@@ -23,8 +23,9 @@ module TestDataHelper
     end
 
     def create_topics
-      @cooking, @fencing, @acting, @djing, @singing, @design, @composer, @software, @beatmaking, @basketball, @electrical, @portugal = %w[
-        cooking fencing acting djing singing design composer software beatmaking basketball electrical portugal
+      @cooking, @fencing, @acting, @djing, @singing, @design,
+      @composer, @software, @beatmaking, @basketball, @electrical, @portugal = [
+        'cooking', 'fencing', 'acting', 'djing', 'singing', 'design', 'composer', 'software', 'Beat making', 'basketball', 'electrical', 'portugal'
       ].map do |skill|
         FactoryBot.create(:topic, name: skill.titleize, default_image_file: "#{skill}.jpeg")
       end
@@ -35,44 +36,47 @@ module TestDataHelper
       # RelationshipManager.befriend @herby, @tisha
     end
 
-    def create_endorsements # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+    def create_endorsements # rubocop:disable Metrics/MethodLength
       @accepted = []
       @pending = []
       @declined = []
 
-      do_accept(@tisha, @nuno, @design)
-      do_accept(@tisha, @vince, @composer)
-      do_accept(@fauzi, @franky, @cooking)
-      do_accept(@franky, @fauzi, @djing)
-      do_accept(@sar, @herby, @djing)
-      do_accept(@nuno, @wid, @software)
-      do_accept(@elsa, @herby, @software)
-      do_accept(@kendra, @sar, @acting)
-      do_accept(@vince, @jean, @fencing)
-      do_accept(@gilbert, @elsa, @design)
-      do_accept(@rico, @wid, @beatmaking)
-      do_accept(@stan, @nuno, @portugal)
-      do_accept(@nuno, @franky, @beatmaking)
-      do_accept(@elsa, @stan, @basketball)
-      do_accept(@elsa, @sar, @acting)
+      create_endorsement(@fauzi, @franky, @cooking)
+      create_endorsement(@tisha, @nuno, @design)
+      create_endorsement(@tisha, @vince, @composer)
+      create_endorsement(@nuno, @franky, @beatmaking)
+      create_endorsement(@rico, @wid, @beatmaking)
+
+      create_endorsement(@franky, @fauzi, @djing)
+      create_endorsement(@sar, @herby, @djing)
+      create_endorsement(@nuno, @wid, @software)
+      create_endorsement(@elsa, @herby, @software)
+      create_endorsement(@kendra, @sar, @acting)
+      create_endorsement(@vince, @jean, @fencing)
+      create_endorsement(@gilbert, @elsa, @design)
+
+      create_endorsement(@stan, @nuno, @portugal)
+
+      create_endorsement(@elsa, @stan, @basketball)
+      create_endorsement(@elsa, @sar, @acting,
+                         'Sars performance in his last movie was incredible. He really became the character')
 
       # DECLINED OR PENDING
       # -----------------------
 
-      @declined << EndorsementService.create(@jean, to_params(@vince, @composer))
-      # @pending << EndorsementService.create(@elsa, to_params(@sar, @acting))
-      @pending << EndorsementService.create(@stan, to_params(@wid, @electrical))
+      # @declined << EndorsementService.create(@jean, to_params(@vince, @composer))
+      # # @pending << EndorsementService.create(@elsa, to_params(@sar, @acting))
+      # @pending << EndorsementService.create(@stan, to_params(@wid, @electrical))
     end
 
-    def do_accept(from, to, topic)
-      accepted = EndorsementService.create(from, to_params(to, topic))
-      accepted.accept!
-      @accepted << accepted
+    def create_endorsement(from, to, topic, description = nil)
+      endorsement = EndorsementService.create(from, to_params(to, topic, description))
+      @accepted << EndorsementService.accept(endorsement, to)
       RelationshipManager.befriend from, to
     end
 
-    def to_params(endorsee, topic)
-      { endorsee_id: endorsee.id, topic_id: topic.id, description: topic.name }
+    def to_params(endorsee, topic, description)
+      { endorsee_id: endorsee.id, topic_id: topic.id, description: description || topic.name }
     end
 
     def set_endorsement_statuses
@@ -137,6 +141,10 @@ module TestDataHelper
   end
 
   module Utils
+    def to_embed_txt(topic)
+      "#{topic} \n #{topic}"
+    end
+
     def clear_db
       ActiveGraph::Base.query('MATCH (n) WHERE NOT n:`ActiveGraph::Migrations::SchemaMigration` DETACH DELETE n')
     end

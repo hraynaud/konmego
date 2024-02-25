@@ -1,65 +1,35 @@
 class EndorsementSearchService
   DEFAULT_NETWORK_HOPS = 3
+  DEFAULT_TOLERANCE = 0.78
   DEFAULT_ALL_TOPICS_REGEX = '.*'.freeze
 
   class << self
-    def search(current_user, topic = nil, hops = nil)
-      hops ||= DEFAULT_NETWORK_HOPS
-      exec_endorsement_query(current_user, topic, hops)
-    end
+    def search(current_user, opts)
+      hops = opts[:hops] || DEFAULT_NETWORK_HOPS
+      tolerance = opts[:tolerance] || DEFAULT_TOLERANCE
+      qry_vector = OllamaService.create_embedding(opts[:query])
 
-    def paths_to_resource(current_user, topic, hops = DEFAULT_NETWORK_HOPS)
-      graph = exec_endorsement_query(current_user, topic, hops)
-      transform(current_user, graph)
+      do_vector_query(current_user.uuid, qry_vector, hops, tolerance)
     end
 
     private
 
-    def get_endorsement_graph(current_user, topic, hops)
-      current_user.query_as(:u)
-                  .with(:u)
-                  .match(match_query(hops))
-                  .params(topic_name: topic)
-                  .return('relationships(p) as r_knows', 'nodes(p) as full_path', :r_src, :r_topic, :t, :e, :endorser, :endorsee)
-    end
+    def do_vector_query(user_uuid, qry_vector, hops, tolerance) # rubocop:disable Metrics/MethodLength
+      ActiveGraph::Base.query(
+        "
+    MATCH p= allShortestPaths((starter:Person {uuid:  $user_uuid})-[:`KNOWS`*0..#{hops}]-(endorser:`Person`))
+    WITH p, endorser
+    CALL db.index.vector.queryNodes('endorsement-embeddings', 3, $qry_vector) YIELD node as e,score
+    WHERE score >= $tolerance
+    MATCH (endorser)<-[r_src:`ENDORSEMENT_SOURCE`]-(e)-[r_target:`ENDORSEMENT_TARGET`]->(endorsee)
+    MATCH (e)-[r_topic:`TOPIC`]->(t:`Topic`)
 
-    def transform(person, data)
-      topic_paths = extract_paths(person, data)
-      topic_paths.map do |topic_path|
-        topic_path
-      end
-    end
-
-    def openstruct_to_hash(object, hash = {})
-      case object
-      when OpenStruct
-        object.each_pair do |key, value|
-          hash[key] = openstruct_to_hash(value)
-        end
-        hash
-      when Array
-        object.map { |v| openstruct_to_hash(v) }
-      else object
-      end
-    end
-
-    def extract_paths(person, data)
-      data.map do |record|
-        @extractor = ::PathExtractor.new(person, record)
-        openstruct_to_hash(OpenStruct.new(path: @extractor.path, endorsement: @extractor.obfuscated_endorsement))
-      end
-    end
-
-    def match_query(hops)
-      <<-CYPHER
-  MATCH p= (u:Person {uuid: $uuid})-[:`KNOWS`*0..#{hops}]-(endorser:`Person`)
- WITH *
- MATCH (endorser)<-[r_src:`ENDORSEMENT_SOURCE`]-(e:`Endorsement`) WHERE (e.status = 1)
- MATCH (e)-[r_target:`ENDORSEMENT_TARGET`]->(endorsee:`Person`)
- MATCH (e)-[r_topic:`TOPIC`]->(t:`Topic`) WHERE t.name = $topic_name
- WITH *
-  WHERE ALL(x IN NODES(p) WHERE SINGLE(y IN NODES(p) WHERE y = x))
-      CYPHER
+    WITH p, relationships(p) AS r_knows, e, r_src, r_topic, t, endorser, endorsee,score
+    WHERE ALL(x IN NODES(p) WHERE SINGLE(y IN NODES(p) WHERE y = x))
+    RETURN  nodes(p) as all_paths, e, score
+    ORDER BY score desc
+    ", user_uuid:, qry_vector:, tolerance:
+      )
     end
 
     def exec_endorsement_query(current_user, topic, hops) # rubocop:disable Metrics/MethodLength

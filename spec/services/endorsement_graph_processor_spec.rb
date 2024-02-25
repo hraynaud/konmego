@@ -22,7 +22,7 @@ describe EndorsementGraphProcessor do # rubocop:disable Metrics/BlockLength
         #------------------------------------------------------------------------------
         # fauzi -- ENDORSES('Cooking') --> franky ( A--> KNOWS & ENDORSES -->B )
         #------------------------------------------------------------------------------
-        graph = EndorsementSearchService.search @fauzi, 'Cooking', 1
+        graph = EndorsementSearchService.search @fauzi, { query: to_embed_txt('Cooking'), hops: 1 }
         results = EndorsementGraphProcessor.process @fauzi, graph
         actual = extract_assertable_data(results)
 
@@ -40,7 +40,7 @@ describe EndorsementGraphProcessor do # rubocop:disable Metrics/BlockLength
         # nuno -- KNOWS --> tisha --> ENDORSES('Composer') --> Person
         #  ( A--> KNOWS -->B KNOWS & ENDORSES --> C)
         #------------------------------------------------------------------------------
-        graph = EndorsementSearchService.search @nuno, 'Composer', 1
+        graph = EndorsementSearchService.search @nuno, { query: to_embed_txt('Composer'), hops: 1 }
         results = EndorsementGraphProcessor.process @nuno, graph
         actual = extract_assertable_data(results)
         expected = [
@@ -55,17 +55,17 @@ describe EndorsementGraphProcessor do # rubocop:disable Metrics/BlockLength
     end
 
     it 'processes multiple paths correctly' do
-      graph = EndorsementSearchService.search @fauzi, 'Beatmaking', 4
+      graph = EndorsementSearchService.search @fauzi, { query: to_embed_txt('Beat making'), hops: 4 }
       results = EndorsementGraphProcessor.process @fauzi, graph
       actual = extract_assertable_data(results)
 
       expected = [
         {
-          topic: 'Beatmaking',
+          topic: 'Beat Making',
           path: to_path_nodes([[@fauzi, 'me', true], [@franky, 'endorsee', true], [@anon, 'endorser', false]])
         },
         {
-          topic: 'Beatmaking',
+          topic: 'Beat Making',
           path: to_path_nodes(
             [
               [@fauzi, 'me', true], [@franky, 'contact', true], [@anon, 'contact', false],

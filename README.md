@@ -63,21 +63,15 @@ Which creates these aliases below
 - alias refresh_dev_db="RAILS_ENV=dev be rake db:create_dev_data"
 - alias test_console="rails c -e test"
 
-### NEO4j
+## NEO4j
 
 - export NEO4J_PWD="OPTIONAL".
 - export DATA_SANS_MIGRATION="MATCH (n) WHERE
   NOT(n:Neo4j::Migrations::SchemaMigration) RETURN n LIMIT 25"
 
-### DEPRECATED
+### CREATE VECTOR INDEX NEO4J > 5.15
 
-export TWITTER_CONSUMER_KEY="<KEY>"
-
-export TWITTER_CONSUMER_SECRET="<SECRET>"
-
-export SECRET_KEY_BASE="<SECRET_KEY_BASE>"
-
-`CREATE VECTOR INDEX`endorsement-embeddings`FOR (n: Endorsement) ON (n.embedding)
+`CREATE VECTOR INDEX`endorsement-embeddings`FOR (n: Endorsement) ON (n.embeddings)
 OPTIONS {indexConfig: {
 `vector.dimensions`: 384,
  `vector.similarity_function`: 'cosine'
@@ -91,3 +85,11 @@ OPTIONS {indexConfig: {
 }}
 
 `
+
+### DEPRECATED
+
+export TWITTER_CONSUMER_KEY="<KEY>"
+
+export TWITTER_CONSUMER_SECRET="<SECRET>"
+
+export SECRET_KEY_BASE="<SECRET_KEY_BASE>"

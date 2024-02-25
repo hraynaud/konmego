@@ -29,10 +29,10 @@ class EndorsementService
     def accept(endorsement, user)
       raise StandardError, 'Invalid Operation' if endorsement.endorsee != user
 
-      endorsement.accept!
-      RelationshipManager.create_friendship_if_none_exists_for(endorsement)
+      endorsement.accept
       endorsement.embeddings = create_embedding(endorsement)
       endorsement.save
+      RelationshipManager.create_friendship_if_none_exists_for(endorsement)
       endorsement
     end
 
