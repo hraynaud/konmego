@@ -13,8 +13,6 @@ class EndorsementService
       raise raise StandardError, 'Please provide a topic' if topic.nil?
 
       endorsee = find_or_create_endorsee(params)
-
-      validate_non_duplicated_endorsement endorser, endorsee, topic
       endorsement = create_from_nodes(endorser, endorsee, topic, params[:description])
       send_confirmation endorsement
       endorsement
@@ -119,11 +117,11 @@ class EndorsementService
       endorsee
     end
 
-    def validate_non_duplicated_endorsement(endorser, endorsee, topic_name)
-      return unless already_exists?(endorser, endorsee, topic_name)
+    # def validate_non_duplicated_endorsement(endorser, endorsee, topic_name)
+    #   return unless already_exists?(endorser, endorsee, topic_name)
 
-      raise raise StandardError, "You've already endorsed #{endorsee.name} for #{topic_name}"
-    end
+    #   raise raise StandardError, "You've already endorsed #{endorsee.name} for #{topic_name}"
+    # end
 
     def find_or_create_topic(params)
       if params[:topic_id]
@@ -137,10 +135,6 @@ class EndorsementService
       topic = invite.topic || TopicService.find_or_create_by_name(invite.topic_name)
       to = invite.receiver || PersonService.find_or_create_from_invite(invite)
       create_from_nodes(invite.sender, to, topic.name, "this person is amazing at #{topic.name}")
-    end
-
-    def already_exists?(endorser, endorsee, topic)
-      Endorsement.where(topic:, endorsee:, endorser:).count.positive?
     end
 
     def invite_params(params)
