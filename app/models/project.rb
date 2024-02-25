@@ -11,6 +11,7 @@ class Project
   property :tags
   property :comments
   property :hero_image_url, type: String
+  property :embeddings
 
   enum status: %i[pending active inactive canceled failed], _default: :pending
   enum visibility: %i[private friends in_network vendor public], _default: :private

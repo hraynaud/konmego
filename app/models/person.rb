@@ -36,6 +36,7 @@ class Person
   property :reg_code, type: String
   property :reg_code_expiration, type: Integer
 
+  property :embeddings
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :email, uniqueness: true
