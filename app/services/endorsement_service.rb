@@ -107,7 +107,7 @@ class EndorsementService
       return endorsee if endorsee
 
       unless params[:email] && params[:first_name] && params[:last_name]
-        raise raise StandardError, "Can't create and invite endorsee; email, first_name, last_name are required."
+        raise StandardError, "Can't create and invite endorsee; email, first_name, last_name are required."
       end
 
       endorsee = PersonService.create_by_endorserment(params)
@@ -142,6 +142,8 @@ class EndorsementService
     end
 
     def create_from_nodes(endorser, endorsee, topic, description)
+      raise StandardError, 'Endorsement Exists' if not_unique(endorser, endorsee, topic)
+
       as_node(endorser, endorsee, topic, description)
     end
 
@@ -154,6 +156,11 @@ class EndorsementService
         endorsement.status = Endorsement.statuses[:pending]
         endorsement.save
       end
+    end
+
+    def not_unique(endorser, endorsee, topic)
+      Endorsement.where(endorser:, endorsee:,
+                        topic:).any?
     end
   end
 end

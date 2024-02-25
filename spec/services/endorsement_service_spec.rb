@@ -34,7 +34,8 @@ describe EndorsementService do # rubocop:disable Metrics/BlockLength
       end
 
       it 'fails with error if endorsment duplicated' do
-        EndorsementService.create(@p1, { endorsee_id: @p2.id, topic_id: @topic1.id })
+        endorsement = EndorsementService.create(@p1, { endorsee_id: @p2.id, topic_id: @topic1.id })
+        endorsement.accept!
         expect do
           EndorsementService.create(@p1, { endorsee_id: @p2.id, topic_id: @topic1.id })
         end.to raise_error(StandardError)
