@@ -73,7 +73,7 @@ class EndorsementSearchService
        ($topic IS NULL AND e.description =~ '.*')) AND endorsee.uuid <> $uuid
       WITH *
      WHERE ALL(x IN NODES(p) WHERE SINGLE(y IN NODES(p) WHERE y = x))
-     return relationships(p) as r_knows, nodes(p) as all_paths, r_src, r_topic, t, e, endorser, endorsee
+     return nodes(p) as all_paths, e
      ORDER BY t.name
      ", topic:, uuid: current_user.uuid
       )
