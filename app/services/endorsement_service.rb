@@ -30,7 +30,8 @@ class EndorsementService
       raise StandardError, 'Invalid Operation' if endorsement.endorsee != user
 
       endorsement.accept
-      endorsement.embeddings = create_embedding(endorsement)
+      optimized = optimize_for_embedding(endorsement)
+      endorsement.embeddings = OllamaService.embedding(optimized)
       endorsement.save
       RelationshipManager.create_friendship_if_none_exists_for(endorsement)
       endorsement
@@ -66,25 +67,9 @@ class EndorsementService
       [Obfuscation::IdCodec.decode(from), Obfuscation::IdCodec.decode(to), topic]
     end
 
-    def create_embedding(endorsement)
-      prompt = "#{endorsement.topic.name} \n #{endorsement.description}"
-      OllamaService.create_embedding(prompt)
+    def optimize_for_embedding(endorsement)
+      "#{endorsement.topic.like_terms}\n#{endorsement.description}"
     end
-
-    # def by_status(user, status)
-    #   endorsements = case status
-    #                  when Endorsement.statuses[:pending]
-    #                    user.endorsements.pending
-    #                  when Endorsement.statuses[:declined]
-    #                    user.endorsements.declined
-    #                  when Endorsement.statuses[:accepted]
-    #                    user.endorsements.accepted
-    #                  else
-    #                    user.endorsements
-    #                  end
-
-    #   EndorsementSerializer.new(endorsements.each_rel { |r| }).serializable_hash
-    # end
 
     private
 
