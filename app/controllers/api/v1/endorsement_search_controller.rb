@@ -2,9 +2,8 @@ module Api
   module V1
     class EndorsementSearchController < ApplicationController
       def index
-        opts = search_params.slice(:hops, :topic, :query, :tolerance)
         user = for_user
-        graph = EndorsementSearchService.search(user, opts)
+        graph = EndorsementSearchService.search(user, search_params, by_vector: true)
         data = EndorsementGraphProcessor.process(user, graph)
         options = { params: { current_user: } }
 
@@ -15,7 +14,11 @@ module Api
       end
 
       def search_params
-        params.permit(:topic, :hops, :query, :tolerance, :user_id)
+        params.permit(:topic_id, :topic_name, :hops, :query, :tolerance, :user_id)
+      end
+
+      def find_topic(name)
+        TopicService.find_or_create(name)
       end
     end
   end

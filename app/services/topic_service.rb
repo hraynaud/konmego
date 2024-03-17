@@ -8,11 +8,6 @@ module TopicService
       Topic.where(name:).first
     end
 
-    def find_related_or_synonym(_name)
-      # TODO: implement
-      []
-    end
-
     def find_or_create(params)
       return get(params[:topic_id]) if params[:topic_id]
 
@@ -21,26 +16,22 @@ module TopicService
 
     def find_or_create_by_name(params)
       topic = find_by_name(params[:name])
-      if topic.nil?
-        topic = Topic.new(name: params[:name], icon: params[:icon])
-        topic.like_terms = generate_like_terms(topic.name)
-        topic.save
-      end
+      topic.nil? ? create(params) : topic
+    end
+
+    def create(params)
+      topic = Topic.new(name: params[:name], icon: params[:icon])
+      topic.like_terms = generate_like_terms(topic.name)
+      topic.save
       topic
     end
 
     def generate_like_terms(name)
-      completion = OllamaService.completion(topic_prompt)
-
-      resp = completion[0]['response']
-      data = JSON.parse(resp)
-
-      terms = data['terms'].join(',')
-      Rails.logger.debug "like terms: #{like_terms}"
-      "#{name},#{terms}"
+      completion = OllamaService.completion(topic_prompt(name))
+      OllamaService.parse_completion(completion)
     end
 
-    def topic_prompt
+    def topic_prompt(name)
       %(
       Given the topic '#{name}' generate 20 synonyms or related terms in the same category or knowledge domain
       Your response will be processed electronically so it must only include JSON.

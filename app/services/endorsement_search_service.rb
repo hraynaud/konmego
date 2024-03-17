@@ -4,43 +4,46 @@ class EndorsementSearchService
   DEFAULT_ALL_TOPICS_REGEX = '.*'.freeze
 
   SEARCH_PROMPT = %(
-    You are an expert in semantic search. The following text represents a natural
+    The following text represents a natural
     language search for a particular skill or talent. Identify the key
     skills, talents, and relevant terms that capture the competencies being sought out.
     Here is the recommdation text:
     ).freeze
 
   SEARCH_INSTR = %(
+
     Read the search text carefully.
-    Identify and list the main skills, talents, or attributes mentioned that are relevant to the search.
-    In order to ensure that the search finds as many matches as possible add at least 10 related terms within the same
-    category or knowledge domain to ensure the search doesn't rely strictly on exact matches.
-    I trust your judgement so please do not include any commentary or explanatory text.
-    Please combine the list of skills and related terms into a JSON array in the following format:
-    {"keywords": [term1, term2, term3, ...]}
-    limit your response to the JSON array.
+
+    Generate 20 synonyms or related terms in the same category or knowledge domain as the search text.
+    Do not include any commentary or explanatory text.
+    Your response will be processed electronically so it must only include JSON.
+    Output the data only in this exact JSON format:  {"terms":["term 1 ", "term 2", "term 3",...]}
+    Do not include any helpful commentary or follow up questions in the response output.
+
+
     ).freeze
 
   class << self
-    def search(current_user, opts)
-      hops = opts[:hops] || DEFAULT_NETWORK_HOPS
-      if opts[:by_vector]
-        by_vector current_user.uuid, opts
+    def search(current_user, query: '', topic_name: '', hops: DEFAULT_NETWORK_HOPS, tolerance: DEFAULT_TOLERANCE, # rubocop:disable Metrics/ParameterLists
+               vector: true)
+      topic = TopicService.find_or_create({ name: topic_name })
+      if vector
+        by_vector current_user.uuid, query, topic, hops, tolerance
       else
-        exec_endorsement_query current_user.uuid, opts[:topic], hops
+        exec_endorsement_query current_user.uuid, topic.name, hops
       end
     end
 
-    def by_vector(user_uuid, opts)
-      tolerance = opts[:tolerance] || DEFAULT_TOLERANCE
-      optimized_text = optimize_for_embedding(opts[:query])
-      qry_vector = OllamaService.embedding(optimized_text)
+    def by_vector(user_uuid, query, topic, hops, tolerance)
+      optimized_text = optimize_for_embedding(query)
+      qry_vector = OllamaService.embedding("#{topic.like_terms} \n #{optimized_text}")
       do_vector_query(user_uuid, qry_vector, hops, tolerance)
     end
 
     def optimize_for_embedding(query)
       search_prompt = build_search_prompt(query)
-      OllamaService.completion(search_prompt)
+      completion = OllamaService.completion(search_prompt)
+      OllamaService.parse_completion completion
     end
 
     def build_search_prompt(search)
@@ -48,6 +51,10 @@ class EndorsementSearchService
     end
 
     private
+
+    def topic_terms(topic)
+      TopicService.find(topic)
+    end
 
     def do_vector_query(user_uuid, qry_vector, hops, tolerance) # rubocop:disable Metrics/MethodLength
       ActiveGraph::Base.query(

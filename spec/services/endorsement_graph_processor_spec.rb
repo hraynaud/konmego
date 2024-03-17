@@ -94,10 +94,6 @@ def extract_assertable_data(results)
   end
 end
 
-# def mock_like_terms(topic)
-#   allow(TopicService).to receive(:generate_like_terms).with(any_args).and_return(topic)
-# end
-
 def to_path_nodes(node_configs)
   node_configs.map do |config|
     to_endorsement_node(*config)

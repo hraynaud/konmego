@@ -11,7 +11,6 @@ class PathExtractor
 
   def obfuscate(full_path)
     @path = process_path full_path
-    binding.pry
     @obfuscated_endorsement = Obfuscation::EndorsementObfuscator.obfuscate(@user, @endorsement)
   end
 

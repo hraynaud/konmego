@@ -72,6 +72,7 @@ module TestDataHelper
       endorsement = EndorsementService.create(from, to_params(to, topic, description))
       @accepted << EndorsementService.accept(endorsement, to)
       RelationshipManager.befriend from, to
+      endorsement
     end
 
     def to_params(endorsee, topic, description)
