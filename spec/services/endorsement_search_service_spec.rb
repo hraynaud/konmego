@@ -33,7 +33,7 @@ describe EndorsementSearchService do # rubocop:disable Metrics/BlockLength
           #  ( A--> KNOWS -->B KNOWS & ENDORSES --> C)
           #------------------------------------------------------------------------------
           mock_like_terms('Composer')
-          results = EndorsementSearchService.search @nuno, { topic: 'Composer', hops: 1 }
+          results = EndorsementSearchService.search @nuno, topic_name: 'Composer', hops: 1, vector: false
           expect_actual_to_match_expected results, 'Composer', [[@nuno, @tisha]], @tisha, @vince
         end
 
@@ -42,7 +42,7 @@ describe EndorsementSearchService do # rubocop:disable Metrics/BlockLength
           # fauzi --> KNOWS --> franky --> KNOWS--> (nuno) --> KNOWS --> (tisha)  ENDORSES --> (vince)
           #------------------------------------------------------------------------------
           mock_like_terms('Composer')
-          results = EndorsementSearchService.search @fauzi, { topic: 'Composer' }
+          results = EndorsementSearchService.search @fauzi, topic_name: 'Composer', vector: false
           expect_actual_to_match_expected results, 'Composer', [[@fauzi, @franky, @nuno, @tisha]], @tisha, @vince
         end
 
@@ -52,7 +52,7 @@ describe EndorsementSearchService do # rubocop:disable Metrics/BlockLength
           # ["Gilber", "Elsa ", "Stan ", "Nuno ", "Franky","Fauzi"]
           #------------------------------------------------------------------------------
           mock_like_terms('Cooking')
-          results = EndorsementSearchService.search @gilbert, { topic: 'Cooking', hops: 5 }
+          results = EndorsementSearchService.search @gilbert, topic_name: 'Cooking', hops: 5, vector: false
           expect_actual_to_match_expected results, 'Cooking', [[@gilbert, @elsa, @stan, @nuno, @franky, @fauzi]], @fauzi,
                                           @franky
         end
@@ -62,7 +62,7 @@ describe EndorsementSearchService do # rubocop:disable Metrics/BlockLength
           # fauzi --> KNOWS --> franky --> KNOWS--> (nuno) --> KNOWS --> (tisha)  ENDORSES --> (vince:NOT_RETURNED)
           #------------------------------------------------------------------------------
           mock_like_terms('Composer')
-          results = EndorsementSearchService.search @fauzi, { topic: 'Composer', hops: 2 }
+          results = EndorsementSearchService.search @fauzi, topic_name: 'Composer', hops: 2, vector: false
           expect(results.to_set).to eq(empty_set)
         end
 
@@ -84,7 +84,7 @@ describe EndorsementSearchService do # rubocop:disable Metrics/BlockLength
 
           it 'finds first path' do
             mock_like_terms('Beat making')
-            results = EndorsementSearchService.search(@elsa, { topic: 'Beat Making', hops: 4 })
+            results = EndorsementSearchService.search(@elsa, topic_name: 'Beat Making', hops: 4, vector: false)
             expect_actual_to_match_expected(results, 'Beat Making',
                                             [[@elsa, @stan, @nuno], [@elsa, @stan, @nuno, @wid, @rico]], @nuno, @franky, 0)
             expect_actual_to_match_expected(results, 'Beat Making',
@@ -104,7 +104,7 @@ describe EndorsementSearchService do # rubocop:disable Metrics/BlockLength
           # ["Vine ", "Tisha", "Nuno ", "Stan", "Elsa", "Herby"]
           #------------------------------------------------------------------------------
           mock_like_terms('Software')
-          results = EndorsementSearchService.search @vince, { topic: 'Software', hops: (3 + 1) }
+          results = EndorsementSearchService.search @vince, topic_name: 'Software', hops: 4, vector: false
           expect_actual_to_match_expected results, 'Software',
                                           [[@vince, @tisha, @nuno], [@vince, @tisha, @nuno, @stan, @elsa]], @nuno, @wid, 1
           expect_actual_to_match_expected results, 'Software',
@@ -115,7 +115,7 @@ describe EndorsementSearchService do # rubocop:disable Metrics/BlockLength
           # ["Vince ", "Tisha", "Nuno ", "Stan", "Elsa", "Herby"]
           #------------------------------------------------------------------------------
           mock_like_terms('Software')
-          results = EndorsementSearchService.search @vince, { topic: 'Software', hops: 3 }
+          results = EndorsementSearchService.search @vince, topic_name: 'Software', hops: 3, vector: false
           expect_actual_to_match_expected results, 'Software', [[@vince, @tisha, @nuno]], @nuno, @wid, 0
         end
 
@@ -129,7 +129,7 @@ describe EndorsementSearchService do # rubocop:disable Metrics/BlockLength
           # herby -KNOWS-> sar -KNOWS-> elsa -KNOWS->stan
           #------------------------------------------------------------------------------
           mock_like_terms('Basketball')
-          results = EndorsementSearchService.search @herby, { topic: 'Basketball' }
+          results = EndorsementSearchService.search @herby, topic_name: 'Basketball', vector: false
 
           expect(@herby.friends_with?(@sar)).to be true
           expect(@elsa.friends_with?(@sar)).to be true
@@ -142,20 +142,20 @@ describe EndorsementSearchService do # rubocop:disable Metrics/BlockLength
     end
 
     context 'Similarity Search' do
-
       before(:each) do
         @topic = TopicService.find_or_create({ name: 'Football' })
-
-        create_endorsement(@gilbert, @sar, @topic,
-                           'Sar is an amazing futbol player. When he is on the pitch he reminds of of the great Pele')
-
+        @endorsement = create_endorsement(@gilbert, @sar, @topic,
+                                          'Sar is an amazing futbol player. When he is on the pitch he reminds of of the great Pele')
         @text = to_embed_txt('Who do i know that that knows the rules of Soccer ')
-
       end
+
+      after(:each) do
+        @endorsement.destroy
+      end
+
       it 'returns path for similarity search' do
         #------------------------------------------------------------------------------
-        # stan -- KNOWS -- elsa --> ENDORSES('Acting') --> sar <-- gilber endorse("Thespian")
-        #  ( A--> KNOWS -->B KNOWS & ENDORSES --> C)
+        # stan -- KNOWS -- elsa -- KNOWS -- sar <-- gilbert endorse("Football")
         #------------------------------------------------------------------------------
 
         results = EndorsementSearchService.search(@stan, vector: true, topic_name: @topic.name,
@@ -166,6 +166,9 @@ describe EndorsementSearchService do # rubocop:disable Metrics/BlockLength
       end
 
       it 'finds path to contacts that have endorsed the topic within specified hops' do
+        #------------------------------------------------------------------------------
+        # jean -- KNOWS - vince -- KNOWS -- tisha -- KNOWS--nuno --KNOWS -- stan
+        # -- KNOWS -- elsa -- KNOWS -- sar <-- gilbert endorse("Football")
         #------------------------------------------------------------------------------
 
         results = EndorsementSearchService.search @jean, vector: true, topic_name: @topic.name,

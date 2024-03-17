@@ -25,7 +25,8 @@ describe EndorsementGraphProcessor do # rubocop:disable Metrics/BlockLength
         #------------------------------------------------------------------------------
         mock_like_terms(@cooking.name)
 
-        graph = EndorsementSearchService.search @fauzi, { topic: 'Cooking', query: to_embed_txt('Cooking'), hops: 1 }
+        graph = EndorsementSearchService.search @fauzi, topic_name: 'Cooking', hops: 1,
+                                                        vector: false
         results = EndorsementGraphProcessor.process @fauzi, graph
         actual = extract_assertable_data(results)
 
@@ -44,7 +45,8 @@ describe EndorsementGraphProcessor do # rubocop:disable Metrics/BlockLength
         #  ( A--> KNOWS -->B KNOWS & ENDORSES --> C)
         #------------------------------------------------------------------------------
         mock_like_terms(@composer.name)
-        graph = EndorsementSearchService.search @nuno, { topic: 'Composer', query: to_embed_txt('Composer'), hops: 1 }
+        graph = EndorsementSearchService.search @nuno, topic_name: 'Composer', hops: 1,
+                                                       vector: false
         results = EndorsementGraphProcessor.process @nuno, graph
         actual = extract_assertable_data(results)
         expected = [
@@ -61,7 +63,7 @@ describe EndorsementGraphProcessor do # rubocop:disable Metrics/BlockLength
     it 'processes multiple paths correctly' do
       mock_like_terms(@beatmaking.name)
       graph = EndorsementSearchService.search @fauzi,
-                                              { topic: 'Beat Making', query: to_embed_txt('Beat making'), hops: 4 }
+                                              topic_name: 'Beat Making', hops: 4, vector: false
       results = EndorsementGraphProcessor.process @fauzi, graph
       actual = extract_assertable_data(results)
 
