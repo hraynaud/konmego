@@ -23,7 +23,7 @@ module TopicService
       topic = find_by_name(params[:name])
       if topic.nil?
         topic = Topic.new(name: params[:name], icon: params[:icon])
-        topic.like_terms = generate_like_terms
+        topic.like_terms = generate_like_terms(topic.name)
         topic.save
       end
       topic

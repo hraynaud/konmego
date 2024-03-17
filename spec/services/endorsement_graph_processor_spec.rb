@@ -13,10 +13,6 @@ describe EndorsementGraphProcessor do # rubocop:disable Metrics/BlockLength
     setup_relationship_data
   end
 
-  before(:each) do
-    # allow_any_instance_of(Topic).to receive(:generate_like_terms).and_return('Topic')
-  end
-
   after(:all) do
     clear_db
   end
@@ -27,7 +23,7 @@ describe EndorsementGraphProcessor do # rubocop:disable Metrics/BlockLength
         #------------------------------------------------------------------------------
         # fauzi -- ENDORSES('Cooking') --> franky ( A--> KNOWS & ENDORSES -->B )
         #------------------------------------------------------------------------------
-        mock_like_terms(@cooking)
+        mock_like_terms(@cooking.name)
 
         graph = EndorsementSearchService.search @fauzi, { topic: 'Cooking', query: to_embed_txt('Cooking'), hops: 1 }
         results = EndorsementGraphProcessor.process @fauzi, graph
@@ -47,7 +43,7 @@ describe EndorsementGraphProcessor do # rubocop:disable Metrics/BlockLength
         # nuno -- KNOWS --> tisha --> ENDORSES('Composer') --> Person
         #  ( A--> KNOWS -->B KNOWS & ENDORSES --> C)
         #------------------------------------------------------------------------------
-        mock_like_terms(@composer)
+        mock_like_terms(@composer.name)
         graph = EndorsementSearchService.search @nuno, { topic: 'Composer', query: to_embed_txt('Composer'), hops: 1 }
         results = EndorsementGraphProcessor.process @nuno, graph
         actual = extract_assertable_data(results)
@@ -63,7 +59,7 @@ describe EndorsementGraphProcessor do # rubocop:disable Metrics/BlockLength
     end
 
     it 'processes multiple paths correctly' do
-      mock_like_terms(@beatmaking)
+      mock_like_terms(@beatmaking.name)
       graph = EndorsementSearchService.search @fauzi,
                                               { topic: 'Beat Making', query: to_embed_txt('Beat making'), hops: 4 }
       results = EndorsementGraphProcessor.process @fauzi, graph
@@ -98,9 +94,9 @@ def extract_assertable_data(results)
   end
 end
 
-def mock_like_terms(topic)
-  allow(TopicService).to receive(:generate_like_terms).with(any_args).and_return(topic.name)
-end
+# def mock_like_terms(topic)
+#   allow(TopicService).to receive(:generate_like_terms).with(any_args).and_return(topic)
+# end
 
 def to_path_nodes(node_configs)
   node_configs.map do |config|

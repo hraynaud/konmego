@@ -147,5 +147,9 @@ module TestDataHelper
     def clear_db
       ActiveGraph::Base.query('MATCH (n) WHERE NOT n:`ActiveGraph::Migrations::SchemaMigration` DETACH DELETE n')
     end
+
+    def mock_like_terms(topic)
+      allow(TopicService).to receive(:generate_like_terms).with(any_args).and_return(topic)
+    end
   end
 end

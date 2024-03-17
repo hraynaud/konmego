@@ -6,8 +6,6 @@ include TestDataHelper::Utils
 describe Api::V1::EndorsementsController, type: :request do # rubocop:disable Metrics/BlockLength
 
   before do
-    allow_any_instance_of(Topic).to receive(:generate_like_terms).and_return('Topic')
-
     create_social_graph
   end
 
@@ -16,14 +14,15 @@ describe Api::V1::EndorsementsController, type: :request do # rubocop:disable Me
   end
 
   describe 'creating endorsement: post api/v1/endorsements' do # rubocop:disable Metrics/BlockLength
-
     context 'for pre-existing topic and endorsee' do
       it ' creates endorsment for existing user and existing topic' do
+        mock_like_terms(@cooking.name)
         do_post @herby, '/api/v1/endorsements', { topicId: @cooking.id, endorseeId: @tisha.id }
         expect_http response, :ok
       end
 
       it ' fails when edorsee is missing' do
+        mock_like_terms(@cooking.name)
         do_post @herby, '/api/v1/endorsements', { topicId: @cooking.id }
         aggregate_failures do
           expect_http response, :unprocessable_entity
@@ -31,6 +30,7 @@ describe Api::V1::EndorsementsController, type: :request do # rubocop:disable Me
       end
 
       it ' fails when topic is missing' do
+        mock_like_terms(@cooking.name)
         do_post @herby, '/api/v1/endorsements', { endorseeId: @tisha.id }
         aggregate_failures do
           expect_http response, :unprocessable_entity
@@ -41,16 +41,17 @@ describe Api::V1::EndorsementsController, type: :request do # rubocop:disable Me
     context 'when either topic or endorsee or both are new' do # rubocop:disable Metrics/BlockLength
       let(:new_topic) { { newTopic: { name: 'My New Topic' } } }
       let(:new_person) { { newPerson: { first: 'Firstly', last: 'Lastly', identity: { email: 'first@last.com' } } } }
-
       context 'new topic only' do
         let(:params) { new_topic.merge({ endorseeId: @tisha.id }) }
 
         it 'returns ok' do
+          mock_like_terms('My New Topic')
           do_post @herby, '/api/v1/endorsements', params
           expect_http response, :ok
         end
 
         it 'creates new endorsement and a new topic' do
+          mock_like_terms('My New Topic')
           expect do
             do_post @herby, '/api/v1/endorsements', params
           end.to change { @herby.reload.endorsees.count }.by(1)
@@ -63,6 +64,7 @@ describe Api::V1::EndorsementsController, type: :request do # rubocop:disable Me
         let(:params) { new_person.merge({ topicId: @singing.id }) }
 
         it 'succeeds and returns created endorsement as response' do
+          mock_like_terms(@singing.name)
           do_post @herby, '/api/v1/endorsements', params
           expect_http response, :ok
           expect_response_and_model_json_to_match response, Endorsement.last
@@ -74,12 +76,14 @@ describe Api::V1::EndorsementsController, type: :request do # rubocop:disable Me
         let(:new_person_and_topic) { new_topic.merge(new_person) }
 
         it 'creates new endorsement and new person' do
+          mock_like_terms('My New Topic')
           do_post @herby, '/api/v1/endorsements', new_person_and_topic
           expect_http response, :ok
           expect_response_and_model_json_to_match response, Endorsement.last
         end
 
         it 'creates new endorserment and topic' do
+          mock_like_terms('My New Topic')
           expect do
             do_post @herby, '/api/v1/endorsements', new_person_and_topic
           end.to change { Topic.count }.by(1)

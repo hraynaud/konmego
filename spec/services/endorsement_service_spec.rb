@@ -69,6 +69,7 @@ describe EndorsementService do # rubocop:disable Metrics/BlockLength
 
     context 'new topic' do
       it 'creates endorsement if topic params are valid' do
+        mock_like_terms('newsy')
         expect do
           EndorsementService.create(@p1,
                                     { endorsee_id: @p2.id, first_name: 'new', last_name: 'lasty',
@@ -88,6 +89,7 @@ describe EndorsementService do # rubocop:disable Metrics/BlockLength
 
     context 'new person and new topic' do
       it 'creates endorsement and new person' do
+        mock_like_terms('newsy')
         expect do
           EndorsementService.create(@p1,
                                     { new_topic_name: 'newsy', new_topic_category: 'topical', first_name: 'new',
