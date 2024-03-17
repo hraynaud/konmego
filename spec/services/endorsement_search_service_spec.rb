@@ -177,6 +177,19 @@ describe EndorsementSearchService do # rubocop:disable Metrics/BlockLength
         expect_actual_to_match_expected results, @topic.name,
                                         [[@jean, @vince, @tisha, @nuno, @stan, @elsa, @gilbert]], @gilbert, @sar, 0
       end
+
+      it 'finds path to contacts that have endorsed the topic within specified hops' do
+        #------------------------------------------------------------------------------
+        # jean -- KNOWS - vince -- KNOWS -- tisha -- KNOWS--nuno --KNOWS -- stan
+        # -- KNOWS -- elsa -- KNOWS -- sar <-- gilbert endorse("Football")
+        #------------------------------------------------------------------------------
+
+        results = EndorsementSearchService.search @jean, vector: true, topic_name: 'Soccer',
+                                                         query: @text, hops: 6,
+                                                         tolerance: 0.65
+        expect_actual_to_match_expected results, 'Football',
+                                        [[@jean, @vince, @tisha, @nuno, @stan, @elsa, @gilbert]], @gilbert, @sar, 0
+      end
     end
   end
 
