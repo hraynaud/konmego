@@ -24,11 +24,18 @@ class EndorsementSearchService
   class << self
     def search(current_user, opts)
       hops = opts[:hops] || DEFAULT_NETWORK_HOPS
+      if opts[:by_vector]
+        by_vector current_user.uuid, opts
+      else
+        exec_endorsement_query current_user.uuid, opts[:topic], hops
+      end
+    end
+
+    def by_vector(user_uuid, opts)
       tolerance = opts[:tolerance] || DEFAULT_TOLERANCE
       optimized_text = optimize_for_embedding(opts[:query])
-      qry_vector = OllamaService.create_embedding(optimized_text)
-
-      do_vector_query(current_user.uuid, qry_vector, hops, tolerance)
+      qry_vector = OllamaService.embedding(optimized_text)
+      do_vector_query(user_uuid, qry_vector, hops, tolerance)
     end
 
     def optimize_for_embedding(query)
@@ -60,7 +67,7 @@ class EndorsementSearchService
       )
     end
 
-    def exec_endorsement_query(current_user, topic, hops) # rubocop:disable Metrics/MethodLength
+    def exec_endorsement_query(user_uuid, topic, hops) # rubocop:disable Metrics/MethodLength
       ActiveGraph::Base.query(
         "MATCH p= allShortestPaths((starter:Person {uuid: $uuid})-[:`KNOWS`*0..#{hops}]-(endorser:`Person`))
         WITH *
@@ -73,7 +80,7 @@ class EndorsementSearchService
      WHERE ALL(x IN NODES(p) WHERE SINGLE(y IN NODES(p) WHERE y = x))
      return nodes(p) as all_paths, e
      ORDER BY t.name
-     ", topic:, uuid: current_user.uuid
+     ", topic:, uuid: user_uuid
       )
     end
   end

@@ -6,6 +6,8 @@ include TestDataHelper::Utils
 describe Api::V1::EndorsementsController, type: :request do # rubocop:disable Metrics/BlockLength
 
   before do
+    allow_any_instance_of(Topic).to receive(:generate_like_terms).and_return('Topic')
+
     create_social_graph
   end
 

@@ -9,7 +9,12 @@ describe EndorsementGraphProcessor do # rubocop:disable Metrics/BlockLength
   before(:all) do
     @anon = OpenStruct.new(first_name: 'Anonymous')
     clear_db
+
     setup_relationship_data
+  end
+
+  before(:each) do
+    # allow_any_instance_of(Topic).to receive(:generate_like_terms).and_return('Topic')
   end
 
   after(:all) do
@@ -22,7 +27,9 @@ describe EndorsementGraphProcessor do # rubocop:disable Metrics/BlockLength
         #------------------------------------------------------------------------------
         # fauzi -- ENDORSES('Cooking') --> franky ( A--> KNOWS & ENDORSES -->B )
         #------------------------------------------------------------------------------
-        graph = EndorsementSearchService.search @fauzi, { query: to_embed_txt('Cooking'), hops: 1 }
+        mock_like_terms(@cooking)
+
+        graph = EndorsementSearchService.search @fauzi, { topic: 'Cooking', query: to_embed_txt('Cooking'), hops: 1 }
         results = EndorsementGraphProcessor.process @fauzi, graph
         actual = extract_assertable_data(results)
 
@@ -40,7 +47,8 @@ describe EndorsementGraphProcessor do # rubocop:disable Metrics/BlockLength
         # nuno -- KNOWS --> tisha --> ENDORSES('Composer') --> Person
         #  ( A--> KNOWS -->B KNOWS & ENDORSES --> C)
         #------------------------------------------------------------------------------
-        graph = EndorsementSearchService.search @nuno, { query: to_embed_txt('Composer'), hops: 1 }
+        mock_like_terms(@composer)
+        graph = EndorsementSearchService.search @nuno, { topic: 'Composer', query: to_embed_txt('Composer'), hops: 1 }
         results = EndorsementGraphProcessor.process @nuno, graph
         actual = extract_assertable_data(results)
         expected = [
@@ -55,7 +63,9 @@ describe EndorsementGraphProcessor do # rubocop:disable Metrics/BlockLength
     end
 
     it 'processes multiple paths correctly' do
-      graph = EndorsementSearchService.search @fauzi, { query: to_embed_txt('Beat making'), hops: 4 }
+      mock_like_terms(@beatmaking)
+      graph = EndorsementSearchService.search @fauzi,
+                                              { topic: 'Beat Making', query: to_embed_txt('Beat making'), hops: 4 }
       results = EndorsementGraphProcessor.process @fauzi, graph
       actual = extract_assertable_data(results)
 
@@ -86,6 +96,10 @@ def extract_assertable_data(results)
       path: result.path.map { |p| p.slice(:name, :role, :is_visible) }
     }
   end
+end
+
+def mock_like_terms(topic)
+  allow(TopicService).to receive(:generate_like_terms).with(any_args).and_return(topic.name)
 end
 
 def to_path_nodes(node_configs)

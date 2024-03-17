@@ -27,7 +27,7 @@ module TestDataHelper
       @composer, @software, @beatmaking, @basketball, @electrical, @portugal = [
         'cooking', 'fencing', 'acting', 'djing', 'singing', 'design', 'composer', 'software', 'Beat making', 'basketball', 'electrical', 'portugal'
       ].map do |skill|
-        FactoryBot.create(:topic, name: skill.titleize, default_image_file: "#{skill}.jpeg")
+        FactoryBot.create(:topic, name: skill.titleize, like_terms: skill, default_image_file: "#{skill}.jpeg")
       end
     end
 
@@ -36,11 +36,10 @@ module TestDataHelper
       # RelationshipManager.befriend @herby, @tisha
     end
 
-    def create_endorsements # rubocop:disable Metrics/MethodLength
+    def create_endorsements
       @accepted = []
       @pending = []
       @declined = []
-
       create_endorsement(@fauzi, @franky, @cooking)
       create_endorsement(@tisha, @nuno, @design)
       create_endorsement(@tisha, @vince, @composer)

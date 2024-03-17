@@ -19,6 +19,7 @@ gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 3.11'
 gem 'rack-cors'
 gem 'rails', '~>7.1'
+gem 'rspec-mocks'
 gem 'rubyzip', '2.3.0'
 gem 'set', '1.1.0'
 
