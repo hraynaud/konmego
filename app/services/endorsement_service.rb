@@ -10,7 +10,7 @@ class EndorsementService
 
     def create(endorser, params)
       topic = find_or_create_topic(params)
-      raise raise StandardError, 'Please provide a topic' if topic.nil?
+      raise StandardError, 'Please provide a topic' if topic.nil?
 
       endorsee = find_or_create_endorsee(params)
       endorsement = create_from_nodes(endorser, endorsee, topic, params[:description])

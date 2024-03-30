@@ -2,12 +2,13 @@ class EndorsementSearchService
   DEFAULT_NETWORK_HOPS = 3
   DEFAULT_TOLERANCE = 0.78
   DEFAULT_ALL_TOPICS_REGEX = '.*'.freeze
+  DEFAULT_LIMIT = 10
 
   SEARCH_PROMPT = %(
     The following text represents a natural
     language search for a particular skill or talent. Identify the key
     skills, talents, and relevant terms that capture the competencies being sought out.
-    Here is the recommdation text:
+    Here is the recommendation text:
     ).freeze
 
   SEARCH_INSTR = %(
@@ -24,20 +25,17 @@ class EndorsementSearchService
     ).freeze
 
   class << self
-    def search(current_user, query: '', topic_name: '', hops: DEFAULT_NETWORK_HOPS, tolerance: DEFAULT_TOLERANCE, # rubocop:disable Metrics/ParameterLists
-               vector: true)
-      topic = TopicService.find_or_create({ name: topic_name })
-      if vector
-        by_vector current_user.uuid, query, topic, hops, tolerance
+    def search(current_user, **args)
+      hops = args[:hops] || DEFAULT_NETWORK_HOPS
+      tolerance = args[:tolerance] || DEFAULT_TOLERANCE
+      topic = TopicService.find_by_name(args[:topic_name])
+      skip = (args[:page] ? args[:page].to_i - 1 : 0) * DEFAULT_LIMIT
+      if args[:query]
+        by_vector current_user.uuid, args[:query], topic, hops, tolerance, skip
       else
-        exec_endorsement_query current_user.uuid, topic.name, hops
+        topic_name = topic&.name
+        exec_endorsement_query current_user.uuid, topic_name, hops, skip
       end
-    end
-
-    def by_vector(user_uuid, query, topic, hops, tolerance)
-      optimized_text = optimize_for_embedding(query)
-      qry_vector = OllamaService.embedding("#{topic.like_terms} \n #{optimized_text}")
-      do_vector_query(user_uuid, qry_vector, hops, tolerance)
     end
 
     def optimize_for_embedding(query)
@@ -56,7 +54,13 @@ class EndorsementSearchService
       TopicService.find(topic)
     end
 
-    def do_vector_query(user_uuid, qry_vector, hops, tolerance) # rubocop:disable Metrics/MethodLength
+    def by_vector(user_uuid, query, topic, hops, tolerance, skip)
+      optimized_text = optimize_for_embedding(query)
+      qry_vector = OllamaService.embedding("#{topic.like_terms} \n #{optimized_text}")
+      do_vector_query(user_uuid, qry_vector, hops, tolerance, skip)
+    end
+
+    def do_vector_query(user_uuid, qry_vector, hops, tolerance, skip, limit=DEFAULT_LIMIT) # rubocop:disable Metrics/MethodLength
       ActiveGraph::Base.query(
         "
     MATCH p= allShortestPaths((starter:Person {uuid:  $user_uuid})-[:`KNOWS`*0..#{hops}]-(endorser:`Person`))
@@ -69,12 +73,12 @@ class EndorsementSearchService
     WITH p, relationships(p) AS r_knows, e, r_src, r_topic, t, endorser, endorsee,score
     WHERE ALL(x IN NODES(p) WHERE SINGLE(y IN NODES(p) WHERE y = x))
     RETURN  nodes(p) as all_paths, e, score
-    ORDER BY score desc
-    ", user_uuid:, qry_vector:, tolerance:
+    ORDER BY score desc SKIP $skip LIMIT $limit
+    ", user_uuid:, qry_vector:, tolerance:, skip:,limit:
       )
     end
 
-    def exec_endorsement_query(user_uuid, topic, hops) # rubocop:disable Metrics/MethodLength
+    def exec_endorsement_query(user_uuid, topic, hops, skip, limit=DEFAULT_LIMIT)
       ActiveGraph::Base.query(
         "MATCH p= allShortestPaths((starter:Person {uuid: $uuid})-[:`KNOWS`*0..#{hops}]-(endorser:`Person`))
         WITH *
@@ -86,8 +90,8 @@ class EndorsementSearchService
       WITH *
      WHERE ALL(x IN NODES(p) WHERE SINGLE(y IN NODES(p) WHERE y = x))
      return nodes(p) as all_paths, e
-     ORDER BY t.name
-     ", topic:, uuid: user_uuid
+     ORDER BY t.name SKIP $skip LIMIT $limit
+     ", topic:, uuid: user_uuid, skip:, limit:
       )
     end
   end

@@ -3,18 +3,16 @@ module Api
     class EndorsementSearchController < ApplicationController
       def index
         user = for_user
-        graph = EndorsementSearchService.search(user, search_params, by_vector: true)
+        graph = EndorsementSearchService.search(user, **search_params.to_h)
         data = EndorsementGraphProcessor.process(user, graph)
-        options = { params: { current_user: } }
 
-        result = EndorsementPathSerializer.new(data, options).serializable_hash
+        result = EndorsementPathSerializer.new(data, { params: { current_user: } }).serializable_hash
         result[:data] = result[:data].to_set
-
         render json: result.to_json
       end
 
       def search_params
-        params.permit(:topic_id, :topic_name, :hops, :query, :tolerance, :user_id)
+        params.permit( :user_id, :query, :topic_name, :topic_id,  :hops, :tolerance, :page)
       end
 
       def find_topic(name)
