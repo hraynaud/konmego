@@ -25,7 +25,7 @@ class EndorsementSearchService
     ).freeze
 
   class << self
-    def search(current_user, **args)
+    def search(current_user, **args) # rubocop:disable Metrics/AbcSize
       hops = args[:hops] || DEFAULT_NETWORK_HOPS
       tolerance = args[:tolerance] || DEFAULT_TOLERANCE
       topic = TopicService.find_by_name(args[:topic_name])
@@ -54,13 +54,13 @@ class EndorsementSearchService
       TopicService.find(topic)
     end
 
-    def by_vector(user_uuid, query, topic, hops, tolerance, skip)
+    def by_vector(user_uuid, query, topic, hops, tolerance, skip) # rubocop:disable Metrics/ParameterLists
       optimized_text = optimize_for_embedding(query)
       qry_vector = OllamaService.embedding("#{topic.like_terms} \n #{optimized_text}")
       do_vector_query(user_uuid, qry_vector, hops, tolerance, skip)
     end
 
-    def do_vector_query(user_uuid, qry_vector, hops, tolerance, skip, limit=DEFAULT_LIMIT) # rubocop:disable Metrics/MethodLength
+    def do_vector_query(user_uuid, qry_vector, hops, tolerance, skip, limit = DEFAULT_LIMIT) # rubocop:disable Metrics/MethodLength, Metrics/ParameterLists
       ActiveGraph::Base.query(
         "
     MATCH p= allShortestPaths((starter:Person {uuid:  $user_uuid})-[:`KNOWS`*0..#{hops}]-(endorser:`Person`))
@@ -74,11 +74,11 @@ class EndorsementSearchService
     WHERE ALL(x IN NODES(p) WHERE SINGLE(y IN NODES(p) WHERE y = x))
     RETURN  nodes(p) as all_paths, e, score
     ORDER BY score desc SKIP $skip LIMIT $limit
-    ", user_uuid:, qry_vector:, tolerance:, skip:,limit:
+    ", user_uuid:, qry_vector:, tolerance:, skip:, limit:
       )
     end
 
-    def exec_endorsement_query(user_uuid, topic, hops, skip, limit=DEFAULT_LIMIT)
+    def exec_endorsement_query(user_uuid, topic, hops, skip, limit = DEFAULT_LIMIT) # rubocop:disable Metrics/MethodLength
       ActiveGraph::Base.query(
         "MATCH p= allShortestPaths((starter:Person {uuid: $uuid})-[:`KNOWS`*0..#{hops}]-(endorser:`Person`))
         WITH *

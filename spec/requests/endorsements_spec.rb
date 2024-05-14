@@ -1,3 +1,4 @@
+# rubocop:disable Style/MixinUsage
 require 'rails_helper'
 include TestDataHelper::Relationships
 include TestDataHelper::Projects
@@ -6,6 +7,7 @@ include TestDataHelper::Utils
 describe Api::V1::EndorsementsController, type: :request do # rubocop:disable Metrics/BlockLength
 
   before do
+
     create_social_graph
   end
 
@@ -102,6 +104,7 @@ describe Api::V1::EndorsementsController, type: :request do # rubocop:disable Me
 
       it 'upates the status of the endorsement' do
         expect do
+          set_llm_defaults
           do_put @herby, accept_api_v1_endorsement_path(e)
           expect_response_and_model_json_to_match response, e.reload
         end.to change { e.status }.to :accepted
@@ -129,4 +132,11 @@ describe Api::V1::EndorsementsController, type: :request do # rubocop:disable Me
 
     end
   end
+  def set_llm_defaults
+    allow(OllamaService).to receive(:embedding).and_return([-1, 0, -0.0123])
+
+    allow(OllamaService).to receive(:completion).and_return('this is a completion')
+  end
 end
+
+# rubocop:enable Style/MixinUsage

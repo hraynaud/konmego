@@ -12,6 +12,7 @@ describe EndorsementService do # rubocop:disable Metrics/BlockLength
     @p2 = FactoryBot.create(:member)
     @topic1 = FactoryBot.create(:topic)
     @topic2 = FactoryBot.create(:topic)
+    set_llm_defaults
   end
 
   after do
@@ -127,4 +128,9 @@ describe EndorsementService do # rubocop:disable Metrics/BlockLength
     end
   end
 
+end
+def set_llm_defaults
+  allow(OllamaService).to receive(:embedding).and_return([-1, 0, -0.0123])
+
+  allow(OllamaService).to receive(:completion).and_return('this is a completion')
 end
