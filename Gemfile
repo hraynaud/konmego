@@ -22,6 +22,7 @@ gem 'rails', '~>7.1'
 gem 'rspec-mocks'
 gem 'rubyzip', '2.3.0'
 gem 'set', '1.1.0'
+gem 'datamuse_rb'
 
 group :production do
   gem 'rails_12factor'
@@ -39,6 +40,7 @@ group :development, :test do
   gem 'rspec'
   gem 'rspec-rails'
   gem 'rubocop'
+  gem 'ruby-spacy'
 end
 
 group :development do

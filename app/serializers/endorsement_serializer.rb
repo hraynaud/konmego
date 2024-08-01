@@ -36,9 +36,9 @@ class EndorsementSerializer
                  endorsement.endorsee) && can_show?(params[:current_user], endorsement.endorser)
       endorsement.description
     elsif can_show?(params[:current_user], endorsement.endorsee)
-      "Someone has endorsed #{endorsement.endorsee.first_name} for #{endorsement.topic}"
+      "Someone has endorsed #{endorsement.endorsee.first_name} for #{endorsement.topic.name}"
     elsif can_show?(params[:current_user], endorsement.endorser)
-      "#{endorsement.endorser.name} has endorsed somonee for #{endorsement.topic}"
+      "#{endorsement.endorser.name} has endorsed someone for #{endorsement.topic.name}"
     else
       ''
     end

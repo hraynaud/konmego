@@ -1,27 +1,21 @@
 class EndorsementSearchService
   DEFAULT_NETWORK_HOPS = 3
-  DEFAULT_TOLERANCE = 0.78
+  DEFAULT_TOLERANCE = 0.70
   DEFAULT_ALL_TOPICS_REGEX = '.*'.freeze
   DEFAULT_LIMIT = 10
 
   SEARCH_PROMPT = %(
-    The following text represents a natural
-    language search for a particular skill or talent. Identify the key
-    skills, talents, and relevant terms that capture the competencies being sought out.
-    Here is the recommendation text:
-    ).freeze
+    You are powerful semantic search and thesaurus robot that only responds in JSON.
+    You reply in JSON format with the field 'terms'.
+    Given some text you will Identify the key
+    skills, talents, and competencies related to the text.
 
-  SEARCH_INSTR = %(
-
-    Read the search text carefully.
-
-    Generate 20 synonyms or related terms in the same category or knowledge domain as the search text.
-    Do not include any commentary or explanatory text.
-    Your response will be processed electronically so it must only include JSON.
-    Output the data only in this exact JSON format:  {"terms":["term 1 ", "term 2", "term 3",...]}
-    Do not include any helpful commentary or follow up questions in the response output.
-
-
+    You must read the text carefully.
+    You Generate 20 synonyms or related terms in the same category or knowledge domain as the search text.
+    Here is the expected JSON format:  {"terms":["term 1 ", "term 2", "term 3",...]}
+    Example text: "who do I know in the culinary arts" your response would look like this:
+    Example answer:{ "terms": ["Cooking", "Culinary Skills", "Food Preparation", "Recipe Development", "Kitchen Management", "Menu Planning", "Food Styling"]}'
+    Here is the text:
     ).freeze
 
   class << self
@@ -31,7 +25,7 @@ class EndorsementSearchService
       topic = TopicService.find_by_name(args[:topic_name])
       skip = (args[:page] ? args[:page].to_i - 1 : 0) * DEFAULT_LIMIT
       if args[:query]
-        by_vector current_user.uuid, args[:query], topic, hops, tolerance, skip
+        by_vector current_user.uuid, args[:query], topic.try(:like_terms), hops, tolerance, skip
       else
         topic_name = topic&.name
         exec_endorsement_query current_user.uuid, topic_name, hops, skip
@@ -45,7 +39,7 @@ class EndorsementSearchService
     end
 
     def build_search_prompt(search)
-      "#{SEARCH_PROMPT} \n __\n #{search} \n ___ #{SEARCH_INSTR}"
+      "#{SEARCH_PROMPT} \n __\n #{search} \n"
     end
 
     private
@@ -54,9 +48,9 @@ class EndorsementSearchService
       TopicService.find(topic)
     end
 
-    def by_vector(user_uuid, query, topic, hops, tolerance, skip) # rubocop:disable Metrics/ParameterLists
+    def by_vector(user_uuid, query, _like_terms, hops, tolerance, skip) # rubocop:disable Metrics/ParameterLists
       optimized_text = optimize_for_embedding(query)
-      qry_vector = OllamaService.embedding("#{topic.like_terms} \n #{optimized_text}")
+      qry_vector = OllamaService.embedding("#{optimized_text} \n #{query}")
       do_vector_query(user_uuid, qry_vector, hops, tolerance, skip)
     end
 
