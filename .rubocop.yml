@@ -11,3 +11,6 @@ AllCops:
   NewCops: enable
 Layout/EmptyLinesAroundBlockBody:
   Enabled: false
+
+Lint/Debugger:
+  Enabled: false
