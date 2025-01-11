@@ -1,6 +1,6 @@
 class EndorsementSearchService
   DEFAULT_NETWORK_HOPS = 3
-  DEFAULT_TOLERANCE = 0.70
+  DEFAULT_TOLERANCE = 0.60
   DEFAULT_ALL_TOPICS_REGEX = '.*'.freeze
   DEFAULT_LIMIT = 10
 
@@ -19,17 +19,28 @@ class EndorsementSearchService
     ).freeze
 
   class << self
-    def search(current_user, **args) # rubocop:disable Metrics/AbcSize
-      hops = args[:hops] || DEFAULT_NETWORK_HOPS
-      tolerance = args[:tolerance] || DEFAULT_TOLERANCE
-      topic = TopicService.find_by_name(args[:topic_name])
-      skip = (args[:page] ? args[:page].to_i - 1 : 0) * DEFAULT_LIMIT
-      if args[:query]
+    def search(current_user, **args)
+      hops, tolerance, skip, query, topic = extract_args(args)
+      if query
         by_vector current_user.uuid, args[:query], topic.try(:like_terms), hops, tolerance, skip
       else
         topic_name = topic&.name
         exec_endorsement_query current_user.uuid, topic_name, hops, skip
       end
+    end
+
+    def extract_args(args)
+      hops = args[:hops] || DEFAULT_NETWORK_HOPS
+      tolerance = args[:tolerance] || DEFAULT_TOLERANCE
+      skip = (args[:page] ? args[:page].to_i - 1 : 0) * DEFAULT_LIMIT
+      query = args[:query]
+      topic = derive_topic(args[:topic_name], query)
+      [hops, tolerance, skip, query, topic]
+    end
+
+    def derive_topic(topic_name, query)
+      topic_name ||= TopicSuggestionService.suggest(query)
+      TopicService.find_by_name(topic_name)
     end
 
     def optimize_for_embedding(query)
