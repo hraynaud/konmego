@@ -12,7 +12,7 @@ module Api
       end
 
       def search_params
-        params.permit( :user_id, :query, :topic_name, :topic_id,  :hops, :tolerance, :page)
+        params.permit(:user_id, :query, :topic_name, :topic_id, :hops, :tolerance, :page)
       end
 
       def find_topic(name)
