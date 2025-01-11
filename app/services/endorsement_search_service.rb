@@ -48,9 +48,12 @@ class EndorsementSearchService
       TopicService.find(topic)
     end
 
-    def by_vector(user_uuid, query, _like_terms, hops, tolerance, skip) # rubocop:disable Metrics/ParameterLists
-      optimized_text = optimize_for_embedding(query)
-      qry_vector = OllamaService.embedding("#{optimized_text} \n #{query}")
+    def by_vector(user_uuid, query, like_terms, hops, tolerance, skip) # rubocop:disable Metrics/ParameterLists
+      # TODO continue experimenting with optimizing the text
+      # optimized_text = optimize_for_embedding(query)
+      # qry_vector = OllamaService.embedding("#{optimized_text} \n #{query}")
+      qry_vector = OllamaService.embedding("#{like_terms} \n #{query}")
+
       do_vector_query(user_uuid, qry_vector, hops, tolerance, skip)
     end
 
