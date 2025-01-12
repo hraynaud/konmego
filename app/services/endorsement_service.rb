@@ -68,7 +68,7 @@ class EndorsementService
     end
 
     def optimize_for_embedding(endorsement)
-      "#{endorsement.topic.like_terms}\n#{endorsement.description}"
+      "#{endorsement.description}\n#{endorsement.topic.like_terms}"
     end
 
     private

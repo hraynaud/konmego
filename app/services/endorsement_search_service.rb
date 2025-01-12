@@ -63,7 +63,7 @@ class EndorsementSearchService
       # TODO continue experimenting with optimizing the text
       # optimized_text = optimize_for_embedding(query)
       # qry_vector = OllamaService.embedding("#{optimized_text} \n #{query}")
-      qry_vector = OllamaService.embedding("#{like_terms} \n #{query}")
+      qry_vector = OllamaService.embedding("#{query}\n  #{like_terms} ")
 
       do_vector_query(user_uuid, qry_vector, hops, tolerance, skip)
     end

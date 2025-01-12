@@ -21,7 +21,9 @@ module TopicService
 
     def create(params)
       topic = Topic.new(name: params[:name], icon: params[:icon])
-      topic.like_terms = generate_like_terms(topic.name)
+
+      data = generate_like_terms(topic.name)
+      topic.like_terms = data['terms']
       topic.save
       topic
     end
@@ -32,15 +34,39 @@ module TopicService
     end
 
     def topic_prompt(name)
-      %(
-      Given the topic '#{name}' generate 20 synonyms or related terms in the same category or knowledge domain
-      Your response will be processed electronically so it must only include JSON.
+      prompt = %(
+      You are powerful semantic search and thesaurus robot that only responds in JSON.
+      Given a topic word or phrase you will generate 20 synonyms or related terms in the same category, theme or
+      knowledge domain as the input topic Your response will be processed electronically so it must only include JSON.
 
       Here are your instructions:
       Output the data only in this exact JSON format:  {"terms":["term 1 ", "term 2", "term 3",...]}
-      Do not include any helpful commentary or follow up questions in the response output.
+      Do not include any commentary or follow up questions or comments in the response output.
 
-      )
+      ### Example:
+      **Input**:
+      yoga
+
+      **Output**
+      {
+      "terms": [
+        "pilates",
+        "fitness",
+        "flexibility",
+        "stretching",
+        "Vinyasa",
+        "Kundalini",
+        "gyrotonics",
+        "strength",
+        "meditation"
+        ]
+        }
+
+        Here is the topic
+
+      ).freeze
+
+      "#{prompt} \n ___ \n #{name}"
     end
   end
 end
