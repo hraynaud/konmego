@@ -73,7 +73,7 @@ class EndorsementSearchService
         "
     MATCH p= allShortestPaths((starter:Person {uuid:  $user_uuid})-[:`KNOWS`*0..#{hops}]-(endorser:`Person`))
     WITH p, endorser
-    CALL db.index.vector.queryNodes('endorsement-embeddings', 3, $qry_vector) YIELD node as e,score
+    CALL db.index.vector.queryNodes('endorsementText', 3, $qry_vector) YIELD node as e,score
     WHERE score >= $tolerance
     MATCH (endorser)<-[r_src:`ENDORSEMENT_SOURCE`]-(e)-[r_target:`ENDORSEMENT_TARGET`]->(endorsee)
     MATCH (e)-[r_topic:`TOPIC`]->(t:`Topic`)
