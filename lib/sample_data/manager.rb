@@ -1,6 +1,6 @@
 module Manager # rubocop:disable Metrics/ModuleLength
   SAMPLE_DATA_ROOT_DIR = "#{Rails.root}/etc/sample_data".freeze
-  MAX_ENDORSEMENTS = 3
+  MAX_ENDORSEMENTS = 5
 
   class << self
     def create_users
