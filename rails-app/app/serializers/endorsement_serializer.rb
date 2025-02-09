@@ -1,10 +1,9 @@
 class EndorsementSerializer
   include ::JSONAPI::Serializer
   set_key_transform :camel_lower
-  # attributes :description, :status, :topic_id, :topic, :topic_image
-
-  # attributes :description, :status, :topic_image, :endorser_avatar_url, :endorsee_avatar_url,:topic_id
-
+   attributes :topic do |endorsement, _params|
+    endorsement.topic.name
+   end
   attribute :direction, if: proc { |_o, params|
                               params && params[:ref_user]
                             } do |o, params|
