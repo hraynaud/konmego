@@ -1,7 +1,10 @@
 class Api::V1::ContactsController < ApplicationController
+  def index
+    render json: PersonSerializer.new(contacts, { params: { current_user: } })
+  end
 
-  def index 
-    render json: PersonSerializer.new(contacts)
+  def create
+    InviteService.create current_user, invite_params
   end
 
   def show
