@@ -16,7 +16,7 @@ class Api::V1::EndorsementsController < ApplicationController
         description: params[:description],
         first_name: params.dig(:new_person, :first),
         last_name: params.dig(:new_person, :last),
-        email: params.dig(:new_person, :identity, :email),
+        email: params.dig(:new_person, :email),
         new_topic_name: params.dig(:new_topic, :name),
         new_topic_category: params.dig(:new_topic, :category)
       }
@@ -124,8 +124,8 @@ class Api::V1::EndorsementsController < ApplicationController
 
   def endorsement_params
     params.permit(:id,
-                  :endorsee_id, :topic_id, :endorser_id, :topic_name,
-                  new_person: [:first, :last, { identity: [:email] }],
+                  :endorsee_id, :topic_id, :endorser_id, :topic_name, :description,
+                  new_person: %i[first last email],
                   new_topic: %i[name description])
   end
 end
