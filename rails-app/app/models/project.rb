@@ -12,6 +12,7 @@ class Project
   property :comments
   property :hero_image_url, type: String
   property :embeddings
+  property :tasks
 
   enum status: %i[pending active inactive canceled failed], _default: :pending
   enum visibility: %i[private friends in_network vendor public], _default: :private
