@@ -12,17 +12,23 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   namespace :api do # rubocop:disable Metrics/BlockLength
     namespace :v1 do
 
-      get 'topic_contacts/:topic', to: 'topic_contacts#index'
       get 'profile', to: 'users#show'
-
       get 'user_relationships/:group', to: 'user_relationships#index',
                                        constraints: { group: /contacts|endorsees|endorsers|any/ }
-      post 'projects_search',  to: 'project_search#index'
-      post 'projects_random',  to: 'project_search#random'
-      post 'invites', to: 'invites#create'
       get 'accept_invite', to: 'invites#accept'
+      post 'invites', to: 'invites#create'
 
       get 'endorsements_search', to: 'endorsement_search#index'
+      get 'topic_contacts/:topic', to: 'topic_contacts#index'
+
+      post 'projects_search',  to: 'project_search#index'
+      post 'projects_random',  to: 'project_search#random'
+
+      resources :chat, only: [:create] do
+        collection do
+          get :stream
+        end
+      end
 
       resources :people
       resources :topics, only: [:index]

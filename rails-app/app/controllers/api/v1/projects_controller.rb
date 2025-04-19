@@ -13,6 +13,7 @@ module Api
       def show
         project = ProjectService.find_by_id(params[:id])
         render json: ProjectSerializer.new(project)
+      end
 
       def update
         current_user.projects.update project_params

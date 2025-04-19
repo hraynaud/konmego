@@ -12,7 +12,7 @@ class ApplicationController < ActionController::API
   protected
 
   def json_response(object, status)
-    render json: object, status: status
+    render json: object, status:
   end
 
   def for_user
@@ -51,7 +51,8 @@ class ApplicationController < ActionController::API
 
   def authenticate_request
     logger.debug "attempting to authenticate request with auth header: #{request.headers['Authorization']}"
-    uid = Authentication.uid_from_from_request_auth_hdr request.headers['Authorization']
+    auth = request.headers['Authorization'] || request.params['authorization']
+    uid = Authentication.uid_from_from_request_auth_hdr auth
 
     @current_user = Person.find(uid)
   rescue StandardError => e
