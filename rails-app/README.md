@@ -50,7 +50,7 @@ Note if community-latest doesn't work you might need to specify the exact versio
 
 it is helpful to create an alias like so in your bash file to cd to this project.
 
-alias mego="cd dev-work/konmego/;source .env-local"
+alias mego="cd dev-work/konmego/;source aliases.sh"
 
 Which creates these aliases below
 
@@ -83,8 +83,24 @@ OPTIONS {indexConfig: {
 `vector.dimensions`: 768,
 `vector.similarity_function`: 'cosine'
 }}
-
 `
+
+## Applications Environment Variables
+##### Java
+`export JAVA_HOME=$(/usr/libexec/java_home -v 1.8.0)`
+
+##### Ollama server 
+`export OLLAMA_SERVER_ADDRESS="http://localhost:11434"`
+
+##### defualt general purpose LLM for chats and completions:
+`export LLM=llama3`
+
+##### default embedding model for Ollama
+`export EMBEDDING_MODEL="mxbai-embed-large"`
+
+##### postgres connection string
+`export DATABASE_URL="postgres://postgres:password@localhost/konmego_development"`
+
 
 ### DEPRECATED
 
@@ -93,3 +109,5 @@ export TWITTER_CONSUMER_KEY="<KEY>"
 export TWITTER_CONSUMER_SECRET="<SECRET>"
 
 export SECRET_KEY_BASE="<SECRET_KEY_BASE>"
+
+
