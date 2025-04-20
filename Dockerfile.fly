@@ -13,4 +13,4 @@ ENTRYPOINT ["/usr/bin/entrypoint.sh"]
 RUN gem install bundler -v '2.3.16'
 RUN bundle install
 
-CMD ["rails", "server", "-b", "0.0.0.0"]
+CMD ["rails", "server", "-b", "0.0.0.0", "-p", "3000"]
