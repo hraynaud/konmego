@@ -46,8 +46,8 @@
 - CREATE RANGE INDEX `person_person_is_member` FOR (n:`Person`) ON (n.`is_member`)
 - CREATE RANGE INDEX `project_project_status` FOR (n:`Project`) ON (n.`status`)
 - CREATE RANGE INDEX `project_project_visibility` FOR (n:`Project`) ON (n.`visibility`)
-- 'CREATE VECTOR INDEX `endorsement-embeddings` FOR (n:`Endorsement`) ON (n.`embeddings`)
-  OPTIONS {indexConfig: {`vector.dimensions`: 384,`vector.similarity_function`: ''COSINE''},
+- 'CREATE VECTOR INDEX `endorsementText` FOR (n:`Endorsement`) ON (n.`embeddings`)
+  OPTIONS {indexConfig: {`vector.dimensions`: 1024,`vector.similarity_function`: ''COSINE''},
   indexProvider: ''vector-1.0''}'
 :versions:
 - '20190616005444'
