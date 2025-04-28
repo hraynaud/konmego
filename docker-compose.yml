@@ -1,6 +1,51 @@
-version: '3.8'
+version: '3'
 
 services:
+  rails-app:
+    build:
+      context: ./rails-app
+      dockerfile: Dockerfile
+    container_name: konmego-rails-server
+    ports:
+      - "3000:3000"
+    depends_on:
+      - neo4j-db
+      - ollama
+      - postgres
+    environment:
+      - NEO4J_HOST=neo4j-db
+      - NEO4J_PORT=7687
+      - NEO4J_USER=${NEO4J_USER}
+      - NEO4J_PASSWORD=${NEO4J_PASSWORD}
+      - OLLAMA_SERVER_ADDRESS=${OLLAMA_SERVER_ADDRESS:-http://ollama:11434}
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    volumes:
+      - ./rails-app:/rails-app   # <-- Mount app code!
+      - ./rails-app/.env.local:/rails-app/.env.local  # <-- Mount env file separately
+
+  neo4j-db:
+    image: neo4j:community-bullseye
+    container_name: konmego-neo4j
+    restart: always
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=${NEO4J_USER}/${NEO4J_PASSWORD}
+    volumes:
+      - ./neo4j-db/data:/data
+
+  ollama:
+    build:
+      context: ./ollama
+      dockerfile: Dockerfile
+    container_name: konmego-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ollama/data:/root/.ollama
+      - ./ollama/models:/models  # Mount directory with your custom models
+
   postgres:
     image: postgres:15
     container_name: postgres
@@ -10,48 +55,10 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
     volumes:
-      - pgdata:/var/lib/postgresql/data
-    networks:
-      - konmego
-
-  ollama:
-    image: ollama/ollama:latest
-    container_name: ollama
-    ports:
-      - "11434:11434"
-    networks:
-      - konmego
-    volumes:
-      - ollama-models:/root/.ollama
-      - ./entrypoint-docker.sh:/entrypoint.sh
-    pull_policy: always
-    tty: true
-    restart: always
-
-  rails-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      - postgres
-      - ollama
-    ports:
-      - "3000:3000"
-      - "7474:7474"
-      - "7687:7687"
-    environment:
-      DATABASE_URL: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}"
-      OLLAMA_SERVER_ADDRESS: ${OLLAMA_SERVER_ADDRESS}
-      RAILS_ENV: development
-    networks:
-      - konmego
-
-volumes:
-  pgdata:
-  ollama-models:
+      - ./postgres-db:/var/lib/postgresql/data
 
 networks:
-  konmego:
-    driver: bridge
-
+  default:
+    name: konmego-network

@@ -32,6 +32,7 @@
 # Neo4j - First ignore everything
 /rails-app/db/neo4j/development/*
 /rails-app/db/neo4j/test/*
+/neo4j-db/*
 
 # Neo4j - Then explicitly keep configuration and .keep files
 !/rails-app/db/neo4j/development/.keep
@@ -62,3 +63,6 @@ logfile
 
 # Ignore fly.io generated files
 fly.toml
+neo4j-db/dev-db.tar.gz
+neo4j-db/
+postgres-db/

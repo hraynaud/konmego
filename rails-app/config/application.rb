@@ -39,8 +39,5 @@ module Konmego
     config.middleware.use ActionDispatch::Session::CookieStore
     config.middleware.use config.session_store
     config.client = config_for(:client)
-    config.neo4j.driver.username = 'neo4j'
-    config.neo4j.driver.password = 'password'
-    # config.active_record.legacy_connection_handling = false
   end
 end

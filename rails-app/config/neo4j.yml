@@ -1,12 +1,11 @@
 development:
-  url: bolt://localhost:7687
-  username: neo4j
-  password: password
+  url: "neo4j://<%= ENV['NEO4J_HOST'] %>:<%= ENV['NEO4J_PORT'] %>"
+  username: "<%= ENV['NEO4J_USER'] %>"
+  password: "<%= ENV['NEO4J_PASSWORD'] %>"
 test:
   url: bolt://localhost:7570
   username: neo4j
   password: password
-  #url: bolt://localhost:7876 #old value
 production:
   url:
     - neo4j://core1:7687
