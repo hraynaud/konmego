@@ -24,10 +24,9 @@
 /rails-app/vendor/bundle
 
 # Ignore sensitive files
-/rails-app/config/master.key
-/.env
-/.env.local
-/.env.*.local
+rails-app/config/master.key
+.env*
+
 
 # Neo4j - First ignore everything
 /rails-app/db/neo4j/development/*
