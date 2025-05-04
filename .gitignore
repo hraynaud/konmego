@@ -32,9 +32,11 @@
 # Neo4j - First ignore everything
 /rails-app/db/neo4j/development/*
 /rails-app/db/neo4j/test/*
-/neo4j-db/*
+/neo4j-db/data/*
+
 
 # Neo4j - Then explicitly keep configuration and .keep files
+!/neo4j-db/Dockerfile
 !/rails-app/db/neo4j/development/.keep
 !/rails-app/db/neo4j/development/conf
 !/rails-app/db/neo4j/development/conf/**
@@ -63,11 +65,14 @@ logfile
 
 # Ignore fly.io generated files
 fly.toml
+
 neo4j-db/dev-db.tar.gz
-neo4j-db/
 postgres-db/
 ollama/data/id_ed25519
 ollama/data/id_ed25519.pub
 ollama/data/models/blobs
 ollama/data/models/manifests
 rails-app/.env.local
+neo4j-db/certificates/bolt/private.key
+neo4j-db/certificates/bolt/public.crt
+neo4j-db/certificates/bolt/trusted.crt
