@@ -1,3 +1,46 @@
+## neo4j aura
+
+- create instance
+- import the data
+
+# Fly.io setup for each component from scratch
+cd into the appropriate folder then execute
+### postgres
+```
+fly postgres create --name konmego-postgres --region ewr
+fly volumes create postgres_data --size 10
+fly secrets set POSTGRES_USER=your_user POSTGRES_PASSWORD=your_secure_password
+```
+
+
+## Rails Server
+```
+fly launch --name konmego-server --no-deploy
+# Configure environment variables to connect to other services
+fly secrets set DATABASE_URL=postgres://your_user:your_secure_password@konmego-postgres.internal:5432/konmego
+fly secrets set NEO4J_HOST=konmego-neo4j.internal
+fly secrets set NEO4J_PORT=7687
+fly secrets set NEO4J_USER=neo4j
+fly secrets set NEO4J_PASSWORD=your_secure_password
+fly secrets set OLLAMA_SERVER_ADDRESS=http://konmego-ollama.internal:11434
+#change for other environments
+fly secrets set RAILS_MASTER_KEY=$(cat config/credentials/development.key)
+fly secrets set RAILS_ENV=development 
+fly deploy  
+```
+
+## Ollama
+```
+fly launch --name konmego-ollama --no-deploy
+fly volumes create ollama_data --size 20
+fly scale memory 4096 --vm-size performance-1x
+# Models will be pulled during initialization
+fly deploy
+```
+
+
+
+
 # Deployment Issues and Solutions
 
 When deploying our Rails/Neo4j/Quasar application to Fly.io, we encountered several challenges. This document summarizes these issues and their solutions for future reference.
