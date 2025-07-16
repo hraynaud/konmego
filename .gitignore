@@ -27,15 +27,15 @@
 rails-app/config/master.key
 .env*
 
+# Ignore test directories
+/spec/*/tbd/*
+/tbd_spec/*
 
-# Neo4j - First ignore everything
+# Embedded Neo4j - First ignore everything
 /rails-app/db/neo4j/development/*
 /rails-app/db/neo4j/test/*
-/neo4j-db/data/*
 
-
-# Neo4j - Then explicitly keep configuration and .keep files
-!/neo4j-db/Dockerfile
+# Embedded Neo4j - Then explicitly keep configuration and .keep files
 !/rails-app/db/neo4j/development/.keep
 !/rails-app/db/neo4j/development/conf
 !/rails-app/db/neo4j/development/conf/**
@@ -43,6 +43,30 @@ rails-app/config/master.key
 !/rails-app/db/neo4j/test/.keep
 !/rails-app/db/neo4j/test/conf
 !/rails-app/db/neo4j/test/conf/**
+
+# Postgres
+postgres-db/
+
+# Neo4j Standalone  (and docker)
+/neo4j-db/data/*
+
+# Neo4j -  keep configuration and .keep files
+!/neo4j-db/Dockerfile
+
+# Neo4j - certs
+neo4j-db/certificates/bolt/private.key
+neo4j-db/certificates/bolt/public.crt
+neo4j-db/certificates/bolt/trusted.crt
+
+# Ollama certs
+ollama/data/id_ed25519
+ollama/data/id_ed25519.pub
+ollama/data/models/blobs
+ollama/data/models/manifests
+
+
+# Ignore fly.io generated files
+fly.toml
 
 # Ignore system and editor files
 .DS_Store
@@ -57,21 +81,3 @@ rails-app/config/master.key
 *.err
 logfile
 /spec/logs/**
-
-# Ignore test directories
-/spec/*/tbd/*
-/tbd_spec/*
-
-# Ignore fly.io generated files
-fly.toml
-
-neo4j-db/dev-db.tar.gz
-postgres-db/
-ollama/data/id_ed25519
-ollama/data/id_ed25519.pub
-ollama/data/models/blobs
-ollama/data/models/manifests
-rails-app/.env.local
-neo4j-db/certificates/bolt/private.key
-neo4j-db/certificates/bolt/public.crt
-neo4j-db/certificates/bolt/trusted.crt

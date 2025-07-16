@@ -1,3 +1,7 @@
+alias start_dev_db="bundle exec rake 'neo4j:start[development]'"
+alias start_test_db="bundle exec rake 'neo4j:start[test]'" 
+alias stop_dev_db="bundle exec rake 'neo4j:stop[development]'"
+alias stop_test_db="bundle exec rake 'neo4j:stop[test]'"
 alias run_rails="bundle exec rails s -b $LOCAL_IP -p 3000"
 alias refresh_test_db="RAILS_ENV=test be rake db:create_dev_data"
 alias refresh_dev_db="RAILS_ENV=development be rake db:create_dev_data"
