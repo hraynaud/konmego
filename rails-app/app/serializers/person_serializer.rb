@@ -14,7 +14,7 @@ class PersonSerializer
   end
 
   attribute :bio do |person, params|
-    can_show?(params[:current_user], person) ? person.bio : 'This users Bio is not private'
+    can_show?(params[:current_user], person) ? person.bio : 'This users Bio is private'
   end
 
   attribute :avatar_url do |person, params|
@@ -23,6 +23,10 @@ class PersonSerializer
 
   attribute :profile_image_url do |person, params|
     can_show?(params[:current_user], person) ? person.profile_image_url : 'anonymous.png'
+  end
+
+  attribute :smart_about do |person, params|
+    can_show?(params[:current_user], person) ? person.smart_about : []
   end
 
   attribute :endorsees do |person, params|

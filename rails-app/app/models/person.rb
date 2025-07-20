@@ -32,11 +32,13 @@ class Person
   property :is_member, type: Boolean, default: false
   property :name, type: String
   property :pursuits, type: Hash, default: {}
+  property :get_smarter_about
   property :status, type: String
   property :reg_code, type: String
   property :reg_code_expiration, type: Integer
 
   property :embeddings
+
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :email, uniqueness: true
@@ -58,6 +60,10 @@ class Person
   def extract
     OpenStruct.new(first_name:, last_name:,
                    avatar_url:, profile_image_url:, name: "#{first_name} #{last_name}", id:)
+  end
+
+  def smart_about
+    pursuits.map { |p| p['topic'] }
   end
 
   def endorsers
@@ -108,7 +114,7 @@ class Person
     outgoing_endorsements.select(&:topic).include? topic
   end
 
-  def has_endorsement_for_topic?(topic) # rubocop:disable Naming/PredicateName
+  def has_endorsement_for_topic?(topic)
     oncoming_endorsements.select(&:topic).include? topic
   end
 
