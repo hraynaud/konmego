@@ -12,34 +12,22 @@
 
 ---
 :constraints:
-- 'CREATE CONSTRAINT `comment_uuid_uniq` FOR (n:`Comment`) REQUIRE (n.`uuid`) IS UNIQUE
-  OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
-- 'CREATE CONSTRAINT `constraint_26885d30` FOR (n:`Obstacle`) REQUIRE (n.`uuid`) IS
-  UNIQUE OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
-- 'CREATE CONSTRAINT `constraint_308f952c` FOR (n:`Identity`) REQUIRE (n.`uuid`) IS
-  UNIQUE OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
-- 'CREATE CONSTRAINT `constraint_d6502a12` FOR (n:`ActiveGraph::Migrations::SchemaMigration`)
-  REQUIRE (n.`migration_id`) IS UNIQUE OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
-- 'CREATE CONSTRAINT `constraint_e2ca317b` FOR (n:`ObstacleCategory`) REQUIRE (n.`uuid`)
-  IS UNIQUE OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
-- 'CREATE CONSTRAINT `constraint_e35df01c` FOR (n:`Activity`) REQUIRE (n.`uuid`) IS
-  UNIQUE OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
-- 'CREATE CONSTRAINT `constraint_eae8a740` FOR (n:`Endorsement`) REQUIRE (n.`uuid`)
-  IS UNIQUE OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
-- 'CREATE CONSTRAINT `invite_uuid_uniq` FOR (n:`Invite`) REQUIRE (n.`uuid`) IS UNIQUE
-  OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
-- 'CREATE CONSTRAINT `person_uuid_uniq` FOR (n:`Person`) REQUIRE (n.`uuid`) IS UNIQUE
-  OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
-- 'CREATE CONSTRAINT `post_uuid_uniq` FOR (n:`Post`) REQUIRE (n.`uuid`) IS UNIQUE
-  OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
-- 'CREATE CONSTRAINT `project_uuid_uniq` FOR (n:`Project`) REQUIRE (n.`uuid`) IS UNIQUE
-  OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
-- 'CREATE CONSTRAINT `registration_uuid_uniq` FOR (n:`Registration`) REQUIRE (n.`uuid`)
-  IS UNIQUE OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
-- 'CREATE CONSTRAINT `schema_migration_uuid_uniq` FOR (n:`ActiveGraph::Migrations::SchemaMigration`)
-  REQUIRE (n.`uuid`) IS UNIQUE OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
-- 'CREATE CONSTRAINT `topic_uuid_uniq` FOR (n:`Topic`) REQUIRE (n.`uuid`) IS UNIQUE
-  OPTIONS {indexConfig: {}, indexProvider: ''range-1.0''}'
+- CREATE CONSTRAINT `comment_uuid_uniq` FOR (n:`Comment`) REQUIRE (n.`uuid`) IS UNIQUE
+- CREATE CONSTRAINT `constraint_7aa28f29` FOR (n:`Activity`) REQUIRE (n.`uuid`) IS
+  UNIQUE
+- CREATE CONSTRAINT `constraint_d6502a12` FOR (n:`ActiveGraph::Migrations::SchemaMigration`)
+  REQUIRE (n.`migration_id`) IS UNIQUE
+- CREATE CONSTRAINT `constraint_eae8a740` FOR (n:`Endorsement`) REQUIRE (n.`uuid`)
+  IS UNIQUE
+- CREATE CONSTRAINT `invite_uuid_uniq` FOR (n:`Invite`) REQUIRE (n.`uuid`) IS UNIQUE
+- CREATE CONSTRAINT `person_uuid_uniq` FOR (n:`Person`) REQUIRE (n.`uuid`) IS UNIQUE
+- CREATE CONSTRAINT `post_uuid_uniq` FOR (n:`Post`) REQUIRE (n.`uuid`) IS UNIQUE
+- CREATE CONSTRAINT `project_uuid_uniq` FOR (n:`Project`) REQUIRE (n.`uuid`) IS UNIQUE
+- CREATE CONSTRAINT `registration_uuid_uniq` FOR (n:`Registration`) REQUIRE (n.`uuid`)
+  IS UNIQUE
+- CREATE CONSTRAINT `schema_migration_uuid_uniq` FOR (n:`ActiveGraph::Migrations::SchemaMigration`)
+  REQUIRE (n.`uuid`) IS UNIQUE
+- CREATE CONSTRAINT `topic_uuid_uniq` FOR (n:`Topic`) REQUIRE (n.`uuid`) IS UNIQUE
 :indexes:
 - CREATE RANGE INDEX `index_5be57233` FOR (n:`Endorsement`) ON (n.`type`)
 - CREATE RANGE INDEX `index_c5dfce8` FOR (n:`Endorsement`) ON (n.`status`)
@@ -47,8 +35,7 @@
 - CREATE RANGE INDEX `project_project_status` FOR (n:`Project`) ON (n.`status`)
 - CREATE RANGE INDEX `project_project_visibility` FOR (n:`Project`) ON (n.`visibility`)
 - 'CREATE VECTOR INDEX `endorsementText` FOR (n:`Endorsement`) ON (n.`embeddings`)
-  OPTIONS {indexConfig: {`vector.dimensions`: 1024,`vector.similarity_function`: ''COSINE''},
-  indexProvider: ''vector-1.0''}'
+  OPTIONS {indexConfig: {`vector.dimensions`: 1024,`vector.similarity_function`: ''COSINE''}}'
 :versions:
 - '20190616005444'
 - '20190616005600'
@@ -82,3 +69,4 @@
 - '20220904192720'
 - '20220904195830'
 - '20240224023556'
+- '20250720124529'
