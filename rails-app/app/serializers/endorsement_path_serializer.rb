@@ -40,7 +40,7 @@ class EndorsementPathSerializer
   end
 
   attribute :endorsee_id do |endorsement, params|
-    endorsement.endorsee.id if can_show?(params[:current_user], endorsement.endorser)
+    endorsement.endorsee.id if can_show?(params[:current_user], endorsement.endorsee)
   end
 
   class << self
