@@ -14,6 +14,10 @@ class EndorsementSerializer
     can_show?(params[:current_user], endorsement.endorsee) ? endorsement.endorsee_id : 'Anonymous'
   end
 
+  attribute :endorser_id do |endorsement, params|
+    can_show?(params[:current_user], endorsement.endorser) ? endorsement.endorser_id : 'Anonymous'
+  end
+
   attribute :endorser_name do |endorsement, params|
     can_show?(params[:current_user], endorsement.endorser) ? endorsement.endorser.name : 'Anonymous'
   end

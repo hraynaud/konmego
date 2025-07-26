@@ -28,11 +28,11 @@ class Endorsement
   end
 
   def endorser_id
-    endorser.neo_id
+    endorser.id
   end
 
   def endorsee_id
-    endorsee.neo_id
+    endorsee.id
   end
 
   def endorser_avatar_url
