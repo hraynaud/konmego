@@ -1,10 +1,6 @@
 class PersonSerializer
   include JSONAPI::Serializer
   set_key_transform :camel_lower
-
-  has_many :incoming_endorsements, serializer: EndorsementSerializer
-  has_many :outgoing_endorsements, serializer: EndorsementSerializer
-
   attribute :first_name do |person, params|
     can_show?(params[:current_user], person) ? person.first_name : 'Hidden'
   end
