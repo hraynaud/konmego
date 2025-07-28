@@ -26,21 +26,11 @@ class PersonSerializer
   end
 
   attribute :endorsees do |person, params|
-    if can_show?(params[:current_user],
-                 person) && !person.outgoing_endorsements.empty?
-      get_data(person.outgoing_endorsements, 'endorsees', params)
-    else
-      []
-    end
+    resolve_endorsement_actors(person, person.outgoing_endorsements, params, 'endorsees')
   end
 
   attribute :endorsers do |person, params|
-    if can_show?(params[:current_user],
-                 person) && !person.incoming_endorsements.empty?
-      get_data(person.incoming_endorsements, 'endorsers', params)
-    else
-      []
-    end
+    resolve_endorsement_actors(person, person.incoming_endorsements, params, 'endorsers')
   end
 
   class << self
@@ -49,6 +39,19 @@ class PersonSerializer
         true if current_user.friends_with?(contact) || (current_user == contact)
       else
         false
+      end
+    end
+
+    def resolve_endorsement_actors(person, data, params, type)
+      if can_show?(params[:current_user],
+                   person) && !data.empty?
+        if params[:current_user] == person
+          get_data(data, type, params)
+        else
+          get_data(data.accepted, type, params)
+        end
+      else
+        []
       end
     end
 
