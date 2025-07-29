@@ -49,6 +49,7 @@ postgres-db/
 
 # Neo4j Standalone  (and docker)
 /neo4j-db/data/*
+/neo4j-db/backups/*
 
 # Neo4j -  keep configuration and .keep files
 !/neo4j-db/Dockerfile
