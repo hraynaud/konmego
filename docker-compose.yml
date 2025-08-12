@@ -5,24 +5,18 @@ services:
     build:
       context: ./rails-app
       dockerfile: Dockerfile
-    container_name: konmego-rails-server
+    image: hraynaud/konmego-rails:latest
+    container_name: konmego-rails:latest
     ports:
       - "3000:3000"
     depends_on:
       - neo4j-db
-      - ollama
-      - postgres
     environment:
+      - NEO4J_URL=bolt://neo4j-db:7687
       - NEO4J_HOST=neo4j-db
       - NEO4J_PORT=7687
       - NEO4J_USER=${NEO4J_USER}
       - NEO4J_PASSWORD=${NEO4J_PASSWORD}
-      - OLLAMA_SERVER_ADDRESS=http://ollama:11434
-      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-    volumes:
-      - ./rails-app:/rails-app   # <-- Mount app code!
-      - ./rails-app/.env.local:/rails-app/.env.local  # <-- Mount env file separately
-
   neo4j-db:
     image: neo4j:community-bullseye
     container_name: konmego-neo4j
@@ -33,31 +27,7 @@ services:
     environment:
       - NEO4J_AUTH=${NEO4J_USER}/${NEO4J_PASSWORD}
     volumes:
-      - ./neo4j-db/data:/data
-
-  ollama:
-    build:
-      context: ./ollama
-      dockerfile: Dockerfile
-    container_name: konmego-ollama
-    ports:
-      - "11434:11434"
-    volumes:
-      - ./ollama/data:/root/.ollama
-      - ./ollama/models:/models  # Mount directory with your custom models
-
-  postgres:
-    image: postgres:15
-    container_name: postgres
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-    volumes:
-      - ./postgres-db:/var/lib/postgresql/data
+      - /home/ec2-user/neo4j-data:/data  
 
 networks:
   default:
