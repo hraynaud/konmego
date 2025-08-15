@@ -40,6 +40,15 @@ namespace :db do # rubocop:disable Metrics/BlockLength
       end
     end
 
+    namespace :reindex do
+      desc 'reindex all endorsements'
+      task endorsements: [:environment] do
+        Endorsement.all.each do |endorsement|
+          EndorsementService.build_embeddings(endorsement)
+        end
+      end
+    end
+
     namespace :clear do
       desc 'clear all data and relationships'
       task all: [:environment] do
