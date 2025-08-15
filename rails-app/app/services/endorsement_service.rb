@@ -30,10 +30,15 @@ class EndorsementService
       raise StandardError, 'Invalid Operation' if endorsement.endorsee != user
 
       endorsement.accept
-      optimized = optimize_for_embedding(endorsement)
-      endorsement.embeddings = OllamaService.embedding(optimized)
-      endorsement.save
+      endorsement = build_embeddings(endorsement)
       RelationshipManager.create_friendship_if_none_exists_for(endorsement)
+      endorsement
+    end
+
+    def build_embeddings(endorsement)
+      optimized = optimize_for_embedding(endorsement)
+      endorsement.embeddings = AiService.embedding(optimized)
+      endorsement.save
       endorsement
     end
 

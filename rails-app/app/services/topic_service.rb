@@ -29,8 +29,8 @@ module TopicService
     end
 
     def generate_like_terms(name)
-      completion = OllamaService.completion(topic_prompt(name))
-      OllamaService.parse_completion(completion)
+      completion = AiService.completion(topic_prompt(name))
+      AiService.parse_completion(completion)
     end
 
     def topic_prompt(name)

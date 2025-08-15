@@ -66,8 +66,8 @@ module TopicSuggestionService
       return nil unless search_qry
 
       search_prompt = build_search_prompt(search_qry)
-      completion = OllamaService.completion(search_prompt)
-      data = OllamaService.parse_completion(completion)
+      completion = AiService.completion(search_prompt)
+      data = AiService.parse_completion(completion)
       topic = data[:topic]
       Rails.logger.debug('Topic is ${topic}')
       topic

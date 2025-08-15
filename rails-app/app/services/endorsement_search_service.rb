@@ -45,8 +45,8 @@ class EndorsementSearchService
 
     def optimize_for_embedding(query)
       search_prompt = build_search_prompt(query)
-      completion = OllamaService.completion(search_prompt)
-      OllamaService.parse_completion completion
+      completion = AiService.completion(search_prompt)
+      AiService.parse_completion completion
     end
 
     def build_search_prompt(search)
@@ -63,7 +63,7 @@ class EndorsementSearchService
       # TODO continue experimenting with optimizing the text
       # optimized_text = optimize_for_embedding(query)
       # qry_vector = OllamaService.embedding("#{optimized_text} \n #{query}")
-      qry_vector = OllamaService.embedding("#{query}\n  #{like_terms} ")
+      qry_vector = AiService.embedding("#{query}\n  #{like_terms} ")
 
       do_vector_query(user_uuid, qry_vector, hops, tolerance, skip)
     end
