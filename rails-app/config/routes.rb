@@ -30,6 +30,12 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
         end
       end
 
+      resources :ai_project_chat, only: [:create] do
+        collection do
+          get :stream
+        end
+      end
+
       resources :people
       resources :topics, only: [:index]
       resources :contacts, only: %i[index show]
