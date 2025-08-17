@@ -41,7 +41,7 @@ Rails.application.configure do
   config.neo4j.verbose_query_logs = false
   config.neo4j.logger = Rails.logger
   config.neo4j.pretty_logged_cypher_queries
-  config.log_level = :info
+  config.log_level = :debug
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
@@ -53,6 +53,5 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :letter_opener
   config.action_mailer.perform_deliveries = true
   config.hosts.clear
-
 
 end
