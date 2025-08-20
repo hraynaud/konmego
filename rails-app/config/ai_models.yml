@@ -1,0 +1,17 @@
+# AI Models Configuration - Simplified
+# Defines default models for different AI tasks
+
+# General purpose LLM for chat and completion (OpenAI)
+default_llm:
+  provider: <%= ENV.fetch('DEFAULT_LLM_PROVIDER', 'openai') %>
+  model: <%= ENV.fetch('DEFAULT_LLM_MODEL', 'gpt-5-mini') %>
+
+# Embedding model (OpenAI)
+embedding_model:
+  provider: <%= ENV.fetch('EMBEDDING_MODEL_PROVIDER', 'openai') %>
+  model: <%= ENV.fetch('EMBEDDING_MODEL', 'text-embedding-3-small') %>
+
+# Assistant model (Gemini)
+assistant:
+  provider: <%= ENV.fetch('ASSISTANT_PROVIDER', 'gemini') %>
+  model: <%= ENV.fetch('ASSISTANT_MODEL', 'gemini-2.5-flash') %>
