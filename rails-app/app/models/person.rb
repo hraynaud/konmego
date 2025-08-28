@@ -39,8 +39,10 @@ class Person
 
   property :embeddings
 
-  validates :first_name, presence: true
-  validates :last_name, presence: true
+  # allow to be nil on intial creation to support simple
+  # email password based sign up.
+  validates :first_name, presence: true, on: :update
+  validates :last_name, presence: true, on: :update
   validates :email, uniqueness: true
   validates :email, presence: true, unless: :is_oauth?
   validate :email_format

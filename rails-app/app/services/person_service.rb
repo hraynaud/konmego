@@ -9,12 +9,17 @@ class PersonService
     end
 
     def create(params)
+      p = build(params)
+      p.save
+      p
+    end
+
+    def build(params)
       Person.new.tap do |p|
         p.first_name = params[:first_name]
         p.last_name = params[:last_name]
         p.email = params[:email]
         p.password = params[:password]
-        p.save
       end
     end
 
