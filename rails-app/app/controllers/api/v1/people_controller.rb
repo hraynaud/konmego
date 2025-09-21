@@ -4,8 +4,22 @@ module Api
       def create; end
 
       def show
-        p = Person.find(params[:id]).try(:first)
-        options = { params: { current_user: } }
+        p = Person.find_by(uuid: params[:id])
+
+        # Pre-load all associations
+        p.contacts.to_a
+        p.outgoing_endorsements.to_a
+        p.incoming_endorsements.to_a
+        p.projects.to_a
+
+        current_user_contact_ids = current_user&.contacts&.pluck(:id) || []
+        options = {
+          params: {
+            current_user: current_user,
+            current_user_contact_ids: current_user_contact_ids
+          }
+        }
+
         render json: PersonSerializer.new(p, options).serializable_hash.to_json
       end
 

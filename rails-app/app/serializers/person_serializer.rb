@@ -2,27 +2,27 @@ class PersonSerializer
   include JSONAPI::Serializer
   set_key_transform :camel_lower
   attribute :first_name do |person, params|
-    can_show?(params[:current_user], person) ? person.first_name : 'Hidden'
+    can_show?(params[:current_user], person, params) ? person.first_name : 'Hidden'
   end
 
   attribute :last_name do |person, params|
-    can_show?(params[:current_user], person) ? person.last_name : 'Hidden'
+    can_show?(params[:current_user], person, params) ? person.last_name : 'Hidden'
   end
 
   attribute :bio do |person, params|
-    can_show?(params[:current_user], person) ? person.bio : 'This users Bio is private'
+    can_show?(params[:current_user], person, params) ? person.bio : 'This users Bio is private'
   end
 
   attribute :avatar_url do |person, params|
-    can_show?(params[:current_user], person) ? person.avatar_url : 'anonymous.png'
+    can_show?(params[:current_user], person, params) ? person.avatar_url : 'anonymous.png'
   end
 
   attribute :profile_image_url do |person, params|
-    can_show?(params[:current_user], person) ? person.profile_image_url : 'anonymous.png'
+    can_show?(params[:current_user], person, params) ? person.profile_image_url : 'anonymous.png'
   end
 
   attribute :smart_about do |person, params|
-    can_show?(params[:current_user], person) ? person.smart_about : []
+    can_show?(params[:current_user], person, params) ? person.smart_about : []
   end
 
   attribute :endorsees do |person, params|
@@ -34,9 +34,17 @@ class PersonSerializer
   end
 
   class << self
-    def can_show?(current_user, contact)
+    def can_show?(current_user, contact, params = nil)
       if current_user
-        true if current_user.friends_with?(contact) || (current_user == contact)
+        return true if current_user == contact
+
+        # Use preloaded contact IDs to avoid N+1 queries
+        if params && params[:current_user_contact_ids]
+          params[:current_user_contact_ids].include?(contact.id)
+        else
+          # Fallback to original method (this should rarely be called now)
+          current_user.friends_with?(contact)
+        end
       else
         false
       end
@@ -44,7 +52,7 @@ class PersonSerializer
 
     def resolve_endorsement_actors(person, data, params, type)
       if can_show?(params[:current_user],
-                   person) && !data.empty?
+                   person, params) && !data.empty?
         if params[:current_user] == person
           get_data(data, type, params)
         else
