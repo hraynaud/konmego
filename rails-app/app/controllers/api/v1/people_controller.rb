@@ -8,9 +8,15 @@ module Api
 
         # Pre-load all associations
         p.contacts.to_a
-        p.outgoing_endorsements.to_a
-        p.incoming_endorsements.to_a
+        outgoing_endorsements = p.outgoing_endorsements.to_a
+        incoming_endorsements = p.incoming_endorsements.to_a
         p.projects.to_a
+
+        (outgoing_endorsements + incoming_endorsements).each do |endorsement|
+          endorsement.topic
+          endorsement.endorser
+          endorsement.endorsee
+        end
 
         current_user_contact_ids = current_user&.contacts&.pluck(:id) || []
         options = {
