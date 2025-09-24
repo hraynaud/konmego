@@ -5,17 +5,30 @@ class ProjectService
     def create(owner, params)
       Project.new(params).tap do |project|
         project.owner = owner
+        build_embeddings(project)
         project.save!
       end
     end
 
     def update(project, params)
       project.update(params)
+      build_embeddings(project) if project.name.changed? || project.description.changed?
       project.save!
     end
 
     def find_by_id(id)
       Project.find(id)
+    end
+
+    def build_embeddings(project)
+      optimized = optimize_for_embedding(project)
+      project.embeddings = AiService.embedding(optimized)
+      project.save
+      project
+    end
+
+    def optimize_for_embedding(project)
+      "#{project.description}\n#{project.name}"
     end
 
     def add_obstacle(obstacle); end

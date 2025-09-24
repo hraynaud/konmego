@@ -29,6 +29,11 @@ class EndorsementSearchService
       end
     end
 
+    def by_project(current_user, project, **args)
+      hops, tolerance, skip, _query, _topic = extract_args(args)
+      do_vector_query(current_user.uuid, project.embeddings, hops, tolerance, skip)
+    end
+
     def extract_args(args)
       hops = args[:hops] || DEFAULT_NETWORK_HOPS
       tolerance = args[:tolerance] || DEFAULT_TOLERANCE
@@ -62,7 +67,6 @@ class EndorsementSearchService
     def by_vector(user_uuid, query, like_terms, hops, tolerance, skip) # rubocop:disable Metrics/ParameterLists
       # TODO continue experimenting with optimizing the text
       # optimized_text = optimize_for_embedding(query)
-      # qry_vector = OllamaService.embedding("#{optimized_text} \n #{query}")
       qry_vector = AiService.embedding("#{query}\n  #{like_terms} ")
 
       do_vector_query(user_uuid, qry_vector, hops, tolerance, skip)

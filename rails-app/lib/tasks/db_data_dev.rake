@@ -47,6 +47,12 @@ namespace :db do # rubocop:disable Metrics/BlockLength
           EndorsementService.build_embeddings(endorsement)
         end
       end
+
+      task projects: [:environment] do
+        Project.all.each do |project|
+          ProjectService.build_embeddings(project)
+        end
+      end
     end
 
     namespace :clear do
