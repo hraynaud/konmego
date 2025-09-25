@@ -49,5 +49,8 @@
 # Ignore Docker-related files
 /.dockerignore
 /Dockerfile*
-/db
+/db/dumps
+/db/neo4j
 /spec
+/lib/tasks/db_data_test.rake
+/lib/tasks/openai_data_seeder.rake
