@@ -132,6 +132,35 @@ class Person
     followers.include? person
   end
 
+  def conversations
+    @conversations ||= Conversation.active.for_person(neo_id)
+  end
+
+  def unread_messages_count
+    conversations.sum { |conv| conv.unread_count_for(neo_id) }
+  end
+
+  def can_message?(other_user)
+    # Users can chat if they are:
+    # 1. Contacts (friends)
+    # 2. Following each other
+    # 3. Part of the same project
+    # 4. Have endorsed each other
+
+    return true if contacts.include?(other_user)
+    return true if followings.include?(other_user) && other_user.followings.include?(self)
+
+    # Check if they're in the same project
+    my_project_ids = (projects.pluck(:neo_id) + participations.pluck(:neo_id)).uniq
+    their_project_ids = (other_user.projects.pluck(:neo_id) + other_user.participations.pluck(:neo_id)).uniq
+    return true if (my_project_ids & their_project_ids).any?
+
+    # Check endorsements
+    return true if endorses?(other_user) || other_user.endorses?(self)
+
+    false
+  end
+
   private
 
   def is_oauth?

@@ -1,6 +1,6 @@
 Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   match '*path', to: 'application#preflight', via: [:options]
-
+  mount ActionCable.server => '/cable'
   get 'current_user',  to: 'application#current_user' # FIXME: is this needed?
   get 'request_token', to: 'authentication#request_token'
   get 'access_token',  to: 'authentication#access_token'
@@ -10,7 +10,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   post 'confirm', to: 'registration#confirm'
 
   namespace :api do # rubocop:disable Metrics/BlockLength
-    namespace :v1 do
+    namespace :v1 do # rubocop:disable Metrics/BlockLength
 
       get 'profile', to: 'users#show'
       get 'user_relationships/:group', to: 'user_relationships#index',
@@ -24,6 +24,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
       post 'projects_search',  to: 'project_search#index'
       post 'projects_random',  to: 'project_search#random'
 
+      # AI Chat routes (existing)
       resources :chat, only: [:create] do
         collection do
           get :stream
@@ -39,6 +40,21 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
       resources :ai_onboarding_chat, only: [:create] do
         collection do
           get :stream
+        end
+      end
+
+      # Human-to-Human Chat routes
+      resources :conversations do
+        member do
+          patch :mark_as_read
+          post :add_participant
+          delete :remove_participant
+        end
+
+        resources :messages do
+          member do
+            patch :mark_as_read
+          end
         end
       end
 
