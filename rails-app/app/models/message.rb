@@ -132,20 +132,48 @@ class Message < ApplicationRecord
       )
     end
 
-    # For project chats, ensure the sender is still an active participant
-    # (in case they were removed from the project but conversation still exists)
+    # For project chats, ensure the sender can participate and add them if needed
     return unless conversation.project_chat?
 
     project = conversation.context_entity
-    return unless project && (project.owner.id == sender_id || project.participants.any? { |p| p.id == sender_id })
-    # Ensure they're in the conversation participants
+    return unless project
+
+    sender = Person.find(sender_id)
+
+    # Check if sender can participate based on project visibility and relationships
+    can_participate = false
+    role = 'member'
+
+    # Project owner gets admin role
+    if project.owner.id == sender_id
+      can_participate = true
+      role = 'admin'
+    # Project participants get member role
+    elsif project.participants.any? { |p| p.id == sender_id }
+      can_participate = true
+      role = 'member'
+    # For public projects, anyone can join
+    elsif project.visibility == 'public'
+      can_participate = true
+      role = 'member'
+    # For non-public projects, only contacts of project owner can join
+    elsif project.owner.contacts.include?(sender)
+      can_participate = true
+      role = 'member'
+    end
+
+    return unless can_participate
+
+    # Add them to conversation participants if they're not already there
     return if conversation.conversation_participants.active.exists?(person_id: sender_id)
 
-    role = project.owner.id == sender_id ? 'admin' : 'member'
     conversation.conversation_participants.create!(
       person_id: sender_id,
       role: role,
       joined_at: Time.current
     )
+  rescue ActiveGraph::Node::Labels::RecordNotFound
+    # If we can't find the sender or project, don't add them
+    Rails.logger.error "Could not find sender #{sender_id} or project for conversation #{conversation.id}"
   end
 end

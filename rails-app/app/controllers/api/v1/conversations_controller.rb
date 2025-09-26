@@ -154,9 +154,10 @@ module Api
 
       def create_project_conversation
         project = Project.find(conversation_params[:project_id])
-        unless project.owner == current_user || project.participants.include?(current_user)
-          return render json: { error: 'Unauthorized' },
-                        status: :forbidden
+
+        # Check if user can access this project chat
+        unless can_access_project_chat?(project, current_user)
+          return render json: { error: 'Unauthorized' }, status: :forbidden
         end
 
         conversation = Conversation.find_or_create_project_chat(project)
@@ -238,6 +239,20 @@ module Api
             name: context.name
           }
         end
+      end
+
+      private
+
+      def can_access_project_chat?(project, user)
+        # Project owner and participants can always access
+        return true if project.owner == user
+        return true if project.participants.include?(user)
+
+        # For public projects, anyone can access
+        return true if project.visibility == 'public'
+
+        # For non-public projects, only contacts of project owner can access
+        project.owner.contacts.include?(user)
       end
     end
   end

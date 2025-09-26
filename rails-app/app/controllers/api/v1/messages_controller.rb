@@ -36,6 +36,14 @@ module Api
                         status: :forbidden
         end
 
+        # Additional check for project chats based on visibility
+        if @conversation.project_chat?
+          project = @conversation.context_entity
+          if project && !can_message_in_project_chat?(project, current_user)
+            return render json: { error: 'You cannot message in this project chat' }, status: :forbidden
+          end
+        end
+
         message = @conversation.messages.build(message_params.merge(sender_id: current_user.id))
 
         if message.save
@@ -88,6 +96,18 @@ module Api
 
       def message_params
         params.require(:message).permit(:content, :message_type, :reply_to_id)
+      end
+
+      def can_message_in_project_chat?(project, user)
+        # Project owner and participants can always message
+        return true if project.owner == user
+        return true if project.participants.include?(user)
+
+        # For public projects, anyone can message
+        return true if project.visibility == 'public'
+
+        # For non-public projects, only contacts of project owner can message
+        project.owner.contacts.include?(user)
       end
     end
   end

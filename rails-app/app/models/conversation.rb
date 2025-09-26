@@ -41,11 +41,22 @@ class Conversation < ApplicationRecord
       project = context_entity
       return false unless project
 
-      project.owner.id == user_id ||
-        project.participants.any? { |p| p.id == user_id }
+      # Project owner and participants can always participate
+      return true if project.owner.id == user_id
+      return true if project.participants.any? { |p| p.id == user_id }
+
+      # For public projects, anyone can participate
+      return true if project.visibility == 'public'
+
+      # For non-public projects, only contacts of project owner can participate
+      project_owner = project.owner
+      current_user = Person.find(user_id)
+      project_owner.contacts.include?(current_user)
     when 'topic_chat'
       true # Generally open to all users
     end
+  rescue ActiveGraph::Node::Labels::RecordNotFound
+    false
   end
 
   def can_moderate?(user_id)
