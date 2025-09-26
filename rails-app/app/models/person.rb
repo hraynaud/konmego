@@ -133,11 +133,11 @@ class Person
   end
 
   def conversations
-    @conversations ||= Conversation.active.for_person(neo_id)
+    @conversations ||= Conversation.active.for_person(id)
   end
 
   def unread_messages_count
-    conversations.sum { |conv| conv.unread_count_for(neo_id) }
+    conversations.sum { |conv| conv.unread_count_for(id) }
   end
 
   def can_message?(other_user)
@@ -151,8 +151,8 @@ class Person
     return true if followings.include?(other_user) && other_user.followings.include?(self)
 
     # Check if they're in the same project
-    my_project_ids = (projects.pluck(:neo_id) + participations.pluck(:neo_id)).uniq
-    their_project_ids = (other_user.projects.pluck(:neo_id) + other_user.participations.pluck(:neo_id)).uniq
+    my_project_ids = (projects.pluck(:id) + participations.pluck(:id)).uniq
+    their_project_ids = (other_user.projects.pluck(:id) + other_user.participations.pluck(:id)).uniq
     return true if (my_project_ids & their_project_ids).any?
 
     # Check endorsements
