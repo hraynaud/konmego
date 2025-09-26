@@ -1,8 +1,8 @@
 module Api
   module V1
     class ConversationsController < ApplicationController
-      before_action :find_conversation,
-                    only: %i[show update destroy mark_as_read add_participant remove_participant]
+      before_action :find_conversation_by_context, only: %i[show_direct show_project show_topic]
+      before_action :find_conversation, only: %i[show_group update destroy add_participant remove_participant]
 
       def index
         conversations = Conversation.active
@@ -15,12 +15,156 @@ module Api
         }
       end
 
-      def show
+      # Direct message endpoints
+      def show_direct
+        render_conversation_with_messages
+      end
+
+      def create_direct
+        other_user_id = params[:other_user_id]
+        conversation = Conversation.find_or_create_direct_message(current_user.id, other_user_id)
+        render json: { conversation: conversation_json(conversation) }
+      rescue StandardError => e
+        render json: { error: e.message }, status: :unprocessable_entity
+      end
+
+      # Project conversation endpoints
+      def show_project
+        render_conversation_with_messages
+      end
+
+      def create_project
+        project = Project.find(params[:project_id])
+        unless can_access_project_chat?(project, current_user)
+          return render json: { error: 'Unauthorized' }, status: :forbidden
+        end
+
+        conversation = Conversation.find_or_create_project_chat(project)
+        render json: { conversation: conversation_json(conversation) }
+      rescue ActiveGraph::Node::Labels::RecordNotFound
+        render json: { error: 'Project not found' }, status: :not_found
+      end
+
+      def mark_project_as_read
+        project = Project.find(params[:project_id])
+        conversation = Conversation.find_by(
+          conversation_type: 'project_chat',
+          context_type: 'Project',
+          context_id: project.id
+        )
+
+        return render json: { error: 'Conversation not found' }, status: :not_found unless conversation
+
+        unless conversation.can_participate?(current_user.id)
+          return render json: { error: 'Unauthorized' },
+                        status: :forbidden
+        end
+
+        mark_conversation_as_read(conversation)
+      end
+
+      # Topic conversation endpoints
+      def show_topic
+        render_conversation_with_messages
+      end
+
+      def create_topic
+        topic = Topic.find(params[:topic_id])
+        conversation = Conversation.find_or_create_topic_chat(topic)
+
+        # Auto-add the creator as a participant for topic chats
+        unless conversation.conversation_participants.exists?(person_id: current_user.id)
+          conversation.conversation_participants.create!(
+            person_id: current_user.id,
+            role: 'member'
+          )
+        end
+
+        render json: { conversation: conversation_json(conversation) }
+      rescue ActiveGraph::Node::Labels::RecordNotFound
+        render json: { error: 'Topic not found' }, status: :not_found
+      end
+
+      def mark_topic_as_read
+        topic = Topic.find(params[:topic_id])
+        conversation = Conversation.find_by(
+          conversation_type: 'topic_chat',
+          context_type: 'Topic',
+          context_id: topic.id
+        )
+
+        return render json: { error: 'Conversation not found' }, status: :not_found unless conversation
+
+        unless conversation.can_participate?(current_user.id)
+          return render json: { error: 'Unauthorized' },
+                        status: :forbidden
+        end
+
+        mark_conversation_as_read(conversation)
+      end
+
+      # Group conversation endpoints (keep existing ID-based approach)
+      def create_group
+        title = conversation_params[:title] || 'Group Chat'
+        participant_ids = conversation_params[:participant_ids] || []
+
+        conversation = Conversation.create_group_chat(title, current_user.id, participant_ids)
+        render json: { conversation: conversation_json(conversation) }
+      rescue StandardError => e
+        render json: { error: e.message }, status: :unprocessable_entity
+      end
+
+      def show_group
         unless @conversation.can_participate?(current_user.id)
           return render json: { error: 'Unauthorized' },
                         status: :forbidden
         end
 
+        render_conversation_with_messages
+      end
+
+      private
+
+      def find_conversation_by_context
+        case action_name
+        when 'show_direct'
+          other_user_id = params[:other_user_id]
+          @conversation = Conversation.joins(:conversation_participants)
+                                      .where(conversation_type: 'direct_message')
+                                      .group(:id)
+                                      .having('COUNT(conversation_participants.id) = 2')
+                                      .where(conversation_participants: {
+                                               person_id: [current_user.id, other_user_id],
+                                               left_at: nil
+                                             })
+                                      .first
+        when 'show_project'
+          project = Project.find(params[:project_id])
+          @conversation = Conversation.find_by(
+            conversation_type: 'project_chat',
+            context_type: 'Project',
+            context_id: project.id
+          )
+        when 'show_topic'
+          topic = Topic.find(params[:topic_id])
+          @conversation = Conversation.find_by(
+            conversation_type: 'topic_chat',
+            context_type: 'Topic',
+            context_id: topic.id
+          )
+        end
+
+        return render json: { error: 'Conversation not found' }, status: :not_found unless @conversation
+
+        unless @conversation.can_participate?(current_user.id)
+          render json: { error: 'Unauthorized' },
+                 status: :forbidden
+        end
+      rescue ActiveGraph::Node::Labels::RecordNotFound
+        render json: { error: 'Context not found' }, status: :not_found
+      end
+
+      def render_conversation_with_messages
         page = (params[:page] || 1).to_i
         per_page = (params[:per_page] || 50).to_i
         offset = (page - 1) * per_page
@@ -42,93 +186,13 @@ module Api
         }
       end
 
-      def create
-        case conversation_params[:conversation_type]
-        when 'direct_message'
-          create_direct_message
-        when 'project_chat'
-          create_project_conversation
-        when 'topic_chat'
-          create_topic_conversation
-        when 'group_chat'
-          create_group_conversation
-        else
-          render json: { error: 'Invalid conversation type' }, status: :bad_request
-        end
-      end
-
-      def update
-        unless @conversation.can_moderate?(current_user.id)
-          return render json: { error: 'Unauthorized' },
-                        status: :forbidden
-        end
-
-        if @conversation.update(title: conversation_params[:title])
-          render json: { conversation: conversation_json(@conversation) }
-        else
-          render json: { errors: @conversation.errors }, status: :unprocessable_entity
-        end
-      end
-
-      def destroy
-        unless @conversation.can_moderate?(current_user.id)
-          return render json: { error: 'Unauthorized' },
-                        status: :forbidden
-        end
-
-        @conversation.archive!
-        render json: { message: 'Conversation archived' }
-      end
-
-      def mark_as_read
-        unless @conversation.can_participate?(current_user.id)
-          return render json: { error: 'Unauthorized' },
-                        status: :forbidden
-        end
-
-        @conversation.messages.unread_by(current_user.id).find_each do |message|
+      def mark_conversation_as_read(conversation)
+        conversation.messages.unread_by(current_user.id).find_each do |message|
           message.mark_as_read!(current_user.id)
         end
 
         render json: { message: 'Messages marked as read' }
       end
-
-      def add_participant
-        unless @conversation.can_moderate?(current_user.id)
-          return render json: { error: 'Unauthorized' },
-                        status: :forbidden
-        end
-        unless @conversation.group_chat?
-          return render json: { error: 'Invalid conversation type' },
-                        status: :bad_request
-        end
-
-        participant_id = params[:person_id]
-
-        if @conversation.add_participant!(participant_id)
-          render json: { message: 'Participant added successfully' }
-        else
-          render json: { error: 'Failed to add participant' }, status: :unprocessable_entity
-        end
-      end
-
-      def remove_participant
-        unless @conversation.can_moderate?(current_user.id)
-          return render json: { error: 'Unauthorized' },
-                        status: :forbidden
-        end
-        unless @conversation.group_chat?
-          return render json: { error: 'Invalid conversation type' },
-                        status: :bad_request
-        end
-
-        participant_id = params[:person_id]
-        @conversation.remove_participant!(participant_id)
-
-        render json: { message: 'Participant removed successfully' }
-      end
-
-      private
 
       def find_conversation
         @conversation = Conversation.find(params[:id])

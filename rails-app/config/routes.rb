@@ -43,20 +43,43 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
         end
       end
 
-      # Human-to-Human Chat routes
-      resources :conversations do
+      # Context-based chat routes
+      resources :conversations, only: [:index] do
         member do
           patch :mark_as_read
-          post :add_participant
-          delete :remove_participant
         end
+      end
 
-        resources :messages do
+      # Direct message conversations (user-to-user)
+      get 'conversations/direct/:other_user_id', to: 'conversations#show_direct'
+      post 'conversations/direct/:other_user_id', to: 'conversations#create_direct'
+      post 'conversations/direct/:other_user_id/messages', to: 'messages#create_direct'
+
+      # Project conversations
+      get 'conversations/project/:project_id', to: 'conversations#show_project'
+      post 'conversations/project/:project_id', to: 'conversations#create_project'
+      post 'conversations/project/:project_id/messages', to: 'messages#create_project'
+      patch 'conversations/project/:project_id/mark_as_read', to: 'conversations#mark_project_as_read'
+
+      # Topic conversations
+      get 'conversations/topic/:topic_id', to: 'conversations#show_topic'
+      post 'conversations/topic/:topic_id', to: 'conversations#create_topic'
+      post 'conversations/topic/:topic_id/messages', to: 'messages#create_topic'
+      patch 'conversations/topic/:topic_id/mark_as_read', to: 'conversations#mark_topic_as_read'
+
+      # Group conversations (still use internal ID since no natural context)
+      resources :conversations, only: [] do
+        resources :messages, only: %i[create update destroy] do
           member do
             patch :mark_as_read
           end
         end
       end
+
+      # Group chat creation
+      post 'conversations/group', to: 'conversations#create_group'
+      get 'conversations/group/:id', to: 'conversations#show_group'
+      post 'conversations/group/:id/messages', to: 'messages#create_group'
 
       resources :people
       resources :topics, only: [:index]
