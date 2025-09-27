@@ -61,8 +61,7 @@ class Message < ApplicationRecord
   end
 
   def can_delete?(user_id)
-    sender_id == user_id ||
-      conversation.can_moderate?(user_id)
+    sender_id == user_id # disable for now|| conversation.can_moderate?(user_id)
   end
 
   def soft_delete!
@@ -135,7 +134,7 @@ class Message < ApplicationRecord
     # For project chats, ensure the sender can participate and add them if needed
     return unless conversation.project_chat?
 
-    project = conversation.context_entity
+    project = conversation.get_context_entity
     return unless project
 
     sender = Person.find(sender_id)

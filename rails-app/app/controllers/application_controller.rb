@@ -54,7 +54,7 @@ class ApplicationController < ActionController::API
     auth = request.headers['Authorization'] || request.params['authorization']
     uid = Authentication.uid_from_from_request_auth_hdr auth
 
-    @current_user = Person.find(uid)
+    @current_user = Person.where(uuid: uid).with_associations(:contacts).first
   rescue StandardError => e
     do_auth_failed e.message
   end

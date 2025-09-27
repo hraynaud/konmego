@@ -55,7 +55,7 @@ module Api
 
         return render json: { error: 'Conversation not found' }, status: :not_found unless conversation
 
-        unless conversation.can_participate?(current_user.id)
+        unless conversation.can_participate?(current_user)
           return render json: { error: 'Unauthorized' },
                         status: :forbidden
         end
@@ -95,7 +95,7 @@ module Api
 
         return render json: { error: 'Conversation not found' }, status: :not_found unless conversation
 
-        unless conversation.can_participate?(current_user.id)
+        unless conversation.can_participate?(current_user)
           return render json: { error: 'Unauthorized' },
                         status: :forbidden
         end
@@ -115,7 +115,7 @@ module Api
       end
 
       def show_group
-        unless @conversation.can_participate?(current_user.id)
+        unless @conversation.can_participate?(current_user)
           return render json: { error: 'Unauthorized' },
                         status: :forbidden
         end
@@ -139,11 +139,12 @@ module Api
                                              })
                                       .first
         when 'show_project'
-          project = Project.find(params[:project_id])
+          project = Project.where(uuid: params[:project_id])
+          @context = project.with_associations(:owner, :participants).first
           @conversation = Conversation.find_by(
             conversation_type: 'project_chat',
             context_type: 'Project',
-            context_id: project.id
+            context_id: @context.id
           )
         when 'show_topic'
           topic = Topic.find(params[:topic_id])
@@ -156,7 +157,7 @@ module Api
 
         return render json: { error: 'Conversation not found' }, status: :not_found unless @conversation
 
-        unless @conversation.can_participate?(current_user.id)
+        unless @conversation.can_participate?(@current_user, @context)
           render json: { error: 'Unauthorized' },
                  status: :forbidden
         end
@@ -169,15 +170,43 @@ module Api
         per_page = (params[:per_page] || 50).to_i
         offset = (page - 1) * per_page
 
+        # Load messages (1 PostgreSQL query)
         messages = @conversation.messages
                                 .undeleted
                                 .chronological
                                 .offset(offset)
                                 .limit(per_page)
 
+        # Get all unique sender IDs (no additional queries)
+        sender_ids = messages.pluck(:sender_id).compact.uniq
+
+        # Load all people at once (1 Neo4j query)
+        people_cache = @conversation.load_participants_batch(sender_ids)
+
+        # Build messages JSON manually using cache
+        messages_json = messages.map do |msg|
+          sender = people_cache[msg.sender_id]
+          {
+            id: msg.id,
+            content: msg.display_content,
+            sender_id: msg.sender_id,
+            sender_name: sender&.name,
+            sender_avatar: sender&.avatar_url,
+            message_type: msg.message_type,
+            reply_to_id: msg.reply_to_id,
+            created_at: msg.created_at,
+            updated_at: msg.updated_at,
+            edited_at: msg.edited_at,
+            can_edit: msg.can_edit?(current_user.id),
+            can_delete: msg.can_delete?(current_user.id),
+            is_read: msg.read_by?(current_user.id)
+          }
+        end
         render json: {
-          conversation: conversation_json(@conversation),
-          messages: messages.map { |msg| msg.as_json(current_user_id: current_user.id) },
+          id: @conversation.id,
+          context_id: @conversation.context_id,
+          context_type: @conversation.context_type,
+          messages: messages_json,
           pagination: {
             page: page,
             per_page: per_page,
@@ -285,7 +314,7 @@ module Api
       end
 
       def conversation_context_json(conversation)
-        context = conversation.context_entity
+        context = conversation.get_context_entity
         return nil unless context
 
         case conversation.context_type

@@ -4,7 +4,7 @@ module Api
       before_action :find_message, only: %i[show update destroy mark_as_read]
 
       def index
-        unless @conversation.can_participate?(current_user.id)
+        unless @conversation.can_participate?(current_user)
           return render json: { error: 'Unauthorized' },
                         status: :forbidden
         end
@@ -91,7 +91,7 @@ module Api
       def mark_as_read
         find_conversation_by_id
         find_message
-        unless @conversation.can_participate?(current_user.id)
+        unless @conversation.can_participate?(current_user)
           return render json: { error: 'Unauthorized' }, status: :forbidden
         end
 
@@ -119,13 +119,13 @@ module Api
       end
 
       def create_message_in_conversation(conversation)
-        unless conversation.can_participate?(current_user.id)
+        unless conversation.can_participate?(current_user)
           return render json: { error: 'Unauthorized' }, status: :forbidden
         end
 
         # Additional check for project chats based on visibility
         if conversation.project_chat?
-          project = conversation.context_entity
+          project = conversation.get_context_entity
           if project && !can_message_in_project_chat?(project, current_user)
             return render json: { error: 'You cannot message in this project chat' }, status: :forbidden
           end

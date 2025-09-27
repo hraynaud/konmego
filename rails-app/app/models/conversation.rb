@@ -29,28 +29,32 @@ class Conversation < ApplicationRecord
     @participant_people ||= participants.map(&:person_from_neo4j).compact
   end
 
+  def load_participants_batch(person_ids = nil)
+    ids_to_load = person_ids || participant_ids
+    PersonBatchService.fetch_people_by_ids(ids_to_load)
+  end
+
   def participant_ids
     conversation_participants.active.pluck(:person_id)
   end
 
-  def can_participate?(user_id)
+  def can_participate?(current_user, context_entity = nil)
     case conversation_type
     when 'direct_message', 'group_chat'
       conversation_participants.active.exists?(person_id: user_id)
     when 'project_chat'
-      project = context_entity
+      project = context_entity.nil? ? get_context_entity : context_entity
       return false unless project
 
       # Project owner and participants can always participate
-      return true if project.owner.id == user_id
-      return true if project.participants.any? { |p| p.id == user_id }
+      return true if project.owner.id == current_user.id
+      return true if project.participants.any? { |p| p.id == current_user.id }
 
       # For public projects, anyone can participate
       return true if project.visibility == 'public'
 
       # For non-public projects, only contacts of project owner can participate
       project_owner = project.owner
-      current_user = Person.find(user_id)
       project_owner.contacts.include?(current_user)
     when 'topic_chat'
       true # Generally open to all users
@@ -64,7 +68,7 @@ class Conversation < ApplicationRecord
     when 'direct_message'
       false # No moderation in DMs
     when 'project_chat'
-      project = context_entity
+      project = get_context_entity
       project&.owner&.id == user_id
     when 'topic_chat'
       false # Open discussion
@@ -76,7 +80,7 @@ class Conversation < ApplicationRecord
     end
   end
 
-  def context_entity
+  def get_context_entity
     return nil unless context_id && context_type
 
     case context_type
@@ -97,9 +101,9 @@ class Conversation < ApplicationRecord
       participant_names = participant_people.map(&:name)
       participant_names.join(' & ')
     when 'project_chat'
-      "#{context_entity&.name || 'Project'} Discussion"
+      "#{get_context_entity&.name || 'Project'} Discussion"
     when 'topic_chat'
-      "#{context_entity&.name || 'Topic'} Chat"
+      "#{get_context_entity&.name || 'Topic'} Chat"
     when 'group_chat'
       title.presence || 'Group Chat'
     end

@@ -2,7 +2,7 @@ class ChatChannel < ApplicationCable::Channel
   def subscribed
     conversation = Conversation.find(params[:conversation_id])
 
-    if conversation && conversation.can_participate?(current_user.id)
+    if conversation && conversation.can_participate?(current_user)
       stream_for conversation
       Rails.logger.info "User #{current_user.id} subscribed to conversation #{conversation.id}"
     else
@@ -16,7 +16,7 @@ class ChatChannel < ApplicationCable::Channel
 
   def send_message(data)
     conversation = Conversation.find(data['conversation_id'])
-    return unless conversation&.can_participate?(current_user.id)
+    return unless conversation&.can_participate?(current_user)
 
     message = conversation.messages.create!(
       content: data['content'],
@@ -33,7 +33,7 @@ class ChatChannel < ApplicationCable::Channel
 
   def typing(data)
     conversation = Conversation.find(data['conversation_id'])
-    return unless conversation&.can_participate?(current_user.id)
+    return unless conversation&.can_participate?(current_user)
 
     ChatChannel.broadcast_to(conversation, {
                                type: 'typing',
@@ -47,7 +47,7 @@ class ChatChannel < ApplicationCable::Channel
 
   def mark_as_read(data)
     conversation = Conversation.find(data['conversation_id'])
-    return unless conversation&.can_participate?(current_user.id)
+    return unless conversation&.can_participate?(current_user)
 
     message = Message.find(data['message_id'])
     message.mark_as_read!(current_user.id)
