@@ -23,7 +23,7 @@ class Project
   has_many :in, :promoters, model_class: :Person, origin: :promoted_projects
   has_many :in, :posts, type: nil
 
-  # has_many :in, :participants, type: :PARTICIPATES_IN, model_class: :Person
+  has_many :in, :participants, type: :PARTICIPATES_IN, model_class: :Person
 
   validates :owner, :name, :description, presence: true
   # validates :topic, presence: {message: "Projects must have a topic"}

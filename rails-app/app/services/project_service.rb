@@ -21,6 +21,16 @@ class ProjectService
       Project.find(id)
     end
 
+    def find_by_uuid(uuid)
+      Project.where(uuid: uuid).first
+    end
+
+    def with_associations(uuid)
+      Project.where(uuid: uuid).with_associations(:owner, :participants).first
+    rescue ActiveGraph::Node::Labels::RecordNotFound
+      raise StandardError, 'Project not found'
+    end
+
     def build_embeddings(project)
       optimized = optimize_for_embedding(project)
       project.embeddings = AiService.embedding(optimized)
