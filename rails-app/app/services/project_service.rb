@@ -10,7 +10,8 @@ class ProjectService
       end
     end
 
-    def update(project, params)
+    def update(user, project_id, params)
+      project = user.projects.find_by(id: project_id)
       project.update(params)
       build_embeddings(project) if project.name.changed? || project.description.changed?
       project.save!

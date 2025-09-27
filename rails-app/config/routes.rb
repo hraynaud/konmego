@@ -91,6 +91,7 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
         end
       end
       resources :projects do
+        resources :promotions, only: %i[create destroy], controller: 'project_promotions'
         resources :posts do
           resources :comments
         end

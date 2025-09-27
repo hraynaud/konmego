@@ -20,8 +20,10 @@ class Project
   has_one :in, :owner, type: :OWNS, model_class: :Person
   has_one :out, :topic, type: :CONCERNS
 
-  has_many :in, :participants, type: :PARTICIPATES_IN, model_class: :Person
+  has_many :in, :promoters, model_class: :Person, origin: :promoted_projects
   has_many :in, :posts, type: nil
+
+  # has_many :in, :participants, type: :PARTICIPATES_IN, model_class: :Person
 
   validates :owner, :name, :description, presence: true
   # validates :topic, presence: {message: "Projects must have a topic"}
@@ -83,7 +85,7 @@ class Project
   private
 
   def cannot_set_status_active_without_required_attributes_set
-    return unless status == 'active' and invalid_activation_config?
+    return unless (status == 'active') && invalid_activation_config?
 
     errors.add(:status,
                'Cannot activate project without obstacles, topics, description, start date and deadline and visibility')

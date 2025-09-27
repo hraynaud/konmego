@@ -16,7 +16,14 @@ module Api
       end
 
       def update
-        current_user.projects.update project_params
+        project = ProjectService.update(current_user, params[:id], project_params)
+
+        if project&.persisted?
+          render json: ProjectSerializer.new(project)
+        else
+          render json: { errors: project ? project.errors.full_messages : ['Project not found'] },
+                 status: :unprocessable_entity
+        end
       end
 
       def project_params

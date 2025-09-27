@@ -9,14 +9,19 @@ class Person
   has_one :in, :inviter, model_class: :Person, type: :INVITED
   has_many :out, :invitees, model_class: :Person, type: :INVITED
   has_many :both, :contacts, model_class: :Person, type: :KNOWS, unique: true
-  has_many :out, :followings, model_class: :Person, type: :FOLLOWINGS, unique: true
-  has_many :in, :followers, model_class: :Person, type: :FOLLOWINGS
+
   has_many :out, :projects, origin: :owner
-  has_many :out, :participations, model_class: :Project, type: :PARTICIPATES_IN
+
+  has_many :out, :promoted_projects, model_class: :Project, type: :PROMOTED
   has_many :in, :posts, origin: :author
   has_many :in, :comments, origin: :author
-  has_many :in, :incoming_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_TARGET
-  has_many :in, :outgoing_endorsements, model_class: :Endorsement, type: :ENDORSEMENT_SOURCE
+  has_many :in, :incoming_endorsements, model_class: :Endorsement, origin: :endorser
+  has_many :in, :outgoing_endorsements, model_class: :Endorsement, origin: :endorsee
+
+  # TODO: delete these associations if they are not being used.
+  has_many :out, :participations, model_class: :Project, type: :PARTICIPATES_IN
+  has_many :out, :followings, model_class: :Person, type: :FOLLOWINGS, unique: true
+  has_many :in, :followers, model_class: :Person, type: :FOLLOWINGS
 
   # has_many :in, :endorsers, rel_class: :Endorse
   # has_many :out, :endorsees, rel_class: :Endorse
@@ -50,6 +55,8 @@ class Person
 
   scope :by_email, ->(login) { where(email: login) }
 
+  Profile = Struct.new(:first_name, :last_name, :avatar_url, :profile_image_url, :name, :id, keyword_init: true)
+
   DEFAULT_RELATIONSHIP_DEPTH = 3
   class << self
     delegate :by_email, to: :Identity
@@ -60,8 +67,14 @@ class Person
   end
 
   def extract
-    OpenStruct.new(first_name:, last_name:,
-                   avatar_url:, profile_image_url:, name: "#{first_name} #{last_name}", id:)
+    Profile.new(
+      first_name:,
+      last_name:,
+      avatar_url:,
+      profile_image_url:,
+      name: "#{first_name} #{last_name}",
+      id:
+    )
   end
 
   def smart_about
@@ -159,6 +172,13 @@ class Person
     return true if endorses?(other_user) || other_user.endorses?(self)
 
     false
+  end
+
+  def affiliated_projects
+    # Find movies connected by either a :PROMOTED or :RECOMMENDED relationship
+    query_as(:person).match('(person)-[rel:PROMOTED]->(movie:Movie)')
+                     .where(person: self)
+                     .pluck(:movie)
   end
 
   private
