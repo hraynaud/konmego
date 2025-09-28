@@ -45,6 +45,10 @@ class ProjectSerializer
     end
   end
 
+  attribute :promoted do |p, params|
+    p.promoters.include?(params[:current_user]) && p.owner != params[:current_user]
+  end
+
   class << self
     def can_show?(current_user, contact, params = nil)
       # Handle nil contact

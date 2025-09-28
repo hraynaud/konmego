@@ -7,23 +7,29 @@ module Api
 
       def create
         project = ProjectService.create(current_user, project_params)
-        render json: ProjectSerializer.new(project)
+        render_project(project)
       end
 
       def show
-        project = ProjectService.find_by_id(params[:id])
-        render json: ProjectSerializer.new(project)
+        project = ProjectService.with_associations(params[:id])
+        render_project(project)
       end
 
       def update
         project = ProjectService.update(current_user, params[:id], project_params)
 
         if project&.persisted?
-          render json: ProjectSerializer.new(project)
+          render_project(project)
         else
           render json: { errors: project ? project.errors.full_messages : ['Project not found'] },
                  status: :unprocessable_entity
         end
+      end
+
+      private
+
+      def render_project(project)
+        render json: ProjectSerializer.new(project, params: { current_user: current_user })
       end
 
       def project_params

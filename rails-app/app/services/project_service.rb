@@ -26,7 +26,7 @@ class ProjectService
     end
 
     def with_associations(uuid)
-      Project.where(uuid: uuid).with_associations(:owner, :participants).first
+      Project.where(uuid: uuid).with_associations(:owner, :participants, :promoters).first
     rescue ActiveGraph::Node::Labels::RecordNotFound
       raise StandardError, 'Project not found'
     end
