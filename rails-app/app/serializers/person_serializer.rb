@@ -33,6 +33,14 @@ class PersonSerializer
     resolve_endorsement_actors(person, person.incoming_endorsements, params, 'endorsers')
   end
 
+  attribute :promoted_projects do |person, params|
+    ProjectSerializer.new(person.promoted_projects, params:)
+  end
+
+  attribute :projects do |person, params|
+    ProjectSerializer.new(person.projects, params:)
+  end
+
   class << self
     def can_show?(current_user, contact, params = nil)
       if current_user

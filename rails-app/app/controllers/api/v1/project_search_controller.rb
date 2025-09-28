@@ -37,13 +37,6 @@ module Api
 
       private
 
-      # def cache_project_associations(projects)
-      #   projects.each do |project|
-      #     project.topic
-      #     project.owner # This works and finds the real owners
-      #   end
-      # end
-
       def cache_project_associations(projects)
         Rails.logger.info "=== CACHING #{projects.size} PROJECT ASSOCIATIONS ==="
 
@@ -51,14 +44,9 @@ module Api
           Rails.logger.info "=== Caching project #{index + 1}: #{project.id} ==="
 
           # Load the associations
-          topic = project.topic
-          owner = project.owner
+          project.topic
+          project.owner
 
-          # # FORCE the caching by overriding the methods
-          # project.define_singleton_method(:topic) { topic }
-          # project.define_singleton_method(:owner) { owner }
-
-          # Rails.logger.info "=== Cached topic: #{topic&.id}, owner: #{owner&.id} ==="
         end
 
         Rails.logger.info '=== DONE CACHING ASSOCIATIONS ==='

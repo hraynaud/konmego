@@ -37,5 +37,10 @@ class PersonService
     def find_by_id(id)
       Person.where(id: id).first
     end
+
+    def with_associations(uuid)
+      Person.where(uuid: uuid).with_associations(:contacts, :projects, :promoted_projects, :posts, :comments,
+                                                 :incoming_endorsements, :outgoing_endorsements).first
+    end
   end
 end
