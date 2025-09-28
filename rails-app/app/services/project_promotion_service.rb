@@ -9,8 +9,9 @@ class ProjectPromotionService
   end
 
   def self.demote(user, project)
-    return unless user.promoted_projects.include?(project)
+    return unless user.promoted_projects.where(id: project.id).exists?
 
     user.promoted_projects.delete(project)
+    true
   end
 end
