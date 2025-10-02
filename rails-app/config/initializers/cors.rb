@@ -8,7 +8,8 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     allowed_origins = case Rails.env
                       when 'development'
-                        ['http://localhost:9000', 'http://localhost:8080', 'https://konmego.com', 'https://www.konmego.com']
+                        ['http://localhost:9000', 'http://localhost:8080', 'https://konmego.com',
+                         'https://www.konmego.com', 'https://demo.konmego.com']
                       when 'production'
                         ['https://konmego.com', 'https://www.konmego.com']
                       else # For staging or other environments
